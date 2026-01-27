@@ -221,7 +221,10 @@ def read_rainbow_wrl(
                 )
                 del rbf["volume"]["scan"]["slice"][i]
 
-    nslices = len(rbf["volume"]["scan"]["slice"])
+    if single_slice:
+        nslices = 1
+    else:
+        nslices = len(rbf["volume"]["scan"]["slice"])
 
     # check the data type
     # all slices should have the same data type
@@ -352,9 +355,9 @@ def read_rainbow_wrl(
                 "WARNING: number of range bins changes between sweeps "
                 + "max number of bins will be used"
             )
-        nbins = nbins_sweep.max()
-        ssri = np.cumsum(np.append([0], rays_per_sweep[:-1])).astype("int32")
-        seri = np.cumsum(rays_per_sweep).astype("int32") - 1
+    nbins = nbins_sweep.max()
+    ssri = np.cumsum(np.append([0], rays_per_sweep[:-1])).astype("int32")
+    seri = np.cumsum(rays_per_sweep).astype("int32") - 1
 
     # total number of rays and sweep start ray index and end
     total_rays = sum(rays_per_sweep)
@@ -369,7 +372,6 @@ def read_rainbow_wrl(
     tx_pwr_v["data"] = None
     if "pw_index" in common_slice_info:
         pw_index = int(common_slice_info["pw_index"])
-
         pulse_width["data"] = PULSE_WIDTH_VEC[pw_index] * np.ones(
             total_rays, dtype=dtype
         )

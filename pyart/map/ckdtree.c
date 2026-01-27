@@ -10,14 +10,14 @@
             ]
         ],
         "depends": [
-            "/tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/arrayobject.h",
-            "/tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/arrayscalars.h",
-            "/tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarrayobject.h",
-            "/tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarraytypes.h",
-            "/tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/ufuncobject.h"
+            "/tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/arrayobject.h",
+            "/tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/arrayscalars.h",
+            "/tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarrayobject.h",
+            "/tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/ndarraytypes.h",
+            "/tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/_core/include/numpy/ufuncobject.h"
         ],
         "include_dirs": [
-            "/tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/_core/include"
+            "/tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/_core/include"
         ],
         "libraries": [
             "m"
@@ -1153,7 +1153,7 @@ static int __Pyx_init_co_variables(void) {
 #include <stdio.h>
 
     /* Using NumPy API declarations from "numpy/__init__.cython-30.pxd" */
-
+    
 #include "numpy/arrayobject.h"
 #include "numpy/ndarrayobject.h"
 #include "numpy/ndarraytypes.h"
@@ -1399,7 +1399,7 @@ static const char *__pyx_filename;
 
 static const char* const __pyx_f[] = {
   "pyart/map/ckdtree.pyx",
-  "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd",
+  "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd",
   "<stringsource>",
   "cpython/type.pxd",
 };
@@ -1610,17 +1610,17 @@ typedef struct {
 
 /* #### Code section: numeric_typedefs ### */
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":744
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":744
  * # in Cython to enable them only on the right systems.
- *
+ * 
  * ctypedef npy_int8       int8_t             # <<<<<<<<<<<<<<
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t
 */
 typedef npy_int8 __pyx_t_5numpy_int8_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":745
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":745
+ * 
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t             # <<<<<<<<<<<<<<
  * ctypedef npy_int32      int32_t
@@ -1628,35 +1628,35 @@ typedef npy_int8 __pyx_t_5numpy_int8_t;
 */
 typedef npy_int16 __pyx_t_5numpy_int16_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":746
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":746
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t             # <<<<<<<<<<<<<<
  * ctypedef npy_int64      int64_t
- *
+ * 
 */
 typedef npy_int32 __pyx_t_5numpy_int32_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":747
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":747
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t
  * ctypedef npy_int64      int64_t             # <<<<<<<<<<<<<<
- *
+ * 
  * ctypedef npy_uint8      uint8_t
 */
 typedef npy_int64 __pyx_t_5numpy_int64_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":749
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":749
  * ctypedef npy_int64      int64_t
- *
+ * 
  * ctypedef npy_uint8      uint8_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t
 */
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":750
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":750
+ * 
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uint32     uint32_t
@@ -1664,35 +1664,35 @@ typedef npy_uint8 __pyx_t_5numpy_uint8_t;
 */
 typedef npy_uint16 __pyx_t_5numpy_uint16_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":751
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":751
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uint64     uint64_t
- *
+ * 
 */
 typedef npy_uint32 __pyx_t_5numpy_uint32_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":752
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":752
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t
  * ctypedef npy_uint64     uint64_t             # <<<<<<<<<<<<<<
- *
+ * 
  * ctypedef npy_float32    float32_t
 */
 typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":754
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":754
  * ctypedef npy_uint64     uint64_t
- *
+ * 
  * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
 */
 typedef npy_float32 __pyx_t_5numpy_float32_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":755
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":755
+ * 
  * ctypedef npy_float32    float32_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
@@ -1700,65 +1700,65 @@ typedef npy_float32 __pyx_t_5numpy_float32_t;
 */
 typedef npy_float64 __pyx_t_5numpy_float64_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":762
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":762
  * ctypedef double complex complex128_t
- *
+ * 
  * ctypedef npy_longlong   longlong_t             # <<<<<<<<<<<<<<
  * ctypedef npy_ulonglong  ulonglong_t
- *
+ * 
 */
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":763
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":763
+ * 
  * ctypedef npy_longlong   longlong_t
  * ctypedef npy_ulonglong  ulonglong_t             # <<<<<<<<<<<<<<
- *
+ * 
  * ctypedef npy_intp       intp_t
 */
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":765
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":765
  * ctypedef npy_ulonglong  ulonglong_t
- *
+ * 
  * ctypedef npy_intp       intp_t             # <<<<<<<<<<<<<<
  * ctypedef npy_uintp      uintp_t
- *
+ * 
 */
 typedef npy_intp __pyx_t_5numpy_intp_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":766
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":766
+ * 
  * ctypedef npy_intp       intp_t
  * ctypedef npy_uintp      uintp_t             # <<<<<<<<<<<<<<
- *
+ * 
  * ctypedef npy_double     float_t
 */
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":768
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":768
  * ctypedef npy_uintp      uintp_t
- *
+ * 
  * ctypedef npy_double     float_t             # <<<<<<<<<<<<<<
  * ctypedef npy_double     double_t
  * ctypedef npy_longdouble longdouble_t
 */
 typedef npy_double __pyx_t_5numpy_float_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":769
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":769
+ * 
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t             # <<<<<<<<<<<<<<
  * ctypedef npy_longdouble longdouble_t
- *
+ * 
 */
 typedef npy_double __pyx_t_5numpy_double_t;
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":770
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":770
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t
  * ctypedef npy_longdouble longdouble_t             # <<<<<<<<<<<<<<
- *
+ * 
  * ctypedef float complex       cfloat_t
 */
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
@@ -1830,7 +1830,7 @@ union __pyx_t_5pyart_3map_7ckdtree_heapcontents {
 
 /* "pyart/map/ckdtree.pyx":129
  *     char* ptrdata
- *
+ * 
  * cdef struct heapitem:             # <<<<<<<<<<<<<<
  *     np.float64_t priority
  *     heapcontents contents
@@ -1842,7 +1842,7 @@ struct __pyx_t_5pyart_3map_7ckdtree_heapitem {
 
 /* "pyart/map/ckdtree.pyx":449
  * # dist_tracker.pop()
- *
+ * 
  * cdef struct RR_stack_item:             # <<<<<<<<<<<<<<
  *     np.intp_t which
  *     np.intp_t split_dim
@@ -1858,7 +1858,7 @@ struct __pyx_t_5pyart_3map_7ckdtree_RR_stack_item {
 
 /* "pyart/map/ckdtree.pyx":632
  * # dist_tracker.pop()
- *
+ * 
  * cdef struct RP_stack_item:             # <<<<<<<<<<<<<<
  *     np.intp_t split_dim
  *     double min_along_dim, max_along_dim
@@ -1888,7 +1888,7 @@ struct __pyx_t_5pyart_3map_7ckdtree_innernode {
 
 /* "pyart/map/ckdtree.pyx":775
  *     innernode* greater
- *
+ * 
  * cdef struct leafnode:             # <<<<<<<<<<<<<<
  *     np.intp_t split_dim
  *     np.intp_t children
@@ -1902,7 +1902,7 @@ struct __pyx_t_5pyart_3map_7ckdtree_leafnode {
 
 /* "pyart/map/ckdtree.pyx":785
  * # malloc sizeof(nodeinfo)+self.m*sizeof(np.float64_t) bytes.
- *
+ * 
  * cdef struct nodeinfo:             # <<<<<<<<<<<<<<
  *     innernode* node
  *     np.float64_t side_distances[0]  # FIXME: Only valid in C99, invalid C++ and C89
@@ -1914,7 +1914,7 @@ struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo {
 
 /* "pyart/map/ckdtree.pyx":133
  *     heapcontents contents
- *
+ * 
  * cdef class heap(object):             # <<<<<<<<<<<<<<
  *     cdef np.intp_t n
  *     cdef heapitem* heap
@@ -1929,7 +1929,7 @@ struct __pyx_obj_5pyart_3map_7ckdtree_heap {
 
 
 /* "pyart/map/ckdtree.pyx":238
- *
+ * 
  * # Utility for building a coo matrix incrementally
  * cdef class coo_entries:             # <<<<<<<<<<<<<<
  *     cdef:
@@ -1951,7 +1951,7 @@ struct __pyx_obj_5pyart_3map_7ckdtree_coo_entries {
 
 /* "pyart/map/ckdtree.pyx":327
  * # ===================
- *
+ * 
  * cdef class Rectangle:             # <<<<<<<<<<<<<<
  *     cdef np.intp_t m
  *     cdef np.float64_t *mins
@@ -1968,7 +1968,7 @@ struct __pyx_obj_5pyart_3map_7ckdtree_Rectangle {
 
 /* "pyart/map/ckdtree.pyx":458
  * cdef np.intp_t GREATER = 2
- *
+ * 
  * cdef class RectRectDistanceTracker(object):             # <<<<<<<<<<<<<<
  *     cdef Rectangle rect1, rect2
  *     cdef np.float64_t p, epsfac, upper_bound
@@ -1991,7 +1991,7 @@ struct __pyx_obj_5pyart_3map_7ckdtree_RectRectDistanceTracker {
 
 /* "pyart/map/ckdtree.pyx":637
  *     np.float64_t min_distance, max_distance
- *
+ * 
  * cdef class PointRectDistanceTracker(object):             # <<<<<<<<<<<<<<
  *     cdef Rectangle rect
  *     cdef np.float64_t *pt
@@ -2040,7 +2040,7 @@ struct __pyx_obj_5pyart_3map_7ckdtree_cKDTree {
 
 /* "pyart/map/ckdtree.pyx":133
  *     heapcontents contents
- *
+ * 
  * cdef class heap(object):             # <<<<<<<<<<<<<<
  *     cdef np.intp_t n
  *     cdef heapitem* heap
@@ -2059,7 +2059,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
 
 
 /* "pyart/map/ckdtree.pyx":238
- *
+ * 
  * # Utility for building a coo matrix incrementally
  * cdef class coo_entries:             # <<<<<<<<<<<<<<
  *     cdef:
@@ -2074,7 +2074,7 @@ static struct __pyx_vtabstruct_5pyart_3map_7ckdtree_coo_entries *__pyx_vtabptr_5
 
 /* "pyart/map/ckdtree.pyx":458
  * cdef np.intp_t GREATER = 2
- *
+ * 
  * cdef class RectRectDistanceTracker(object):             # <<<<<<<<<<<<<<
  *     cdef Rectangle rect1, rect2
  *     cdef np.float64_t p, epsfac, upper_bound
@@ -2097,7 +2097,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 
 /* "pyart/map/ckdtree.pyx":637
  *     np.float64_t min_distance, max_distance
- *
+ * 
  * cdef class PointRectDistanceTracker(object):             # <<<<<<<<<<<<<<
  *     cdef Rectangle rect
  *     cdef np.float64_t *pt
@@ -3836,9 +3836,9 @@ return 0;
 #endif
 /* #### Code section: module_code ### */
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":243
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":243
  *         cdef int type_num
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp itemsize(self) noexcept nogil:
  *             return PyDataType_ELSIZE(self)
@@ -3847,19 +3847,19 @@ return 0;
 static CYTHON_INLINE npy_intp __pyx_f_5numpy_5dtype_8itemsize_itemsize(PyArray_Descr *__pyx_v_self) {
   npy_intp __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":245
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":245
  *         @property
  *         cdef inline npy_intp itemsize(self) noexcept nogil:
  *             return PyDataType_ELSIZE(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyDataType_ELSIZE(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":243
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":243
  *         cdef int type_num
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp itemsize(self) noexcept nogil:
  *             return PyDataType_ELSIZE(self)
@@ -3870,9 +3870,9 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_5dtype_8itemsize_itemsize(PyArray_D
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":247
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":247
  *             return PyDataType_ELSIZE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp alignment(self) noexcept nogil:
  *             return PyDataType_ALIGNMENT(self)
@@ -3881,19 +3881,19 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_5dtype_8itemsize_itemsize(PyArray_D
 static CYTHON_INLINE npy_intp __pyx_f_5numpy_5dtype_9alignment_alignment(PyArray_Descr *__pyx_v_self) {
   npy_intp __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":249
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":249
  *         @property
  *         cdef inline npy_intp alignment(self) noexcept nogil:
  *             return PyDataType_ALIGNMENT(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Use fields/names with care as they may be NULL.  You must check
 */
   __pyx_r = PyDataType_ALIGNMENT(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":247
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":247
  *             return PyDataType_ELSIZE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp alignment(self) noexcept nogil:
  *             return PyDataType_ALIGNMENT(self)
@@ -3904,7 +3904,7 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_5dtype_9alignment_alignment(PyArray
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":253
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":253
  *         # Use fields/names with care as they may be NULL.  You must check
  *         # for this using PyDataType_HASFIELDS.
  *         @property             # <<<<<<<<<<<<<<
@@ -3918,11 +3918,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_6fields_fields(PyArray_Desc
   PyObject *__pyx_t_1;
   __Pyx_RefNannySetupContext("fields", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":255
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":255
  *         @property
  *         cdef inline object fields(self):
  *             return <object>PyDataType_FIELDS(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __Pyx_XDECREF(__pyx_r);
@@ -3931,7 +3931,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_6fields_fields(PyArray_Desc
   __pyx_r = ((PyObject *)__pyx_t_1);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":253
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":253
  *         # Use fields/names with care as they may be NULL.  You must check
  *         # for this using PyDataType_HASFIELDS.
  *         @property             # <<<<<<<<<<<<<<
@@ -3946,9 +3946,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_6fields_fields(PyArray_Desc
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":257
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":257
  *             return <object>PyDataType_FIELDS(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline tuple names(self):
  *             return <tuple>PyDataType_NAMES(self)
@@ -3960,11 +3960,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_5names_names(PyArray_Descr 
   PyObject *__pyx_t_1;
   __Pyx_RefNannySetupContext("names", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":259
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":259
  *         @property
  *         cdef inline tuple names(self):
  *             return <tuple>PyDataType_NAMES(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Use PyDataType_HASSUBARRAY to test whether this field is
 */
   __Pyx_XDECREF(__pyx_r);
@@ -3973,9 +3973,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_5names_names(PyArray_Descr 
   __pyx_r = ((PyObject*)__pyx_t_1);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":257
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":257
  *             return <object>PyDataType_FIELDS(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline tuple names(self):
  *             return <tuple>PyDataType_NAMES(self)
@@ -3988,7 +3988,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_5names_names(PyArray_Descr 
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":264
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":264
  *         # valid (the pointer can be NULL). Most users should access
  *         # this field via the inline helper method PyDataType_SHAPE.
  *         @property             # <<<<<<<<<<<<<<
@@ -3999,17 +3999,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_5dtype_5names_names(PyArray_Descr 
 static CYTHON_INLINE PyArray_ArrayDescr *__pyx_f_5numpy_5dtype_8subarray_subarray(PyArray_Descr *__pyx_v_self) {
   PyArray_ArrayDescr *__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":266
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":266
  *         @property
  *         cdef inline PyArray_ArrayDescr* subarray(self) noexcept nogil:
  *             return PyDataType_SUBARRAY(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyDataType_SUBARRAY(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":264
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":264
  *         # valid (the pointer can be NULL). Most users should access
  *         # this field via the inline helper method PyDataType_SHAPE.
  *         @property             # <<<<<<<<<<<<<<
@@ -4022,9 +4022,9 @@ static CYTHON_INLINE PyArray_ArrayDescr *__pyx_f_5numpy_5dtype_8subarray_subarra
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":268
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":268
  *             return PyDataType_SUBARRAY(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_uint64 flags(self) noexcept nogil:
  *             """The data types flags."""
@@ -4033,19 +4033,19 @@ static CYTHON_INLINE PyArray_ArrayDescr *__pyx_f_5numpy_5dtype_8subarray_subarra
 static CYTHON_INLINE npy_uint64 __pyx_f_5numpy_5dtype_5flags_flags(PyArray_Descr *__pyx_v_self) {
   npy_uint64 __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":271
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":271
  *         cdef inline npy_uint64 flags(self) noexcept nogil:
  *             """The data types flags."""
  *             return PyDataType_FLAGS(self)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = PyDataType_FLAGS(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":268
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":268
  *             return PyDataType_SUBARRAY(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_uint64 flags(self) noexcept nogil:
  *             """The data types flags."""
@@ -4056,9 +4056,9 @@ static CYTHON_INLINE npy_uint64 __pyx_f_5numpy_5dtype_5flags_flags(PyArray_Descr
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":280
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":280
  *     ctypedef class numpy.broadcast [object PyArrayMultiIterObject, check_size ignore]:
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline int numiter(self) noexcept nogil:
  *             """The number of arrays that need to be broadcast to the same shape."""
@@ -4067,19 +4067,19 @@ static CYTHON_INLINE npy_uint64 __pyx_f_5numpy_5dtype_5flags_flags(PyArray_Descr
 static CYTHON_INLINE int __pyx_f_5numpy_9broadcast_7numiter_numiter(PyArrayMultiIterObject *__pyx_v_self) {
   int __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":283
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":283
  *         cdef inline int numiter(self) noexcept nogil:
  *             """The number of arrays that need to be broadcast to the same shape."""
  *             return PyArray_MultiIter_NUMITER(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_MultiIter_NUMITER(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":280
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":280
  *     ctypedef class numpy.broadcast [object PyArrayMultiIterObject, check_size ignore]:
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline int numiter(self) noexcept nogil:
  *             """The number of arrays that need to be broadcast to the same shape."""
@@ -4090,9 +4090,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_9broadcast_7numiter_numiter(PyArrayMulti
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":285
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":285
  *             return PyArray_MultiIter_NUMITER(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp size(self) noexcept nogil:
  *             """The total broadcasted size."""
@@ -4101,19 +4101,19 @@ static CYTHON_INLINE int __pyx_f_5numpy_9broadcast_7numiter_numiter(PyArrayMulti
 static CYTHON_INLINE npy_intp __pyx_f_5numpy_9broadcast_4size_size(PyArrayMultiIterObject *__pyx_v_self) {
   npy_intp __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":288
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":288
  *         cdef inline npy_intp size(self) noexcept nogil:
  *             """The total broadcasted size."""
  *             return PyArray_MultiIter_SIZE(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_MultiIter_SIZE(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":285
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":285
  *             return PyArray_MultiIter_NUMITER(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp size(self) noexcept nogil:
  *             """The total broadcasted size."""
@@ -4124,9 +4124,9 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_9broadcast_4size_size(PyArrayMultiI
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":290
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":290
  *             return PyArray_MultiIter_SIZE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp index(self) noexcept nogil:
  *             """The current (1-d) index into the broadcasted result."""
@@ -4135,19 +4135,19 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_9broadcast_4size_size(PyArrayMultiI
 static CYTHON_INLINE npy_intp __pyx_f_5numpy_9broadcast_5index_index(PyArrayMultiIterObject *__pyx_v_self) {
   npy_intp __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":293
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":293
  *         cdef inline npy_intp index(self) noexcept nogil:
  *             """The current (1-d) index into the broadcasted result."""
  *             return PyArray_MultiIter_INDEX(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_MultiIter_INDEX(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":290
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":290
  *             return PyArray_MultiIter_SIZE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp index(self) noexcept nogil:
  *             """The current (1-d) index into the broadcasted result."""
@@ -4158,9 +4158,9 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_9broadcast_5index_index(PyArrayMult
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":295
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":295
  *             return PyArray_MultiIter_INDEX(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline int nd(self) noexcept nogil:
  *             """The number of dimensions in the broadcasted result."""
@@ -4169,19 +4169,19 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_9broadcast_5index_index(PyArrayMult
 static CYTHON_INLINE int __pyx_f_5numpy_9broadcast_2nd_nd(PyArrayMultiIterObject *__pyx_v_self) {
   int __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":298
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":298
  *         cdef inline int nd(self) noexcept nogil:
  *             """The number of dimensions in the broadcasted result."""
  *             return PyArray_MultiIter_NDIM(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_MultiIter_NDIM(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":295
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":295
  *             return PyArray_MultiIter_INDEX(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline int nd(self) noexcept nogil:
  *             """The number of dimensions in the broadcasted result."""
@@ -4192,9 +4192,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_9broadcast_2nd_nd(PyArrayMultiIterObject
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":300
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":300
  *             return PyArray_MultiIter_NDIM(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp* dimensions(self) noexcept nogil:
  *             """The shape of the broadcasted result."""
@@ -4203,19 +4203,19 @@ static CYTHON_INLINE int __pyx_f_5numpy_9broadcast_2nd_nd(PyArrayMultiIterObject
 static CYTHON_INLINE npy_intp *__pyx_f_5numpy_9broadcast_10dimensions_dimensions(PyArrayMultiIterObject *__pyx_v_self) {
   npy_intp *__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":303
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":303
  *         cdef inline npy_intp* dimensions(self) noexcept nogil:
  *             """The shape of the broadcasted result."""
  *             return PyArray_MultiIter_DIMS(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_MultiIter_DIMS(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":300
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":300
  *             return PyArray_MultiIter_NDIM(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp* dimensions(self) noexcept nogil:
  *             """The shape of the broadcasted result."""
@@ -4226,9 +4226,9 @@ static CYTHON_INLINE npy_intp *__pyx_f_5numpy_9broadcast_10dimensions_dimensions
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":305
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":305
  *             return PyArray_MultiIter_DIMS(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline void** iters(self) noexcept nogil:
  *             """An array of iterator objects that holds the iterators for the arrays to be broadcast together.
@@ -4237,19 +4237,19 @@ static CYTHON_INLINE npy_intp *__pyx_f_5numpy_9broadcast_10dimensions_dimensions
 static CYTHON_INLINE void **__pyx_f_5numpy_9broadcast_5iters_iters(PyArrayMultiIterObject *__pyx_v_self) {
   void **__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":309
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":309
  *             """An array of iterator objects that holds the iterators for the arrays to be broadcast together.
  *             On return, the iterators are adjusted for broadcasting."""
  *             return PyArray_MultiIter_ITERS(self)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = PyArray_MultiIter_ITERS(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":305
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":305
  *             return PyArray_MultiIter_DIMS(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline void** iters(self) noexcept nogil:
  *             """An array of iterator objects that holds the iterators for the arrays to be broadcast together.
@@ -4260,9 +4260,9 @@ static CYTHON_INLINE void **__pyx_f_5numpy_9broadcast_5iters_iters(PyArrayMultiI
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":323
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":323
  *         # Instead, we use properties that map to the corresponding C-API functions.
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline PyObject* base(self) noexcept nogil:
  *             """Returns a borrowed reference to the object owning the data/memory.
@@ -4271,19 +4271,19 @@ static CYTHON_INLINE void **__pyx_f_5numpy_9broadcast_5iters_iters(PyArrayMultiI
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_7ndarray_4base_base(PyArrayObject *__pyx_v_self) {
   PyObject *__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":327
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":327
  *             """Returns a borrowed reference to the object owning the data/memory.
  *             """
  *             return PyArray_BASE(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_BASE(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":323
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":323
  *         # Instead, we use properties that map to the corresponding C-API functions.
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline PyObject* base(self) noexcept nogil:
  *             """Returns a borrowed reference to the object owning the data/memory.
@@ -4294,9 +4294,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_7ndarray_4base_base(PyArrayObject 
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":329
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":329
  *             return PyArray_BASE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline dtype descr(self):
  *             """Returns an owned reference to the dtype of the array.
@@ -4308,11 +4308,11 @@ static CYTHON_INLINE PyArray_Descr *__pyx_f_5numpy_7ndarray_5descr_descr(PyArray
   PyArray_Descr *__pyx_t_1;
   __Pyx_RefNannySetupContext("descr", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":333
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":333
  *             """Returns an owned reference to the dtype of the array.
  *             """
  *             return <dtype>PyArray_DESCR(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __Pyx_XDECREF((PyObject *)__pyx_r);
@@ -4321,9 +4321,9 @@ static CYTHON_INLINE PyArray_Descr *__pyx_f_5numpy_7ndarray_5descr_descr(PyArray
   __pyx_r = ((PyArray_Descr *)__pyx_t_1);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":329
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":329
  *             return PyArray_BASE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline dtype descr(self):
  *             """Returns an owned reference to the dtype of the array.
@@ -4336,9 +4336,9 @@ static CYTHON_INLINE PyArray_Descr *__pyx_f_5numpy_7ndarray_5descr_descr(PyArray
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":335
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":335
  *             return <dtype>PyArray_DESCR(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline int ndim(self) noexcept nogil:
  *             """Returns the number of dimensions in the array.
@@ -4347,19 +4347,19 @@ static CYTHON_INLINE PyArray_Descr *__pyx_f_5numpy_7ndarray_5descr_descr(PyArray
 static CYTHON_INLINE int __pyx_f_5numpy_7ndarray_4ndim_ndim(PyArrayObject *__pyx_v_self) {
   int __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":339
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":339
  *             """Returns the number of dimensions in the array.
  *             """
  *             return PyArray_NDIM(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_NDIM(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":335
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":335
  *             return <dtype>PyArray_DESCR(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline int ndim(self) noexcept nogil:
  *             """Returns the number of dimensions in the array.
@@ -4370,9 +4370,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_7ndarray_4ndim_ndim(PyArrayObject *__pyx
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":341
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":341
  *             return PyArray_NDIM(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp *shape(self) noexcept nogil:
  *             """Returns a pointer to the dimensions/shape of the array.
@@ -4381,19 +4381,19 @@ static CYTHON_INLINE int __pyx_f_5numpy_7ndarray_4ndim_ndim(PyArrayObject *__pyx
 static CYTHON_INLINE npy_intp *__pyx_f_5numpy_7ndarray_5shape_shape(PyArrayObject *__pyx_v_self) {
   npy_intp *__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":347
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":347
  *             Can return NULL for 0-dimensional arrays.
  *             """
  *             return PyArray_DIMS(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_DIMS(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":341
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":341
  *             return PyArray_NDIM(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp *shape(self) noexcept nogil:
  *             """Returns a pointer to the dimensions/shape of the array.
@@ -4404,9 +4404,9 @@ static CYTHON_INLINE npy_intp *__pyx_f_5numpy_7ndarray_5shape_shape(PyArrayObjec
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":349
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":349
  *             return PyArray_DIMS(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp *strides(self) noexcept nogil:
  *             """Returns a pointer to the strides of the array.
@@ -4415,19 +4415,19 @@ static CYTHON_INLINE npy_intp *__pyx_f_5numpy_7ndarray_5shape_shape(PyArrayObjec
 static CYTHON_INLINE npy_intp *__pyx_f_5numpy_7ndarray_7strides_strides(PyArrayObject *__pyx_v_self) {
   npy_intp *__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":354
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":354
  *             The number of elements matches the number of dimensions of the array (ndim).
  *             """
  *             return PyArray_STRIDES(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_STRIDES(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":349
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":349
  *             return PyArray_DIMS(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp *strides(self) noexcept nogil:
  *             """Returns a pointer to the strides of the array.
@@ -4438,9 +4438,9 @@ static CYTHON_INLINE npy_intp *__pyx_f_5numpy_7ndarray_7strides_strides(PyArrayO
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":356
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":356
  *             return PyArray_STRIDES(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp size(self) noexcept nogil:
  *             """Returns the total size (in number of elements) of the array.
@@ -4449,19 +4449,19 @@ static CYTHON_INLINE npy_intp *__pyx_f_5numpy_7ndarray_7strides_strides(PyArrayO
 static CYTHON_INLINE npy_intp __pyx_f_5numpy_7ndarray_4size_size(PyArrayObject *__pyx_v_self) {
   npy_intp __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":360
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":360
  *             """Returns the total size (in number of elements) of the array.
  *             """
  *             return PyArray_SIZE(self)             # <<<<<<<<<<<<<<
- *
+ * 
  *         @property
 */
   __pyx_r = PyArray_SIZE(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":356
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":356
  *             return PyArray_STRIDES(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline npy_intp size(self) noexcept nogil:
  *             """Returns the total size (in number of elements) of the array.
@@ -4472,9 +4472,9 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_7ndarray_4size_size(PyArrayObject *
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":362
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":362
  *             return PyArray_SIZE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline char* data(self) noexcept nogil:
  *             """The pointer to the data buffer as a char*.
@@ -4483,19 +4483,19 @@ static CYTHON_INLINE npy_intp __pyx_f_5numpy_7ndarray_4size_size(PyArrayObject *
 static CYTHON_INLINE char *__pyx_f_5numpy_7ndarray_4data_data(PyArrayObject *__pyx_v_self) {
   char *__pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":369
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":369
  *             of `PyArray_DATA()` instead, which returns a 'void*'.
  *             """
  *             return PyArray_BYTES(self)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = PyArray_BYTES(__pyx_v_self);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":362
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":362
  *             return PyArray_SIZE(self)
- *
+ * 
  *         @property             # <<<<<<<<<<<<<<
  *         cdef inline char* data(self) noexcept nogil:
  *             """The pointer to the data buffer as a char*.
@@ -4506,12 +4506,12 @@ static CYTHON_INLINE char *__pyx_f_5numpy_7ndarray_4data_data(PyArrayObject *__p
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":777
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":777
  * ctypedef long double complex clongdouble_t
- *
+ * 
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(1, <void*>a)
- *
+ * 
 */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__pyx_v_a) {
@@ -4523,11 +4523,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":778
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":778
+ * 
  * cdef inline object PyArray_MultiIterNew1(a):
  *     return PyArray_MultiIterNew(1, <void*>a)             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline object PyArray_MultiIterNew2(a, b):
 */
   __Pyx_XDECREF(__pyx_r);
@@ -4537,12 +4537,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":777
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":777
  * ctypedef long double complex clongdouble_t
- *
+ * 
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(1, <void*>a)
- *
+ * 
 */
 
   /* function exit code */
@@ -4556,12 +4556,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":780
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":780
  *     return PyArray_MultiIterNew(1, <void*>a)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- *
+ * 
 */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
@@ -4573,11 +4573,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":781
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":781
+ * 
  * cdef inline object PyArray_MultiIterNew2(a, b):
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
 */
   __Pyx_XDECREF(__pyx_r);
@@ -4587,12 +4587,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":780
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":780
  *     return PyArray_MultiIterNew(1, <void*>a)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- *
+ * 
 */
 
   /* function exit code */
@@ -4606,12 +4606,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":783
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":783
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- *
+ * 
 */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c) {
@@ -4623,11 +4623,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":784
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":784
+ * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
 */
   __Pyx_XDECREF(__pyx_r);
@@ -4637,12 +4637,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":783
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":783
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- *
+ * 
 */
 
   /* function exit code */
@@ -4656,12 +4656,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":786
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":786
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- *
+ * 
 */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d) {
@@ -4673,11 +4673,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":787
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":787
+ * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
 */
   __Pyx_XDECREF(__pyx_r);
@@ -4687,12 +4687,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":786
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":786
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- *
+ * 
 */
 
   /* function exit code */
@@ -4706,12 +4706,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":789
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":789
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- *
+ * 
 */
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d, PyObject *__pyx_v_e) {
@@ -4723,11 +4723,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":790
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":790
+ * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline tuple PyDataType_SHAPE(dtype d):
 */
   __Pyx_XDECREF(__pyx_r);
@@ -4737,12 +4737,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":789
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":789
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
- *
+ * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- *
+ * 
 */
 
   /* function exit code */
@@ -4756,9 +4756,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":792
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":792
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- *
+ * 
  * cdef inline tuple PyDataType_SHAPE(dtype d):             # <<<<<<<<<<<<<<
  *     if PyDataType_HASSUBARRAY(d):
  *         return <tuple>d.subarray.shape
@@ -4771,8 +4771,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
   PyObject *__pyx_t_2;
   __Pyx_RefNannySetupContext("PyDataType_SHAPE", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":793
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":793
+ * 
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  *     if PyDataType_HASSUBARRAY(d):             # <<<<<<<<<<<<<<
  *         return <tuple>d.subarray.shape
@@ -4781,7 +4781,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
   __pyx_t_1 = PyDataType_HASSUBARRAY(__pyx_v_d);
   if (__pyx_t_1) {
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":794
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":794
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  *     if PyDataType_HASSUBARRAY(d):
  *         return <tuple>d.subarray.shape             # <<<<<<<<<<<<<<
@@ -4794,8 +4794,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
     __pyx_r = ((PyObject*)__pyx_t_2);
     goto __pyx_L0;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":793
- *
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":793
+ * 
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  *     if PyDataType_HASSUBARRAY(d):             # <<<<<<<<<<<<<<
  *         return <tuple>d.subarray.shape
@@ -4803,12 +4803,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
 */
   }
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":796
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":796
  *         return <tuple>d.subarray.shape
  *     else:
  *         return ()             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -4817,9 +4817,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
     goto __pyx_L0;
   }
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":792
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":792
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
- *
+ * 
  * cdef inline tuple PyDataType_SHAPE(dtype d):             # <<<<<<<<<<<<<<
  *     if PyDataType_HASSUBARRAY(d):
  *         return <tuple>d.subarray.shape
@@ -4832,9 +4832,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":995
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":995
  *     int _import_umath() except -1
- *
+ * 
  * cdef inline void set_array_base(ndarray arr, object base) except *:             # <<<<<<<<<<<<<<
  *     Py_INCREF(base) # important to do this before stealing the reference below!
  *     PyArray_SetBaseObject(arr, base)
@@ -4846,27 +4846,27 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":996
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":996
+ * 
  * cdef inline void set_array_base(ndarray arr, object base) except *:
  *     Py_INCREF(base) # important to do this before stealing the reference below!             # <<<<<<<<<<<<<<
  *     PyArray_SetBaseObject(arr, base)
- *
+ * 
 */
   Py_INCREF(__pyx_v_base);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":997
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":997
  * cdef inline void set_array_base(ndarray arr, object base) except *:
  *     Py_INCREF(base) # important to do this before stealing the reference below!
  *     PyArray_SetBaseObject(arr, base)             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline object get_array_base(ndarray arr):
 */
   __pyx_t_1 = PyArray_SetBaseObject(__pyx_v_arr, __pyx_v_base); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(1, 997, __pyx_L1_error)
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":995
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":995
  *     int _import_umath() except -1
- *
+ * 
  * cdef inline void set_array_base(ndarray arr, object base) except *:             # <<<<<<<<<<<<<<
  *     Py_INCREF(base) # important to do this before stealing the reference below!
  *     PyArray_SetBaseObject(arr, base)
@@ -4879,9 +4879,9 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   __pyx_L0:;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":999
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":999
  *     PyArray_SetBaseObject(arr, base)
- *
+ * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
  *     base = PyArray_BASE(arr)
  *     if base is NULL:
@@ -4894,8 +4894,8 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("get_array_base", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1000
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1000
+ * 
  * cdef inline object get_array_base(ndarray arr):
  *     base = PyArray_BASE(arr)             # <<<<<<<<<<<<<<
  *     if base is NULL:
@@ -4903,7 +4903,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
 */
   __pyx_v_base = PyArray_BASE(__pyx_v_arr);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1001
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1001
  * cdef inline object get_array_base(ndarray arr):
  *     base = PyArray_BASE(arr)
  *     if base is NULL:             # <<<<<<<<<<<<<<
@@ -4913,18 +4913,18 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   __pyx_t_1 = (__pyx_v_base == NULL);
   if (__pyx_t_1) {
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1002
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1002
  *     base = PyArray_BASE(arr)
  *     if base is NULL:
  *         return None             # <<<<<<<<<<<<<<
  *     return <object>base
- *
+ * 
 */
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1001
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1001
  * cdef inline object get_array_base(ndarray arr):
  *     base = PyArray_BASE(arr)
  *     if base is NULL:             # <<<<<<<<<<<<<<
@@ -4933,11 +4933,11 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
 */
   }
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1003
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1003
  *     if base is NULL:
  *         return None
  *     return <object>base             # <<<<<<<<<<<<<<
- *
+ * 
  * # Versions of the import_* functions which are more suitable for
 */
   __Pyx_XDECREF(__pyx_r);
@@ -4945,9 +4945,9 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   __pyx_r = ((PyObject *)__pyx_v_base);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":999
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":999
  *     PyArray_SetBaseObject(arr, base)
- *
+ * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
  *     base = PyArray_BASE(arr)
  *     if base is NULL:
@@ -4960,7 +4960,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1007
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1007
  * # Versions of the import_* functions which are more suitable for
  * # Cython code.
  * cdef inline int import_array() except -1:             # <<<<<<<<<<<<<<
@@ -4986,7 +4986,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("import_array", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1008
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1008
  * # Cython code.
  * cdef inline int import_array() except -1:
  *     try:             # <<<<<<<<<<<<<<
@@ -5002,7 +5002,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1009
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1009
  * cdef inline int import_array() except -1:
  *     try:
  *         __pyx_import_array()             # <<<<<<<<<<<<<<
@@ -5011,7 +5011,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
 */
       __pyx_t_4 = _import_array(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1009, __pyx_L3_error)
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1008
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1008
  * # Cython code.
  * cdef inline int import_array() except -1:
  *     try:             # <<<<<<<<<<<<<<
@@ -5025,12 +5025,12 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1010
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1010
  *     try:
  *         __pyx_import_array()
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ImportError("numpy._core.multiarray failed to import")
- *
+ * 
 */
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
     if (__pyx_t_4) {
@@ -5040,11 +5040,11 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
       __Pyx_XGOTREF(__pyx_t_6);
       __Pyx_XGOTREF(__pyx_t_7);
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1011
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1011
  *         __pyx_import_array()
  *     except Exception:
  *         raise ImportError("numpy._core.multiarray failed to import")             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline int import_umath() except -1:
 */
       __pyx_t_9 = NULL;
@@ -5062,7 +5062,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     }
     goto __pyx_L5_except_error;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1008
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1008
  * # Cython code.
  * cdef inline int import_array() except -1:
  *     try:             # <<<<<<<<<<<<<<
@@ -5078,7 +5078,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     __pyx_L8_try_end:;
   }
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1007
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1007
  * # Versions of the import_* functions which are more suitable for
  * # Cython code.
  * cdef inline int import_array() except -1:             # <<<<<<<<<<<<<<
@@ -5102,9 +5102,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1013
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1013
  *         raise ImportError("numpy._core.multiarray failed to import")
- *
+ * 
  * cdef inline int import_umath() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -5128,8 +5128,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("import_umath", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1014
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1014
+ * 
  * cdef inline int import_umath() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -5144,7 +5144,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1015
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1015
  * cdef inline int import_umath() except -1:
  *     try:
  *         _import_umath()             # <<<<<<<<<<<<<<
@@ -5153,8 +5153,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
 */
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1015, __pyx_L3_error)
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1014
- *
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1014
+ * 
  * cdef inline int import_umath() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -5167,12 +5167,12 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1016
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1016
  *     try:
  *         _import_umath()
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ImportError("numpy._core.umath failed to import")
- *
+ * 
 */
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
     if (__pyx_t_4) {
@@ -5182,11 +5182,11 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
       __Pyx_XGOTREF(__pyx_t_6);
       __Pyx_XGOTREF(__pyx_t_7);
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1017
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1017
  *         _import_umath()
  *     except Exception:
  *         raise ImportError("numpy._core.umath failed to import")             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline int import_ufunc() except -1:
 */
       __pyx_t_9 = NULL;
@@ -5204,8 +5204,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     }
     goto __pyx_L5_except_error;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1014
- *
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1014
+ * 
  * cdef inline int import_umath() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -5220,9 +5220,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     __pyx_L8_try_end:;
   }
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1013
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1013
  *         raise ImportError("numpy._core.multiarray failed to import")
- *
+ * 
  * cdef inline int import_umath() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -5244,9 +5244,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1019
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1019
  *         raise ImportError("numpy._core.umath failed to import")
- *
+ * 
  * cdef inline int import_ufunc() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -5270,8 +5270,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("import_ufunc", 0);
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1020
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1020
+ * 
  * cdef inline int import_ufunc() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -5286,7 +5286,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1021
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1021
  * cdef inline int import_ufunc() except -1:
  *     try:
  *         _import_umath()             # <<<<<<<<<<<<<<
@@ -5295,8 +5295,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
 */
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1021, __pyx_L3_error)
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1020
- *
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1020
+ * 
  * cdef inline int import_ufunc() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -5309,12 +5309,12 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1022
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1022
  *     try:
  *         _import_umath()
  *     except Exception:             # <<<<<<<<<<<<<<
  *         raise ImportError("numpy._core.umath failed to import")
- *
+ * 
 */
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
     if (__pyx_t_4) {
@@ -5324,12 +5324,12 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
       __Pyx_XGOTREF(__pyx_t_6);
       __Pyx_XGOTREF(__pyx_t_7);
 
-      /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1023
+      /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1023
  *         _import_umath()
  *     except Exception:
  *         raise ImportError("numpy._core.umath failed to import")             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
       __pyx_t_9 = NULL;
       __pyx_t_10 = 1;
@@ -5346,8 +5346,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     }
     goto __pyx_L5_except_error;
 
-    /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1020
- *
+    /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1020
+ * 
  * cdef inline int import_ufunc() except -1:
  *     try:             # <<<<<<<<<<<<<<
  *         _import_umath()
@@ -5362,9 +5362,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     __pyx_L8_try_end:;
   }
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1019
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1019
  *         raise ImportError("numpy._core.umath failed to import")
- *
+ * 
  * cdef inline int import_ufunc() except -1:             # <<<<<<<<<<<<<<
  *     try:
  *         _import_umath()
@@ -5386,9 +5386,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1026
- *
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1026
+ * 
+ * 
  * cdef inline bint is_timedelta64_object(object obj) noexcept:             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.timedelta64)`
@@ -5397,19 +5397,19 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
 static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_obj) {
   int __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1038
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1038
  *     bool
  *     """
  *     return PyObject_TypeCheck(obj, &PyTimedeltaArrType_Type)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = PyObject_TypeCheck(__pyx_v_obj, (&PyTimedeltaArrType_Type));
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1026
- *
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1026
+ * 
+ * 
  * cdef inline bint is_timedelta64_object(object obj) noexcept:             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.timedelta64)`
@@ -5420,9 +5420,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1041
- *
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1041
+ * 
+ * 
  * cdef inline bint is_datetime64_object(object obj) noexcept:             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.datetime64)`
@@ -5431,19 +5431,19 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
 static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_obj) {
   int __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1053
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1053
  *     bool
  *     """
  *     return PyObject_TypeCheck(obj, &PyDatetimeArrType_Type)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = PyObject_TypeCheck(__pyx_v_obj, (&PyDatetimeArrType_Type));
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1041
- *
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1041
+ * 
+ * 
  * cdef inline bint is_datetime64_object(object obj) noexcept:             # <<<<<<<<<<<<<<
  *     """
  *     Cython equivalent of `isinstance(obj, np.datetime64)`
@@ -5454,9 +5454,9 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1056
- *
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1056
+ * 
+ * 
  * cdef inline npy_datetime get_datetime64_value(object obj) noexcept nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy datetime64 object
@@ -5465,19 +5465,19 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
 static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *__pyx_v_obj) {
   npy_datetime __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1063
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1063
  *     also needed.  That can be found using `get_datetime64_unit`.
  *     """
  *     return (<PyDatetimeScalarObject*>obj).obval             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = ((PyDatetimeScalarObject *)__pyx_v_obj)->obval;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1056
- *
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1056
+ * 
+ * 
  * cdef inline npy_datetime get_datetime64_value(object obj) noexcept nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy datetime64 object
@@ -5488,9 +5488,9 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1066
- *
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1066
+ * 
+ * 
  * cdef inline npy_timedelta get_timedelta64_value(object obj) noexcept nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy timedelta64 object
@@ -5499,19 +5499,19 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
 static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject *__pyx_v_obj) {
   npy_timedelta __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1070
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1070
  *     returns the int64 value underlying scalar numpy timedelta64 object
  *     """
  *     return (<PyTimedeltaScalarObject*>obj).obval             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = ((PyTimedeltaScalarObject *)__pyx_v_obj)->obval;
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1066
- *
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1066
+ * 
+ * 
  * cdef inline npy_timedelta get_timedelta64_value(object obj) noexcept nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the int64 value underlying scalar numpy timedelta64 object
@@ -5522,9 +5522,9 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
   return __pyx_r;
 }
 
-/* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1073
- *
- *
+/* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1073
+ * 
+ * 
  * cdef inline NPY_DATETIMEUNIT get_datetime64_unit(object obj) noexcept nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the unit part of the dtype for a numpy datetime64 object.
@@ -5533,19 +5533,19 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
 static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObject *__pyx_v_obj) {
   NPY_DATETIMEUNIT __pyx_r;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1077
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1077
  *     returns the unit part of the dtype for a numpy datetime64 object.
  *     """
  *     return <NPY_DATETIMEUNIT>(<PyDatetimeScalarObject*>obj).obmeta.base             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = ((NPY_DATETIMEUNIT)((PyDatetimeScalarObject *)__pyx_v_obj)->obmeta.base);
   goto __pyx_L0;
 
-  /* "../../../../../../tmp/pip-build-env-0d312zig/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1073
- *
- *
+  /* "../../../../../tmp/pip-build-env-ve5hry0t/overlay/lib/python3.12/site-packages/numpy/__init__.cython-30.pxd":1073
+ * 
+ * 
  * cdef inline NPY_DATETIMEUNIT get_datetime64_unit(object obj) noexcept nogil:             # <<<<<<<<<<<<<<
  *     """
  *     returns the unit part of the dtype for a numpy datetime64 object.
@@ -5558,7 +5558,7 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
 
 /* "pyart/map/ckdtree.pyx":78
  * # test is optimized away.
- *
+ * 
  * cdef inline int set_add_pair(set results,             # <<<<<<<<<<<<<<
  *                              np.intp_t i,
  *                              np.intp_t j) except -1:
@@ -5581,7 +5581,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_pair(PyObject *__p
 
   /* "pyart/map/ckdtree.pyx":82
  *                              np.intp_t j) except -1:
- *
+ * 
  *     if sizeof(long) < sizeof(np.intp_t):             # <<<<<<<<<<<<<<
  *         # Win 64
  *         results.add((int(i), int(j)))
@@ -5637,7 +5637,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_pair(PyObject *__p
 
     /* "pyart/map/ckdtree.pyx":82
  *                              np.intp_t j) except -1:
- *
+ * 
  *     if sizeof(long) < sizeof(np.intp_t):             # <<<<<<<<<<<<<<
  *         # Win 64
  *         results.add((int(i), int(j)))
@@ -5650,7 +5650,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_pair(PyObject *__p
  *         # Other platforms
  *         results.add((i, j))             # <<<<<<<<<<<<<<
  *     return 0
- *
+ * 
 */
   /*else*/ {
     if (unlikely(__pyx_v_results == Py_None)) {
@@ -5678,15 +5678,15 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_pair(PyObject *__p
  *         # Other platforms
  *         results.add((i, j))
  *     return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":78
  * # test is optimized away.
- *
+ * 
  * cdef inline int set_add_pair(set results,             # <<<<<<<<<<<<<<
  *                              np.intp_t i,
  *                              np.intp_t j) except -1:
@@ -5706,8 +5706,8 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_pair(PyObject *__p
 }
 
 /* "pyart/map/ckdtree.pyx":91
- *
- *
+ * 
+ * 
  * cdef inline int set_add_ordered_pair(set results,             # <<<<<<<<<<<<<<
  *                                      np.intp_t i,
  *                                      np.intp_t j) except -1:
@@ -5730,7 +5730,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_ordered_pair(PyObj
 
   /* "pyart/map/ckdtree.pyx":95
  *                                      np.intp_t j) except -1:
- *
+ * 
  *     if sizeof(long) < sizeof(np.intp_t):             # <<<<<<<<<<<<<<
  *         # Win 64
  *         if i < j:
@@ -5855,7 +5855,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_ordered_pair(PyObj
 
     /* "pyart/map/ckdtree.pyx":95
  *                                      np.intp_t j) except -1:
- *
+ * 
  *     if sizeof(long) < sizeof(np.intp_t):             # <<<<<<<<<<<<<<
  *         # Win 64
  *         if i < j:
@@ -5915,7 +5915,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_ordered_pair(PyObj
  *         else:
  *             results.add((j, i))             # <<<<<<<<<<<<<<
  *     return 0
- *
+ * 
 */
     /*else*/ {
       if (unlikely(__pyx_v_results == Py_None)) {
@@ -5945,15 +5945,15 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_ordered_pair(PyObj
  *         else:
  *             results.add((j, i))
  *     return 0             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline int list_append(list results, np.intp_t i) except -1:
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":91
- *
- *
+ * 
+ * 
  * cdef inline int set_add_ordered_pair(set results,             # <<<<<<<<<<<<<<
  *                                      np.intp_t i,
  *                                      np.intp_t j) except -1:
@@ -5974,7 +5974,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_set_add_ordered_pair(PyObj
 
 /* "pyart/map/ckdtree.pyx":109
  *     return 0
- *
+ * 
  * cdef inline int list_append(list results, np.intp_t i) except -1:             # <<<<<<<<<<<<<<
  *     if sizeof(long) < sizeof(np.intp_t):
  *         # Win 64
@@ -5995,7 +5995,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_list_append(PyObject *__py
   __Pyx_RefNannySetupContext("list_append", 0);
 
   /* "pyart/map/ckdtree.pyx":110
- *
+ * 
  * cdef inline int list_append(list results, np.intp_t i) except -1:
  *     if sizeof(long) < sizeof(np.intp_t):             # <<<<<<<<<<<<<<
  *         # Win 64
@@ -6070,7 +6070,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_list_append(PyObject *__py
     __pyx_L4:;
 
     /* "pyart/map/ckdtree.pyx":110
- *
+ * 
  * cdef inline int list_append(list results, np.intp_t i) except -1:
  *     if sizeof(long) < sizeof(np.intp_t):             # <<<<<<<<<<<<<<
  *         # Win 64
@@ -6084,7 +6084,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_list_append(PyObject *__py
  *         # Other platforms
  *         results.append(i)             # <<<<<<<<<<<<<<
  *     return 0
- *
+ * 
 */
   /*else*/ {
     if (unlikely(__pyx_v_results == Py_None)) {
@@ -6102,15 +6102,15 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_list_append(PyObject *__py
  *         # Other platforms
  *         results.append(i)
  *     return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":109
  *     return 0
- *
+ * 
  * cdef inline int list_append(list results, np.intp_t i) except -1:             # <<<<<<<<<<<<<<
  *     if sizeof(long) < sizeof(np.intp_t):
  *         # Win 64
@@ -6130,7 +6130,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_list_append(PyObject *__py
 
 /* "pyart/map/ckdtree.pyx":138
  *     cdef np.intp_t space
- *
+ * 
  *     def __init__(heap self, np.intp_t initial_size):             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         self.space = initial_size
@@ -6272,7 +6272,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_4heap___init__(struct __pyx_obj_5pyart_
  *             raise MemoryError
  *         self.heap = <heapitem*> tmp             # <<<<<<<<<<<<<<
  *         self.n = 0
- *
+ * 
 */
   __pyx_v_self->heap = ((struct __pyx_t_5pyart_3map_7ckdtree_heapitem *)__pyx_v_tmp);
 
@@ -6280,14 +6280,14 @@ static int __pyx_pf_5pyart_3map_7ckdtree_4heap___init__(struct __pyx_obj_5pyart_
  *             raise MemoryError
  *         self.heap = <heapitem*> tmp
  *         self.n = 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     def __dealloc__(heap self):
 */
   __pyx_v_self->n = 0;
 
   /* "pyart/map/ckdtree.pyx":138
  *     cdef np.intp_t space
- *
+ * 
  *     def __init__(heap self, np.intp_t initial_size):             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         self.space = initial_size
@@ -6305,7 +6305,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_4heap___init__(struct __pyx_obj_5pyart_
 
 /* "pyart/map/ckdtree.pyx":148
  *         self.n = 0
- *
+ * 
  *     def __dealloc__(heap self):             # <<<<<<<<<<<<<<
  *         if self.heap != <heapitem*> NULL:
  *             stdlib.free(self.heap)
@@ -6328,11 +6328,11 @@ static void __pyx_pf_5pyart_3map_7ckdtree_4heap_2__dealloc__(struct __pyx_obj_5p
   int __pyx_t_1;
 
   /* "pyart/map/ckdtree.pyx":149
- *
+ * 
  *     def __dealloc__(heap self):
  *         if self.heap != <heapitem*> NULL:             # <<<<<<<<<<<<<<
  *             stdlib.free(self.heap)
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->heap != ((struct __pyx_t_5pyart_3map_7ckdtree_heapitem *)NULL));
   if (__pyx_t_1) {
@@ -6341,23 +6341,23 @@ static void __pyx_pf_5pyart_3map_7ckdtree_4heap_2__dealloc__(struct __pyx_obj_5p
  *     def __dealloc__(heap self):
  *         if self.heap != <heapitem*> NULL:
  *             stdlib.free(self.heap)             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef inline int _resize(heap self, np.intp_t new_space) except -1:
 */
     free(__pyx_v_self->heap);
 
     /* "pyart/map/ckdtree.pyx":149
- *
+ * 
  *     def __dealloc__(heap self):
  *         if self.heap != <heapitem*> NULL:             # <<<<<<<<<<<<<<
  *             stdlib.free(self.heap)
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":148
  *         self.n = 0
- *
+ * 
  *     def __dealloc__(heap self):             # <<<<<<<<<<<<<<
  *         if self.heap != <heapitem*> NULL:
  *             stdlib.free(self.heap)
@@ -6368,7 +6368,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_4heap_2__dealloc__(struct __pyx_obj_5p
 
 /* "pyart/map/ckdtree.pyx":152
  *             stdlib.free(self.heap)
- *
+ * 
  *     cdef inline int _resize(heap self, np.intp_t new_space) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         if new_space < self.n:
@@ -6507,7 +6507,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap__resize(struct __pyx
  *             raise MemoryError
  *         self.heap = <heapitem*> tmp             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
   __pyx_v_self->heap = ((struct __pyx_t_5pyart_3map_7ckdtree_heapitem *)__pyx_v_tmp);
 
@@ -6515,7 +6515,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap__resize(struct __pyx
  *             raise MemoryError
  *         self.heap = <heapitem*> tmp
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     @cython.cdivision(True)
 */
   __pyx_r = 0;
@@ -6523,7 +6523,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap__resize(struct __pyx
 
   /* "pyart/map/ckdtree.pyx":152
  *             stdlib.free(self.heap)
- *
+ * 
  *     cdef inline int _resize(heap self, np.intp_t new_space) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         if new_space < self.n:
@@ -6545,7 +6545,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap__resize(struct __pyx
 
 /* "pyart/map/ckdtree.pyx":163
  *         return 0
- *
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef inline int push(heap self, heapitem item) except -1:
  *         cdef np.intp_t i
@@ -6564,7 +6564,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
 
   /* "pyart/map/ckdtree.pyx":168
  *         cdef heapitem t
- *
+ * 
  *         self.n += 1             # <<<<<<<<<<<<<<
  *         if self.n > self.space:
  *             self._resize(2 * self.space + 1)
@@ -6572,11 +6572,11 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
   __pyx_v_self->n = (__pyx_v_self->n + 1);
 
   /* "pyart/map/ckdtree.pyx":169
- *
+ * 
  *         self.n += 1
  *         if self.n > self.space:             # <<<<<<<<<<<<<<
  *             self._resize(2 * self.space + 1)
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->n > __pyx_v_self->space);
   if (__pyx_t_1) {
@@ -6585,41 +6585,41 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
  *         self.n += 1
  *         if self.n > self.space:
  *             self._resize(2 * self.space + 1)             # <<<<<<<<<<<<<<
- *
+ * 
  *         i = self.n - 1
 */
     __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_4heap__resize(__pyx_v_self, ((2 * __pyx_v_self->space) + 1)); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 170, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":169
- *
+ * 
  *         self.n += 1
  *         if self.n > self.space:             # <<<<<<<<<<<<<<
  *             self._resize(2 * self.space + 1)
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":172
  *             self._resize(2 * self.space + 1)
- *
+ * 
  *         i = self.n - 1             # <<<<<<<<<<<<<<
  *         self.heap[i] = item
- *
+ * 
 */
   __pyx_v_i = (__pyx_v_self->n - 1);
 
   /* "pyart/map/ckdtree.pyx":173
- *
+ * 
  *         i = self.n - 1
  *         self.heap[i] = item             # <<<<<<<<<<<<<<
- *
+ * 
  *         while i > 0 and self.heap[i].priority < self.heap[(i - 1) // 2].priority:
 */
   (__pyx_v_self->heap[__pyx_v_i]) = __pyx_v_item;
 
   /* "pyart/map/ckdtree.pyx":175
  *         self.heap[i] = item
- *
+ * 
  *         while i > 0 and self.heap[i].priority < self.heap[(i - 1) // 2].priority:             # <<<<<<<<<<<<<<
  *             t = self.heap[(i - 1) // 2]
  *             self.heap[(i - 1) // 2] = self.heap[i]
@@ -6637,7 +6637,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
     if (!__pyx_t_1) break;
 
     /* "pyart/map/ckdtree.pyx":176
- *
+ * 
  *         while i > 0 and self.heap[i].priority < self.heap[(i - 1) // 2].priority:
  *             t = self.heap[(i - 1) // 2]             # <<<<<<<<<<<<<<
  *             self.heap[(i - 1) // 2] = self.heap[i]
@@ -6668,7 +6668,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
  *             self.heap[i] = t
  *             i = (i - 1) // 2             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
     __pyx_v_i = ((__pyx_v_i - 1) / 2);
   }
@@ -6677,15 +6677,15 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
  *             self.heap[i] = t
  *             i = (i - 1) // 2
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":163
  *         return 0
- *
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef inline int push(heap self, heapitem item) except -1:
  *         cdef np.intp_t i
@@ -6700,32 +6700,32 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_4heap_push(struct __pyx_ob
 }
 
 /* "pyart/map/ckdtree.pyx":183
- *
- *
+ * 
+ * 
  *     cdef heapitem peek(heap self):             # <<<<<<<<<<<<<<
  *         return self.heap[0]
- *
+ * 
 */
 
 static struct __pyx_t_5pyart_3map_7ckdtree_heapitem __pyx_f_5pyart_3map_7ckdtree_4heap_peek(struct __pyx_obj_5pyart_3map_7ckdtree_heap *__pyx_v_self) {
   struct __pyx_t_5pyart_3map_7ckdtree_heapitem __pyx_r;
 
   /* "pyart/map/ckdtree.pyx":184
- *
+ * 
  *     cdef heapitem peek(heap self):
  *         return self.heap[0]             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = (__pyx_v_self->heap[0]);
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":183
- *
- *
+ * 
+ * 
  *     cdef heapitem peek(heap self):             # <<<<<<<<<<<<<<
  *         return self.heap[0]
- *
+ * 
 */
 
   /* function exit code */
@@ -6734,8 +6734,8 @@ static struct __pyx_t_5pyart_3map_7ckdtree_heapitem __pyx_f_5pyart_3map_7ckdtree
 }
 
 /* "pyart/map/ckdtree.pyx":187
- *
- *
+ * 
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int remove(heap self) except -1:
  *         cdef heapitem t
@@ -6753,7 +6753,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_remove(struct __pyx_obj_5pyart_3ma
 
   /* "pyart/map/ckdtree.pyx":192
  *         cdef np.intp_t i, j, k, l
- *
+ * 
  *         self.heap[0] = self.heap[self.n-1]             # <<<<<<<<<<<<<<
  *         self.n -= 1
  *         # No point in freeing up space as the heap empties.
@@ -6761,7 +6761,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_remove(struct __pyx_obj_5pyart_3ma
   (__pyx_v_self->heap[0]) = (__pyx_v_self->heap[(__pyx_v_self->n - 1)]);
 
   /* "pyart/map/ckdtree.pyx":193
- *
+ * 
  *         self.heap[0] = self.heap[self.n-1]
  *         self.n -= 1             # <<<<<<<<<<<<<<
  *         # No point in freeing up space as the heap empties.
@@ -6950,7 +6950,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_remove(struct __pyx_obj_5pyart_3ma
  *             j = 2*i+1
  *             k = 2*i+2             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
     __pyx_v_k = ((2 * __pyx_v_i) + 2);
   }
@@ -6959,15 +6959,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_remove(struct __pyx_obj_5pyart_3ma
  *             j = 2*i+1
  *             k = 2*i+2
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int pop(heap self, heapitem *it) except -1:
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":187
- *
- *
+ * 
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int remove(heap self) except -1:
  *         cdef heapitem t
@@ -6980,7 +6980,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_remove(struct __pyx_obj_5pyart_3ma
 
 /* "pyart/map/ckdtree.pyx":217
  *         return 0
- *
+ * 
  *     cdef int pop(heap self, heapitem *it) except -1:             # <<<<<<<<<<<<<<
  *         it[0] = self.peek()
  *         self.remove()
@@ -6995,7 +6995,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_pop(struct __pyx_obj_5pyart_3map_7
   int __pyx_clineno = 0;
 
   /* "pyart/map/ckdtree.pyx":218
- *
+ * 
  *     cdef int pop(heap self, heapitem *it) except -1:
  *         it[0] = self.peek()             # <<<<<<<<<<<<<<
  *         self.remove()
@@ -7009,7 +7009,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_pop(struct __pyx_obj_5pyart_3map_7
  *         it[0] = self.peek()
  *         self.remove()             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
   __pyx_t_2 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_heap *)__pyx_v_self->__pyx_vtab)->remove(__pyx_v_self); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 219, __pyx_L1_error)
 
@@ -7017,15 +7017,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_pop(struct __pyx_obj_5pyart_3map_7
  *         it[0] = self.peek()
  *         self.remove()
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":217
  *         return 0
- *
+ * 
  *     cdef int pop(heap self, heapitem *it) except -1:             # <<<<<<<<<<<<<<
  *         it[0] = self.peek()
  *         self.remove()
@@ -7046,7 +7046,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_4heap_pop(struct __pyx_obj_5pyart_3map_7
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_5__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7054,7 +7054,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_4heap_5__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_4heap_5__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_5__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7127,7 +7127,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_4heap_4__reduce_cython__(CYTHON_U
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_7__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7135,7 +7135,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_4heap_7__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_4heap_7__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_7__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_4heap_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7288,7 +7288,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dmax(
  *         return x
  *     else:
  *         return y             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t dabs(np.float64_t x):
 */
   /*else*/ {
@@ -7311,7 +7311,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dmax(
 
 /* "pyart/map/ckdtree.pyx":231
  *         return y
- *
+ * 
  * cdef inline np.float64_t dabs(np.float64_t x):             # <<<<<<<<<<<<<<
  *     if x>0:
  *         return x
@@ -7322,7 +7322,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dabs(
   int __pyx_t_1;
 
   /* "pyart/map/ckdtree.pyx":232
- *
+ * 
  * cdef inline np.float64_t dabs(np.float64_t x):
  *     if x>0:             # <<<<<<<<<<<<<<
  *         return x
@@ -7342,7 +7342,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dabs(
     goto __pyx_L0;
 
     /* "pyart/map/ckdtree.pyx":232
- *
+ * 
  * cdef inline np.float64_t dabs(np.float64_t x):
  *     if x>0:             # <<<<<<<<<<<<<<
  *         return x
@@ -7354,7 +7354,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dabs(
  *         return x
  *     else:
  *         return -x             # <<<<<<<<<<<<<<
- *
+ * 
  * # Utility for building a coo matrix incrementally
 */
   /*else*/ {
@@ -7364,7 +7364,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dabs(
 
   /* "pyart/map/ckdtree.pyx":231
  *         return y
- *
+ * 
  * cdef inline np.float64_t dabs(np.float64_t x):             # <<<<<<<<<<<<<<
  *     if x>0:
  *         return x
@@ -7377,7 +7377,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_dabs(
 
 /* "pyart/map/ckdtree.pyx":247
  *         np.float64_t *v_data
- *
+ * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         self.n = 0
  *         self.n_max = 10
@@ -7424,7 +7424,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_11coo_entries___init__(struct __pyx_obj
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "pyart/map/ckdtree.pyx":248
- *
+ * 
  *     def __init__(self):
  *         self.n = 0             # <<<<<<<<<<<<<<
  *         self.n_max = 10
@@ -7617,7 +7617,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_11coo_entries___init__(struct __pyx_obj
  *         self.i_data = <np.intp_t *>np.PyArray_DATA(self.i)
  *         self.j_data = <np.intp_t *>np.PyArray_DATA(self.j)             # <<<<<<<<<<<<<<
  *         self.v_data = <np.float64_t*>np.PyArray_DATA(self.v)
- *
+ * 
 */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->j);
   __Pyx_INCREF(__pyx_t_1);
@@ -7628,7 +7628,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_11coo_entries___init__(struct __pyx_obj
  *         self.i_data = <np.intp_t *>np.PyArray_DATA(self.i)
  *         self.j_data = <np.intp_t *>np.PyArray_DATA(self.j)
  *         self.v_data = <np.float64_t*>np.PyArray_DATA(self.v)             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef void add(coo_entries self, np.intp_t i, np.intp_t j, np.float64_t v):
 */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->v);
@@ -7638,7 +7638,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_11coo_entries___init__(struct __pyx_obj
 
   /* "pyart/map/ckdtree.pyx":247
  *         np.float64_t *v_data
- *
+ * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         self.n = 0
  *         self.n_max = 10
@@ -7663,7 +7663,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_11coo_entries___init__(struct __pyx_obj
 
 /* "pyart/map/ckdtree.pyx":257
  *         self.v_data = <np.float64_t*>np.PyArray_DATA(self.v)
- *
+ * 
  *     cdef void add(coo_entries self, np.intp_t i, np.intp_t j, np.float64_t v):             # <<<<<<<<<<<<<<
  *         cdef np.intp_t k
  *         if self.n == self.n_max:
@@ -7846,7 +7846,7 @@ static void __pyx_f_5pyart_3map_7ckdtree_11coo_entries_add(struct __pyx_obj_5pya
  *         self.j_data[k] = j
  *         self.v_data[k] = v             # <<<<<<<<<<<<<<
  *         self.n += 1
- *
+ * 
 */
   (__pyx_v_self->v_data[__pyx_v_k]) = __pyx_v_v;
 
@@ -7854,14 +7854,14 @@ static void __pyx_f_5pyart_3map_7ckdtree_11coo_entries_add(struct __pyx_obj_5pya
  *         self.j_data[k] = j
  *         self.v_data[k] = v
  *         self.n += 1             # <<<<<<<<<<<<<<
- *
+ * 
  *     def to_matrix(coo_entries self, shape=None):
 */
   __pyx_v_self->n = (__pyx_v_self->n + 1);
 
   /* "pyart/map/ckdtree.pyx":257
  *         self.v_data = <np.float64_t*>np.PyArray_DATA(self.v)
- *
+ * 
  *     cdef void add(coo_entries self, np.intp_t i, np.intp_t j, np.float64_t v):             # <<<<<<<<<<<<<<
  *         cdef np.intp_t k
  *         if self.n == self.n_max:
@@ -7880,14 +7880,14 @@ static void __pyx_f_5pyart_3map_7ckdtree_11coo_entries_add(struct __pyx_obj_5pya
 
 /* "pyart/map/ckdtree.pyx":273
  *         self.n += 1
- *
+ * 
  *     def to_matrix(coo_entries self, shape=None):             # <<<<<<<<<<<<<<
  *         # Shrink arrays to size
  *         self.i.resize(self.n)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_3to_matrix(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_3to_matrix(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7895,7 +7895,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_11coo_entries_3to_matrix = {"to_matrix", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_3to_matrix, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_3to_matrix(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_3to_matrix(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8106,7 +8106,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_11coo_entries_2to_matrix(struct _
  *         self.n_max = self.n
  *         return scipy.sparse.coo_matrix((self.v, (self.i, self.j)),             # <<<<<<<<<<<<<<
  *                                        shape=shape)
- *
+ * 
 */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_scipy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
@@ -8137,8 +8137,8 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_11coo_entries_2to_matrix(struct _
  *         self.n_max = self.n
  *         return scipy.sparse.coo_matrix((self.v, (self.i, self.j)),
  *                                        shape=shape)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_t_4 = 0;
   {
@@ -8160,7 +8160,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_11coo_entries_2to_matrix(struct _
 
   /* "pyart/map/ckdtree.pyx":273
  *         self.n += 1
- *
+ * 
  *     def to_matrix(coo_entries self, shape=None):             # <<<<<<<<<<<<<<
  *         # Shrink arrays to size
  *         self.i.resize(self.n)
@@ -8188,7 +8188,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_11coo_entries_2to_matrix(struct _
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_5__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8196,7 +8196,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_11coo_entries_5__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_5__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_5__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8269,7 +8269,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_11coo_entries_4__reduce_cython__(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_7__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8277,7 +8277,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_11coo_entries_7__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_7__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_7__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_11coo_entries_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8680,7 +8680,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree__dist
  *             if r>upperbound:
  *                 return r             # <<<<<<<<<<<<<<
  *     return r
- *
+ * 
 */
         __pyx_r = __pyx_v_r;
         goto __pyx_L0;
@@ -8701,8 +8701,8 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree__dist
  *             if r>upperbound:
  *                 return r
  *     return r             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = __pyx_v_r;
   goto __pyx_L0;
@@ -8725,7 +8725,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree__dist
 
 /* "pyart/map/ckdtree.pyx":333
  *     cdef np.ndarray mins_arr, maxes_arr
- *
+ * 
  *     def __init__(self, mins_arr, maxes_arr):             # <<<<<<<<<<<<<<
  *         # Copy array data
  *         self.mins_arr = np.array(mins_arr, dtype=np.float64, order='C')
@@ -8940,7 +8940,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_9Rectangle___init__(struct __pyx_obj_5p
  *         self.mins = <np.float64_t*>np.PyArray_DATA(self.mins_arr)
  *         self.maxes = <np.float64_t*>np.PyArray_DATA(self.maxes_arr)             # <<<<<<<<<<<<<<
  *         self.m = self.mins_arr.shape[0]
- *
+ * 
 */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->maxes_arr);
   __Pyx_INCREF(__pyx_t_1);
@@ -8951,7 +8951,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_9Rectangle___init__(struct __pyx_obj_5p
  *         self.mins = <np.float64_t*>np.PyArray_DATA(self.mins_arr)
  *         self.maxes = <np.float64_t*>np.PyArray_DATA(self.maxes_arr)
  *         self.m = self.mins_arr.shape[0]             # <<<<<<<<<<<<<<
- *
+ * 
  * # 1-d pieces
 */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->mins_arr);
@@ -8961,7 +8961,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_9Rectangle___init__(struct __pyx_obj_5p
 
   /* "pyart/map/ckdtree.pyx":333
  *     cdef np.ndarray mins_arr, maxes_arr
- *
+ * 
  *     def __init__(self, mins_arr, maxes_arr):             # <<<<<<<<<<<<<<
  *         # Copy array data
  *         self.mins_arr = np.array(mins_arr, dtype=np.float64, order='C')
@@ -8990,7 +8990,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_9Rectangle___init__(struct __pyx_obj_5p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_3__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_3__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8998,7 +8998,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_9Rectangle_3__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_3__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_3__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_3__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9071,7 +9071,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_9Rectangle_2__reduce_cython__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_5__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_5__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9079,7 +9079,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_9Rectangle_5__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_5__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_5__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_9Rectangle_5__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9207,7 +9207,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
  *     a point in the hyperrectangle.
  *     """
  *     return dmax(0, dmax(rect.mins[k] - x[k], x[k] - rect.maxes[k])) ** p             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t max_dist_point_interval_p(np.float64_t* x,
 */
   __pyx_t_1 = __pyx_f_5pyart_3map_7ckdtree_dmax(((__pyx_v_rect->mins[__pyx_v_k]) - (__pyx_v_x[__pyx_v_k])), ((__pyx_v_x[__pyx_v_k]) - (__pyx_v_rect->maxes[__pyx_v_k]))); if (unlikely(__pyx_t_1 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 350, __pyx_L1_error)
@@ -9233,7 +9233,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
 
 /* "pyart/map/ckdtree.pyx":352
  *     return dmax(0, dmax(rect.mins[k] - x[k], x[k] - rect.maxes[k])) ** p
- *
+ * 
  * cdef inline np.float64_t max_dist_point_interval_p(np.float64_t* x,             # <<<<<<<<<<<<<<
  *                                                    Rectangle rect,
  *                                                    np.intp_t k,
@@ -9250,7 +9250,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
  *     a point in the hyperrectangle.
  *     """
  *     return dmax(rect.maxes[k] - x[k], x[k] - rect.mins[k]) ** p             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t min_dist_interval_interval_p(Rectangle rect1,
 */
   __pyx_t_1 = __pyx_f_5pyart_3map_7ckdtree_dmax(((__pyx_v_rect->maxes[__pyx_v_k]) - (__pyx_v_x[__pyx_v_k])), ((__pyx_v_x[__pyx_v_k]) - (__pyx_v_rect->mins[__pyx_v_k]))); if (unlikely(__pyx_t_1 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 359, __pyx_L1_error)
@@ -9259,7 +9259,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 
   /* "pyart/map/ckdtree.pyx":352
  *     return dmax(0, dmax(rect.mins[k] - x[k], x[k] - rect.maxes[k])) ** p
- *
+ * 
  * cdef inline np.float64_t max_dist_point_interval_p(np.float64_t* x,             # <<<<<<<<<<<<<<
  *                                                    Rectangle rect,
  *                                                    np.intp_t k,
@@ -9275,7 +9275,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 
 /* "pyart/map/ckdtree.pyx":361
  *     return dmax(rect.maxes[k] - x[k], x[k] - rect.mins[k]) ** p
- *
+ * 
  * cdef inline np.float64_t min_dist_interval_interval_p(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                       Rectangle rect2,
  *                                                       np.intp_t k,
@@ -9294,7 +9294,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
  *     """
  *     return dmax(0, dmax(rect1.mins[k] - rect2.maxes[k],             # <<<<<<<<<<<<<<
  *                         rect2.mins[k] - rect1.maxes[k])) ** p
- *
+ * 
 */
   __pyx_t_1 = __pyx_f_5pyart_3map_7ckdtree_dmax(((__pyx_v_rect1->mins[__pyx_v_k]) - (__pyx_v_rect2->maxes[__pyx_v_k])), ((__pyx_v_rect2->mins[__pyx_v_k]) - (__pyx_v_rect1->maxes[__pyx_v_k]))); if (unlikely(__pyx_t_1 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 368, __pyx_L1_error)
   __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_dmax(0.0, __pyx_t_1); if (unlikely(__pyx_t_2 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 368, __pyx_L1_error)
@@ -9303,7 +9303,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
  *     """
  *     return dmax(0, dmax(rect1.mins[k] - rect2.maxes[k],
  *                         rect2.mins[k] - rect1.maxes[k])) ** p             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t max_dist_interval_interval_p(Rectangle rect1,
 */
   __pyx_r = pow(__pyx_t_2, __pyx_v_p);
@@ -9311,7 +9311,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
 
   /* "pyart/map/ckdtree.pyx":361
  *     return dmax(rect.maxes[k] - x[k], x[k] - rect.mins[k]) ** p
- *
+ * 
  * cdef inline np.float64_t min_dist_interval_interval_p(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                       Rectangle rect2,
  *                                                       np.intp_t k,
@@ -9327,7 +9327,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
 
 /* "pyart/map/ckdtree.pyx":371
  *                         rect2.mins[k] - rect1.maxes[k])) ** p
- *
+ * 
  * cdef inline np.float64_t max_dist_interval_interval_p(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                       Rectangle rect2,
  *                                                       np.intp_t k,
@@ -9344,7 +9344,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
  *     two hyperrectangles.
  *     """
  *     return dmax(rect1.maxes[k] - rect2.mins[k], rect2.maxes[k] - rect1.mins[k]) ** p             # <<<<<<<<<<<<<<
- *
+ * 
  * # Interval arithmetic in m-D
 */
   __pyx_t_1 = __pyx_f_5pyart_3map_7ckdtree_dmax(((__pyx_v_rect1->maxes[__pyx_v_k]) - (__pyx_v_rect2->mins[__pyx_v_k])), ((__pyx_v_rect2->maxes[__pyx_v_k]) - (__pyx_v_rect1->mins[__pyx_v_k]))); if (unlikely(__pyx_t_1 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 378, __pyx_L1_error)
@@ -9353,7 +9353,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 
   /* "pyart/map/ckdtree.pyx":371
  *                         rect2.mins[k] - rect1.maxes[k])) ** p
- *
+ * 
  * cdef inline np.float64_t max_dist_interval_interval_p(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                       Rectangle rect2,
  *                                                       np.intp_t k,
@@ -9368,7 +9368,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 }
 
 /* "pyart/map/ckdtree.pyx":384
- *
+ * 
  * # These should be used only for p == infinity
  * cdef inline np.float64_t min_dist_point_rect_p_inf(np.float64_t* x,             # <<<<<<<<<<<<<<
  *                                                    Rectangle rect):
@@ -9414,7 +9414,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
  *     for i in range(rect.m):
  *         min_dist = dmax(min_dist, dmax(rect.mins[i]-x[i], x[i]-rect.maxes[i]))             # <<<<<<<<<<<<<<
  *     return min_dist
- *
+ * 
 */
     __pyx_t_4 = __pyx_f_5pyart_3map_7ckdtree_dmax(((__pyx_v_rect->mins[__pyx_v_i]) - (__pyx_v_x[__pyx_v_i])), ((__pyx_v_x[__pyx_v_i]) - (__pyx_v_rect->maxes[__pyx_v_i]))); if (unlikely(__pyx_t_4 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 390, __pyx_L1_error)
     __pyx_t_5 = __pyx_f_5pyart_3map_7ckdtree_dmax(__pyx_v_min_dist, __pyx_t_4); if (unlikely(__pyx_t_5 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 390, __pyx_L1_error)
@@ -9425,14 +9425,14 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
  *     for i in range(rect.m):
  *         min_dist = dmax(min_dist, dmax(rect.mins[i]-x[i], x[i]-rect.maxes[i]))
  *     return min_dist             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t max_dist_point_rect_p_inf(np.float64_t* x,
 */
   __pyx_r = __pyx_v_min_dist;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":384
- *
+ * 
  * # These should be used only for p == infinity
  * cdef inline np.float64_t min_dist_point_rect_p_inf(np.float64_t* x,             # <<<<<<<<<<<<<<
  *                                                    Rectangle rect):
@@ -9449,7 +9449,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
 
 /* "pyart/map/ckdtree.pyx":393
  *     return min_dist
- *
+ * 
  * cdef inline np.float64_t max_dist_point_rect_p_inf(np.float64_t* x,             # <<<<<<<<<<<<<<
  *                                                    Rectangle rect):
  *     """Compute the maximum distance between x and the given hyperrectangle."""
@@ -9494,7 +9494,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
  *     for i in range(rect.m):
  *         max_dist = dmax(max_dist, dmax(rect.maxes[i]-x[i], x[i]-rect.mins[i]))             # <<<<<<<<<<<<<<
  *     return max_dist
- *
+ * 
 */
     __pyx_t_4 = __pyx_f_5pyart_3map_7ckdtree_dmax(((__pyx_v_rect->maxes[__pyx_v_i]) - (__pyx_v_x[__pyx_v_i])), ((__pyx_v_x[__pyx_v_i]) - (__pyx_v_rect->mins[__pyx_v_i]))); if (unlikely(__pyx_t_4 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 399, __pyx_L1_error)
     __pyx_t_5 = __pyx_f_5pyart_3map_7ckdtree_dmax(__pyx_v_max_dist, __pyx_t_4); if (unlikely(__pyx_t_5 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 399, __pyx_L1_error)
@@ -9505,7 +9505,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
  *     for i in range(rect.m):
  *         max_dist = dmax(max_dist, dmax(rect.maxes[i]-x[i], x[i]-rect.mins[i]))
  *     return max_dist             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t min_dist_rect_rect_p_inf(Rectangle rect1,
 */
   __pyx_r = __pyx_v_max_dist;
@@ -9513,7 +9513,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 
   /* "pyart/map/ckdtree.pyx":393
  *     return min_dist
- *
+ * 
  * cdef inline np.float64_t max_dist_point_rect_p_inf(np.float64_t* x,             # <<<<<<<<<<<<<<
  *                                                    Rectangle rect):
  *     """Compute the maximum distance between x and the given hyperrectangle."""
@@ -9529,7 +9529,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 
 /* "pyart/map/ckdtree.pyx":402
  *     return max_dist
- *
+ * 
  * cdef inline np.float64_t min_dist_rect_rect_p_inf(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                   Rectangle rect2):
  *     """Compute the minimum distance between points in two hyperrectangles."""
@@ -9585,7 +9585,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
  *         min_dist = dmax(min_dist, dmax(rect1.mins[i] - rect2.maxes[i],
  *                                        rect2.mins[i] - rect1.maxes[i]))
  *     return min_dist             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef inline np.float64_t max_dist_rect_rect_p_inf(Rectangle rect1,
 */
   __pyx_r = __pyx_v_min_dist;
@@ -9593,7 +9593,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
 
   /* "pyart/map/ckdtree.pyx":402
  *     return max_dist
- *
+ * 
  * cdef inline np.float64_t min_dist_rect_rect_p_inf(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                   Rectangle rect2):
  *     """Compute the minimum distance between points in two hyperrectangles."""
@@ -9609,7 +9609,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_min_d
 
 /* "pyart/map/ckdtree.pyx":412
  *     return min_dist
- *
+ * 
  * cdef inline np.float64_t max_dist_rect_rect_p_inf(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                   Rectangle rect2):
  *     """Compute the maximum distance between points in two hyperrectangles."""
@@ -9665,7 +9665,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
  *         max_dist = dmax(max_dist, dmax(rect1.maxes[i] - rect2.mins[i],
  *                                        rect2.maxes[i] - rect1.mins[i]))
  *     return max_dist             # <<<<<<<<<<<<<<
- *
+ * 
  * # Rectangle-to-rectangle distance tracker
 */
   __pyx_r = __pyx_v_max_dist;
@@ -9673,7 +9673,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 
   /* "pyart/map/ckdtree.pyx":412
  *     return min_dist
- *
+ * 
  * cdef inline np.float64_t max_dist_rect_rect_p_inf(Rectangle rect1,             # <<<<<<<<<<<<<<
  *                                                   Rectangle rect2):
  *     """Compute the maximum distance between points in two hyperrectangles."""
@@ -9688,7 +9688,7 @@ static CYTHON_INLINE __pyx_t_5numpy_float64_t __pyx_f_5pyart_3map_7ckdtree_max_d
 }
 
 /* "pyart/map/ckdtree.pyx":467
- *
+ * 
  *     # Stack handling
  *     cdef int _init_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
@@ -9763,7 +9763,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__init_stack(st
  *         self.stack = <RR_stack_item*> tmp
  *         self.stack_size = 0             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
   __pyx_v_self->stack_size = 0;
 
@@ -9771,14 +9771,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__init_stack(st
  *         self.stack = <RR_stack_item*> tmp
  *         self.stack_size = 0
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int _resize_stack(self, np.intp_t new_max_size) except -1:
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":467
- *
+ * 
  *     # Stack handling
  *     cdef int _init_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
@@ -9795,7 +9795,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__init_stack(st
 
 /* "pyart/map/ckdtree.pyx":478
  *         return 0
- *
+ * 
  *     cdef int _resize_stack(self, np.intp_t new_max_size) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         self.stack_max_size = new_max_size
@@ -9860,7 +9860,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__resize_stack(
  *             raise MemoryError
  *         self.stack = <RR_stack_item*> tmp             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
   __pyx_v_self->stack = ((struct __pyx_t_5pyart_3map_7ckdtree_RR_stack_item *)__pyx_v_tmp);
 
@@ -9868,7 +9868,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__resize_stack(
  *             raise MemoryError
  *         self.stack = <RR_stack_item*> tmp
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int _free_stack(self) except -1:
 */
   __pyx_r = 0;
@@ -9876,7 +9876,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__resize_stack(
 
   /* "pyart/map/ckdtree.pyx":478
  *         return 0
- *
+ * 
  *     cdef int _resize_stack(self, np.intp_t new_max_size) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         self.stack_max_size = new_max_size
@@ -9892,7 +9892,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__resize_stack(
 
 /* "pyart/map/ckdtree.pyx":488
  *         return 0
- *
+ * 
  *     cdef int _free_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         if self.stack != <RR_stack_item*> NULL:
  *             stdlib.free(self.stack)
@@ -9903,7 +9903,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__free_stack(st
   int __pyx_t_1;
 
   /* "pyart/map/ckdtree.pyx":489
- *
+ * 
  *     cdef int _free_stack(self) except -1:
  *         if self.stack != <RR_stack_item*> NULL:             # <<<<<<<<<<<<<<
  *             stdlib.free(self.stack)
@@ -9917,12 +9917,12 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__free_stack(st
  *         if self.stack != <RR_stack_item*> NULL:
  *             stdlib.free(self.stack)             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
     free(__pyx_v_self->stack);
 
     /* "pyart/map/ckdtree.pyx":489
- *
+ * 
  *     cdef int _free_stack(self) except -1:
  *         if self.stack != <RR_stack_item*> NULL:             # <<<<<<<<<<<<<<
  *             stdlib.free(self.stack)
@@ -9934,15 +9934,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__free_stack(st
  *         if self.stack != <RR_stack_item*> NULL:
  *             stdlib.free(self.stack)
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":488
  *         return 0
- *
+ * 
  *     cdef int _free_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         if self.stack != <RR_stack_item*> NULL:
  *             stdlib.free(self.stack)
@@ -9954,11 +9954,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker__free_stack(st
 }
 
 /* "pyart/map/ckdtree.pyx":494
- *
- *
+ * 
+ * 
  *     def __init__(self, Rectangle rect1, Rectangle rect2,             # <<<<<<<<<<<<<<
  *                  np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
 */
 
 /* Python wrapper */
@@ -10093,19 +10093,19 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
 
   /* "pyart/map/ckdtree.pyx":497
  *                  np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
  *         if rect1.m != rect2.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("rect1 and rect2 have different dimensions")
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_rect1->m != __pyx_v_rect2->m);
   if (unlikely(__pyx_t_1)) {
 
     /* "pyart/map/ckdtree.pyx":498
- *
+ * 
  *         if rect1.m != rect2.m:
  *             raise ValueError("rect1 and rect2 have different dimensions")             # <<<<<<<<<<<<<<
- *
+ * 
  *         self.rect1 = rect1
 */
     __pyx_t_3 = NULL;
@@ -10123,16 +10123,16 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
 
     /* "pyart/map/ckdtree.pyx":497
  *                  np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
  *         if rect1.m != rect2.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("rect1 and rect2 have different dimensions")
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":500
  *             raise ValueError("rect1 and rect2 have different dimensions")
- *
+ * 
  *         self.rect1 = rect1             # <<<<<<<<<<<<<<
  *         self.rect2 = rect2
  *         self.p = p
@@ -10144,11 +10144,11 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
   __pyx_v_self->rect1 = __pyx_v_rect1;
 
   /* "pyart/map/ckdtree.pyx":501
- *
+ * 
  *         self.rect1 = rect1
  *         self.rect2 = rect2             # <<<<<<<<<<<<<<
  *         self.p = p
- *
+ * 
 */
   __Pyx_INCREF((PyObject *)__pyx_v_rect2);
   __Pyx_GIVEREF((PyObject *)__pyx_v_rect2);
@@ -10160,13 +10160,13 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
  *         self.rect1 = rect1
  *         self.rect2 = rect2
  *         self.p = p             # <<<<<<<<<<<<<<
- *
+ * 
  *         # internally we represent all distances as distance ** p
 */
   __pyx_v_self->p = __pyx_v_p;
 
   /* "pyart/map/ckdtree.pyx":505
- *
+ * 
  *         # internally we represent all distances as distance ** p
  *         if p != infinity and upper_bound != infinity:             # <<<<<<<<<<<<<<
  *             self.upper_bound = upper_bound ** p
@@ -10193,7 +10193,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
     __pyx_v_self->upper_bound = pow(__pyx_v_upper_bound, __pyx_v_p);
 
     /* "pyart/map/ckdtree.pyx":505
- *
+ * 
  *         # internally we represent all distances as distance ** p
  *         if p != infinity and upper_bound != infinity:             # <<<<<<<<<<<<<<
  *             self.upper_bound = upper_bound ** p
@@ -10206,7 +10206,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
  *             self.upper_bound = upper_bound ** p
  *         else:
  *             self.upper_bound = upper_bound             # <<<<<<<<<<<<<<
- *
+ * 
  *         # fiddle approximation factor
 */
   /*else*/ {
@@ -10215,7 +10215,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
   __pyx_L4:;
 
   /* "pyart/map/ckdtree.pyx":511
- *
+ * 
  *         # fiddle approximation factor
  *         if eps == 0:             # <<<<<<<<<<<<<<
  *             self.epsfac = 1
@@ -10234,7 +10234,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
     __pyx_v_self->epsfac = 1.0;
 
     /* "pyart/map/ckdtree.pyx":511
- *
+ * 
  *         # fiddle approximation factor
  *         if eps == 0:             # <<<<<<<<<<<<<<
  *             self.epsfac = 1
@@ -10281,7 +10281,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
  *             self.epsfac = 1 / (1 + eps)
  *         else:
  *             self.epsfac = 1 / (1 + eps) ** p             # <<<<<<<<<<<<<<
- *
+ * 
  *         self._init_stack()
 */
   /*else*/ {
@@ -10296,15 +10296,15 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
 
   /* "pyart/map/ckdtree.pyx":518
  *             self.epsfac = 1 / (1 + eps) ** p
- *
+ * 
  *         self._init_stack()             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Compute initial min and max distances
 */
   __pyx_t_7 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_RectRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->_init_stack(__pyx_v_self); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 518, __pyx_L1_error)
 
   /* "pyart/map/ckdtree.pyx":521
- *
+ * 
  *         # Compute initial min and max distances
  *         if self.p == infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance = min_dist_rect_rect_p_inf(rect1, rect2)
@@ -10334,7 +10334,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
     __pyx_v_self->max_distance = __pyx_t_6;
 
     /* "pyart/map/ckdtree.pyx":521
- *
+ * 
  *         # Compute initial min and max distances
  *         if self.p == infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance = min_dist_rect_rect_p_inf(rect1, rect2)
@@ -10406,7 +10406,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
  *             for i in range(rect1.m):
  *                 self.min_distance += min_dist_interval_interval_p(rect1, rect2, i, p)             # <<<<<<<<<<<<<<
  *                 self.max_distance += max_dist_interval_interval_p(rect1, rect2, i, p)
- *
+ * 
 */
       __pyx_t_10 = __Pyx_PyLong_As_npy_intp(__pyx_v_i); if (unlikely((__pyx_t_10 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 528, __pyx_L1_error)
       __pyx_t_6 = __pyx_f_5pyart_3map_7ckdtree_min_dist_interval_interval_p(__pyx_v_rect1, __pyx_v_rect2, __pyx_t_10, __pyx_v_p); if (unlikely(__pyx_t_6 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 528, __pyx_L1_error)
@@ -10416,7 +10416,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
  *             for i in range(rect1.m):
  *                 self.min_distance += min_dist_interval_interval_p(rect1, rect2, i, p)
  *                 self.max_distance += max_dist_interval_interval_p(rect1, rect2, i, p)             # <<<<<<<<<<<<<<
- *
+ * 
  *     def __dealloc__(self):
 */
       __pyx_t_10 = __Pyx_PyLong_As_npy_intp(__pyx_v_i); if (unlikely((__pyx_t_10 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 529, __pyx_L1_error)
@@ -10436,11 +10436,11 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
   __pyx_L8:;
 
   /* "pyart/map/ckdtree.pyx":494
- *
- *
+ * 
+ * 
  *     def __init__(self, Rectangle rect1, Rectangle rect2,             # <<<<<<<<<<<<<<
  *                  np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
 */
 
   /* function exit code */
@@ -10460,10 +10460,10 @@ static int __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker___init__(stru
 
 /* "pyart/map/ckdtree.pyx":531
  *                 self.max_distance += max_dist_interval_interval_p(rect1, rect2, i, p)
- *
+ * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         self._free_stack()
- *
+ * 
 */
 
 /* Python wrapper */
@@ -10486,20 +10486,20 @@ static void __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker_2__dealloc__
   int __pyx_clineno = 0;
 
   /* "pyart/map/ckdtree.pyx":532
- *
+ * 
  *     def __dealloc__(self):
  *         self._free_stack()             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int push(self, np.intp_t which, np.intp_t direction,
 */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_RectRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->_free_stack(__pyx_v_self); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 532, __pyx_L1_error)
 
   /* "pyart/map/ckdtree.pyx":531
  *                 self.max_distance += max_dist_interval_interval_p(rect1, rect2, i, p)
- *
+ * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         self._free_stack()
- *
+ * 
 */
 
   /* function exit code */
@@ -10511,7 +10511,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker_2__dealloc__
 
 /* "pyart/map/ckdtree.pyx":534
  *         self._free_stack()
- *
+ * 
  *     cdef int push(self, np.intp_t which, np.intp_t direction,             # <<<<<<<<<<<<<<
  *                   np.intp_t split_dim,
  *                   np.float64_t split_val) except -1:
@@ -10533,7 +10533,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
   __Pyx_RefNannySetupContext("push", 0);
 
   /* "pyart/map/ckdtree.pyx":539
- *
+ * 
  *         cdef Rectangle rect
  *         if which == 1:             # <<<<<<<<<<<<<<
  *             rect = self.rect1
@@ -10555,7 +10555,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
     __pyx_t_2 = 0;
 
     /* "pyart/map/ckdtree.pyx":539
- *
+ * 
  *         cdef Rectangle rect
  *         if which == 1:             # <<<<<<<<<<<<<<
  *             rect = self.rect1
@@ -10568,7 +10568,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *             rect = self.rect1
  *         else:
  *             rect = self.rect2             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Push onto stack
 */
   /*else*/ {
@@ -10580,11 +10580,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
   __pyx_L3:;
 
   /* "pyart/map/ckdtree.pyx":545
- *
+ * 
  *         # Push onto stack
  *         if self.stack_size == self.stack_max_size:             # <<<<<<<<<<<<<<
  *             self._resize_stack(self.stack_max_size * 2)
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->stack_size == __pyx_v_self->stack_max_size);
   if (__pyx_t_1) {
@@ -10593,23 +10593,23 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         # Push onto stack
  *         if self.stack_size == self.stack_max_size:
  *             self._resize_stack(self.stack_max_size * 2)             # <<<<<<<<<<<<<<
- *
+ * 
  *         cdef RR_stack_item *item = &self.stack[self.stack_size]
 */
     __pyx_t_3 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_RectRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->_resize_stack(__pyx_v_self, (__pyx_v_self->stack_max_size * 2)); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 546, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":545
- *
+ * 
  *         # Push onto stack
  *         if self.stack_size == self.stack_max_size:             # <<<<<<<<<<<<<<
  *             self._resize_stack(self.stack_max_size * 2)
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":548
  *             self._resize_stack(self.stack_max_size * 2)
- *
+ * 
  *         cdef RR_stack_item *item = &self.stack[self.stack_size]             # <<<<<<<<<<<<<<
  *         self.stack_size += 1
  *         item.which = which
@@ -10617,7 +10617,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
   __pyx_v_item = (&(__pyx_v_self->stack[__pyx_v_self->stack_size]));
 
   /* "pyart/map/ckdtree.pyx":549
- *
+ * 
  *         cdef RR_stack_item *item = &self.stack[self.stack_size]
  *         self.stack_size += 1             # <<<<<<<<<<<<<<
  *         item.which = which
@@ -10668,7 +10668,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         item.max_distance = self.max_distance
  *         item.min_along_dim = rect.mins[split_dim]             # <<<<<<<<<<<<<<
  *         item.max_along_dim = rect.maxes[split_dim]
- *
+ * 
 */
   __pyx_v_item->min_along_dim = (__pyx_v_rect->mins[__pyx_v_split_dim]);
 
@@ -10676,13 +10676,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         item.max_distance = self.max_distance
  *         item.min_along_dim = rect.mins[split_dim]
  *         item.max_along_dim = rect.maxes[split_dim]             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Update min/max distances
 */
   __pyx_v_item->max_along_dim = (__pyx_v_rect->maxes[__pyx_v_split_dim]);
 
   /* "pyart/map/ckdtree.pyx":558
- *
+ * 
  *         # Update min/max distances
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance -= min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
@@ -10696,7 +10696,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         if self.p != infinity:
  *             self.min_distance -= min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)             # <<<<<<<<<<<<<<
  *             self.max_distance -= max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
- *
+ * 
 */
     __pyx_t_2 = ((PyObject *)__pyx_v_self->rect1);
     __Pyx_INCREF(__pyx_t_2);
@@ -10711,7 +10711,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         if self.p != infinity:
  *             self.min_distance -= min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
  *             self.max_distance -= max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)             # <<<<<<<<<<<<<<
- *
+ * 
  *         if direction == LESS:
 */
     __pyx_t_5 = ((PyObject *)__pyx_v_self->rect1);
@@ -10724,7 +10724,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
     __pyx_v_self->max_distance = (__pyx_v_self->max_distance - __pyx_t_4);
 
     /* "pyart/map/ckdtree.pyx":558
- *
+ * 
  *         # Update min/max distances
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance -= min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
@@ -10734,7 +10734,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
 
   /* "pyart/map/ckdtree.pyx":562
  *             self.max_distance -= max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
- *
+ * 
  *         if direction == LESS:             # <<<<<<<<<<<<<<
  *             rect.maxes[split_dim] = split_val
  *         else:
@@ -10743,7 +10743,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":563
- *
+ * 
  *         if direction == LESS:
  *             rect.maxes[split_dim] = split_val             # <<<<<<<<<<<<<<
  *         else:
@@ -10753,7 +10753,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
 
     /* "pyart/map/ckdtree.pyx":562
  *             self.max_distance -= max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
- *
+ * 
  *         if direction == LESS:             # <<<<<<<<<<<<<<
  *             rect.maxes[split_dim] = split_val
  *         else:
@@ -10765,7 +10765,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *             rect.maxes[split_dim] = split_val
  *         else:
  *             rect.mins[split_dim] = split_val             # <<<<<<<<<<<<<<
- *
+ * 
  *         if self.p != infinity:
 */
   /*else*/ {
@@ -10775,7 +10775,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
 
   /* "pyart/map/ckdtree.pyx":567
  *             rect.mins[split_dim] = split_val
- *
+ * 
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance += min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
  *             self.max_distance += max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
@@ -10784,7 +10784,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":568
- *
+ * 
  *         if self.p != infinity:
  *             self.min_distance += min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)             # <<<<<<<<<<<<<<
  *             self.max_distance += max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
@@ -10817,7 +10817,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
 
     /* "pyart/map/ckdtree.pyx":567
  *             rect.mins[split_dim] = split_val
- *
+ * 
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance += min_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
  *             self.max_distance += max_dist_interval_interval_p(self.rect1, self.rect2, split_dim, self.p)
@@ -10830,7 +10830,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         else:
  *             self.min_distance = min_dist_rect_rect_p_inf(self.rect1, self.rect2)             # <<<<<<<<<<<<<<
  *             self.max_distance = max_dist_rect_rect_p_inf(self.rect1, self.rect2)
- *
+ * 
 */
   /*else*/ {
     __pyx_t_2 = ((PyObject *)__pyx_v_self->rect1);
@@ -10846,7 +10846,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
  *         else:
  *             self.min_distance = min_dist_rect_rect_p_inf(self.rect1, self.rect2)
  *             self.max_distance = max_dist_rect_rect_p_inf(self.rect1, self.rect2)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
     __pyx_t_5 = ((PyObject *)__pyx_v_self->rect1);
@@ -10862,17 +10862,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
 
   /* "pyart/map/ckdtree.pyx":574
  *             self.max_distance = max_dist_rect_rect_p_inf(self.rect1, self.rect2)
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":534
  *         self._free_stack()
- *
+ * 
  *     cdef int push(self, np.intp_t which, np.intp_t direction,             # <<<<<<<<<<<<<<
  *                   np.intp_t split_dim,
  *                   np.float64_t split_val) except -1:
@@ -10891,8 +10891,8 @@ static int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push(struct __
 }
 
 /* "pyart/map/ckdtree.pyx":577
- *
- *
+ * 
+ * 
  *     cdef inline int push_less_of(self, np.intp_t which,             # <<<<<<<<<<<<<<
  *                                  innernode *node) except -1:
  *         return self.push(which, LESS, node.split_dim, node.split)
@@ -10909,16 +10909,16 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *     cdef inline int push_less_of(self, np.intp_t which,
  *                                  innernode *node) except -1:
  *         return self.push(which, LESS, node.split_dim, node.split)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_RectRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->push(__pyx_v_self, __pyx_v_which, __pyx_v_5pyart_3map_7ckdtree_LESS, __pyx_v_node->split_dim, __pyx_v_node->split); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 579, __pyx_L1_error)
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":577
- *
- *
+ * 
+ * 
  *     cdef inline int push_less_of(self, np.intp_t which,             # <<<<<<<<<<<<<<
  *                                  innernode *node) except -1:
  *         return self.push(which, LESS, node.split_dim, node.split)
@@ -10933,8 +10933,8 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 }
 
 /* "pyart/map/ckdtree.pyx":582
- *
- *
+ * 
+ * 
  *     cdef inline int push_greater_of(self, np.intp_t which,             # <<<<<<<<<<<<<<
  *                                     innernode *node) except -1:
  *         return self.push(which, GREATER, node.split_dim, node.split)
@@ -10951,16 +10951,16 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *     cdef inline int push_greater_of(self, np.intp_t which,
  *                                     innernode *node) except -1:
  *         return self.push(which, GREATER, node.split_dim, node.split)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_RectRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->push(__pyx_v_self, __pyx_v_which, __pyx_v_5pyart_3map_7ckdtree_GREATER, __pyx_v_node->split_dim, __pyx_v_node->split); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 584, __pyx_L1_error)
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":582
- *
- *
+ * 
+ * 
  *     cdef inline int push_greater_of(self, np.intp_t which,             # <<<<<<<<<<<<<<
  *                                     innernode *node) except -1:
  *         return self.push(which, GREATER, node.split_dim, node.split)
@@ -10975,8 +10975,8 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 }
 
 /* "pyart/map/ckdtree.pyx":587
- *
- *
+ * 
+ * 
  *     cdef inline int pop(self) except -1:             # <<<<<<<<<<<<<<
  *         # Pop from stack
  *         self.stack_size -= 1
@@ -10997,7 +10997,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *         # Pop from stack
  *         self.stack_size -= 1             # <<<<<<<<<<<<<<
  *         assert self.stack_size >= 0
- *
+ * 
 */
   __pyx_v_self->stack_size = (__pyx_v_self->stack_size - 1);
 
@@ -11005,7 +11005,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *         # Pop from stack
  *         self.stack_size -= 1
  *         assert self.stack_size >= 0             # <<<<<<<<<<<<<<
- *
+ * 
  *         cdef RR_stack_item* item = &self.stack[self.stack_size]
 */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
@@ -11022,7 +11022,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 
   /* "pyart/map/ckdtree.pyx":592
  *         assert self.stack_size >= 0
- *
+ * 
  *         cdef RR_stack_item* item = &self.stack[self.stack_size]             # <<<<<<<<<<<<<<
  *         self.min_distance = item.min_distance
  *         self.max_distance = item.max_distance
@@ -11030,11 +11030,11 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
   __pyx_v_item = (&(__pyx_v_self->stack[__pyx_v_self->stack_size]));
 
   /* "pyart/map/ckdtree.pyx":593
- *
+ * 
  *         cdef RR_stack_item* item = &self.stack[self.stack_size]
  *         self.min_distance = item.min_distance             # <<<<<<<<<<<<<<
  *         self.max_distance = item.max_distance
- *
+ * 
 */
   __pyx_t_2 = __pyx_v_item->min_distance;
   __pyx_v_self->min_distance = __pyx_t_2;
@@ -11043,7 +11043,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *         cdef RR_stack_item* item = &self.stack[self.stack_size]
  *         self.min_distance = item.min_distance
  *         self.max_distance = item.max_distance             # <<<<<<<<<<<<<<
- *
+ * 
  *         if item.which == 1:
 */
   __pyx_t_2 = __pyx_v_item->max_distance;
@@ -11051,7 +11051,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 
   /* "pyart/map/ckdtree.pyx":596
  *         self.max_distance = item.max_distance
- *
+ * 
  *         if item.which == 1:             # <<<<<<<<<<<<<<
  *             self.rect1.mins[item.split_dim] = item.min_along_dim
  *             self.rect1.maxes[item.split_dim] = item.max_along_dim
@@ -11060,7 +11060,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":597
- *
+ * 
  *         if item.which == 1:
  *             self.rect1.mins[item.split_dim] = item.min_along_dim             # <<<<<<<<<<<<<<
  *             self.rect1.maxes[item.split_dim] = item.max_along_dim
@@ -11081,7 +11081,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 
     /* "pyart/map/ckdtree.pyx":596
  *         self.max_distance = item.max_distance
- *
+ * 
  *         if item.which == 1:             # <<<<<<<<<<<<<<
  *             self.rect1.mins[item.split_dim] = item.min_along_dim
  *             self.rect1.maxes[item.split_dim] = item.max_along_dim
@@ -11094,7 +11094,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *         else:
  *             self.rect2.mins[item.split_dim] = item.min_along_dim             # <<<<<<<<<<<<<<
  *             self.rect2.maxes[item.split_dim] = item.max_along_dim
- *
+ * 
 */
   /*else*/ {
     __pyx_t_3 = __pyx_v_item->min_along_dim;
@@ -11104,7 +11104,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
  *         else:
  *             self.rect2.mins[item.split_dim] = item.min_along_dim
  *             self.rect2.maxes[item.split_dim] = item.max_along_dim             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
     __pyx_t_3 = __pyx_v_item->max_along_dim;
@@ -11114,17 +11114,17 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 
   /* "pyart/map/ckdtree.pyx":603
  *             self.rect2.maxes[item.split_dim] = item.max_along_dim
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  * # Point-to-rectangle distance tracker
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":587
- *
- *
+ * 
+ * 
  *     cdef inline int pop(self) except -1:             # <<<<<<<<<<<<<<
  *         # Pop from stack
  *         self.stack_size -= 1
@@ -11145,7 +11145,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_5__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11153,7 +11153,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_23RectRectDistanceTracker_5__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_5__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_5__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11226,7 +11226,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker_4__redu
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_7__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11234,7 +11234,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_23RectRectDistanceTracker_7__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_7__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_7__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_23RectRectDistanceTracker_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11343,7 +11343,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_23RectRectDistanceTracker_6__sets
 }
 
 /* "pyart/map/ckdtree.pyx":647
- *
+ * 
  *     # Stack handling
  *     cdef int _init_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
@@ -11418,7 +11418,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__init_stack(s
  *         self.stack = <RP_stack_item*> tmp
  *         self.stack_size = 0             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
   __pyx_v_self->stack_size = 0;
 
@@ -11426,14 +11426,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__init_stack(s
  *         self.stack = <RP_stack_item*> tmp
  *         self.stack_size = 0
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int _resize_stack(self, np.intp_t new_max_size) except -1:
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":647
- *
+ * 
  *     # Stack handling
  *     cdef int _init_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
@@ -11450,7 +11450,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__init_stack(s
 
 /* "pyart/map/ckdtree.pyx":658
  *         return 0
- *
+ * 
  *     cdef int _resize_stack(self, np.intp_t new_max_size) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         self.stack_max_size = new_max_size
@@ -11515,7 +11515,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__resize_stack
  *             raise MemoryError
  *         self.stack = <RP_stack_item*> tmp             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
   __pyx_v_self->stack = ((struct __pyx_t_5pyart_3map_7ckdtree_RP_stack_item *)__pyx_v_tmp);
 
@@ -11523,7 +11523,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__resize_stack
  *             raise MemoryError
  *         self.stack = <RP_stack_item*> tmp
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int _free_stack(self) except -1:
 */
   __pyx_r = 0;
@@ -11531,7 +11531,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__resize_stack
 
   /* "pyart/map/ckdtree.pyx":658
  *         return 0
- *
+ * 
  *     cdef int _resize_stack(self, np.intp_t new_max_size) except -1:             # <<<<<<<<<<<<<<
  *         cdef void *tmp
  *         self.stack_max_size = new_max_size
@@ -11547,7 +11547,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__resize_stack
 
 /* "pyart/map/ckdtree.pyx":668
  *         return 0
- *
+ * 
  *     cdef int _free_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         if self.stack != <RP_stack_item*> NULL:
  *             stdlib.free(self.stack)
@@ -11558,7 +11558,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__free_stack(s
   int __pyx_t_1;
 
   /* "pyart/map/ckdtree.pyx":669
- *
+ * 
  *     cdef int _free_stack(self) except -1:
  *         if self.stack != <RP_stack_item*> NULL:             # <<<<<<<<<<<<<<
  *             stdlib.free(self.stack)
@@ -11572,12 +11572,12 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__free_stack(s
  *         if self.stack != <RP_stack_item*> NULL:
  *             stdlib.free(self.stack)             # <<<<<<<<<<<<<<
  *         return 0
- *
+ * 
 */
     free(__pyx_v_self->stack);
 
     /* "pyart/map/ckdtree.pyx":669
- *
+ * 
  *     cdef int _free_stack(self) except -1:
  *         if self.stack != <RP_stack_item*> NULL:             # <<<<<<<<<<<<<<
  *             stdlib.free(self.stack)
@@ -11589,7 +11589,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__free_stack(s
  *         if self.stack != <RP_stack_item*> NULL:
  *             stdlib.free(self.stack)
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef init(self, np.float64_t *pt, Rectangle rect,
 */
   __pyx_r = 0;
@@ -11597,7 +11597,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__free_stack(s
 
   /* "pyart/map/ckdtree.pyx":668
  *         return 0
- *
+ * 
  *     cdef int _free_stack(self) except -1:             # <<<<<<<<<<<<<<
  *         if self.stack != <RP_stack_item*> NULL:
  *             stdlib.free(self.stack)
@@ -11610,10 +11610,10 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker__free_stack(s
 
 /* "pyart/map/ckdtree.pyx":673
  *         return 0
- *
+ * 
  *     cdef init(self, np.float64_t *pt, Rectangle rect,             # <<<<<<<<<<<<<<
  *               np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
 */
 
 static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(struct __pyx_obj_5pyart_3map_7ckdtree_PointRectDistanceTracker *__pyx_v_self, __pyx_t_5numpy_float64_t *__pyx_v_pt, struct __pyx_obj_5pyart_3map_7ckdtree_Rectangle *__pyx_v_rect, __pyx_t_5numpy_float64_t __pyx_v_p, __pyx_t_5numpy_float64_t __pyx_v_eps, __pyx_t_5numpy_float64_t __pyx_v_upper_bound) {
@@ -11637,7 +11637,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
 
   /* "pyart/map/ckdtree.pyx":676
  *               np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
  *         self.pt = pt             # <<<<<<<<<<<<<<
  *         self.rect = rect
  *         self.p = p
@@ -11645,11 +11645,11 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
   __pyx_v_self->pt = __pyx_v_pt;
 
   /* "pyart/map/ckdtree.pyx":677
- *
+ * 
  *         self.pt = pt
  *         self.rect = rect             # <<<<<<<<<<<<<<
  *         self.p = p
- *
+ * 
 */
   __Pyx_INCREF((PyObject *)__pyx_v_rect);
   __Pyx_GIVEREF((PyObject *)__pyx_v_rect);
@@ -11661,13 +11661,13 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
  *         self.pt = pt
  *         self.rect = rect
  *         self.p = p             # <<<<<<<<<<<<<<
- *
+ * 
  *         # internally we represent all distances as distance ** p
 */
   __pyx_v_self->p = __pyx_v_p;
 
   /* "pyart/map/ckdtree.pyx":681
- *
+ * 
  *         # internally we represent all distances as distance ** p
  *         if p != infinity and upper_bound != infinity:             # <<<<<<<<<<<<<<
  *             self.upper_bound = upper_bound ** p
@@ -11694,7 +11694,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
     __pyx_v_self->upper_bound = pow(__pyx_v_upper_bound, __pyx_v_p);
 
     /* "pyart/map/ckdtree.pyx":681
- *
+ * 
  *         # internally we represent all distances as distance ** p
  *         if p != infinity and upper_bound != infinity:             # <<<<<<<<<<<<<<
  *             self.upper_bound = upper_bound ** p
@@ -11707,7 +11707,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
  *             self.upper_bound = upper_bound ** p
  *         else:
  *             self.upper_bound = upper_bound             # <<<<<<<<<<<<<<
- *
+ * 
  *         # fiddle approximation factor
 */
   /*else*/ {
@@ -11716,7 +11716,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
   __pyx_L3:;
 
   /* "pyart/map/ckdtree.pyx":687
- *
+ * 
  *         # fiddle approximation factor
  *         if eps == 0:             # <<<<<<<<<<<<<<
  *             self.epsfac = 1
@@ -11735,7 +11735,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
     __pyx_v_self->epsfac = 1.0;
 
     /* "pyart/map/ckdtree.pyx":687
- *
+ * 
  *         # fiddle approximation factor
  *         if eps == 0:             # <<<<<<<<<<<<<<
  *             self.epsfac = 1
@@ -11782,7 +11782,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
  *             self.epsfac = 1 / (1 + eps)
  *         else:
  *             self.epsfac = 1 / (1 + eps) ** p             # <<<<<<<<<<<<<<
- *
+ * 
  *         self._init_stack()
 */
   /*else*/ {
@@ -11797,15 +11797,15 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
 
   /* "pyart/map/ckdtree.pyx":694
  *             self.epsfac = 1 / (1 + eps) ** p
- *
+ * 
  *         self._init_stack()             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Compute initial min and max distances
 */
   __pyx_t_4 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_PointRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->_init_stack(__pyx_v_self); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 694, __pyx_L1_error)
 
   /* "pyart/map/ckdtree.pyx":697
- *
+ * 
  *         # Compute initial min and max distances
  *         if self.p == infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance = min_dist_point_rect_p_inf(pt, rect)
@@ -11835,7 +11835,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
     __pyx_v_self->max_distance = __pyx_t_3;
 
     /* "pyart/map/ckdtree.pyx":697
- *
+ * 
  *         # Compute initial min and max distances
  *         if self.p == infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance = min_dist_point_rect_p_inf(pt, rect)
@@ -11907,7 +11907,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
  *             for i in range(rect.m):
  *                 self.min_distance += min_dist_point_interval_p(pt, rect, i, p)             # <<<<<<<<<<<<<<
  *                 self.max_distance += max_dist_point_interval_p(pt, rect, i, p)
- *
+ * 
 */
       __pyx_t_10 = __Pyx_PyLong_As_npy_intp(__pyx_v_i); if (unlikely((__pyx_t_10 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 704, __pyx_L1_error)
       __pyx_t_3 = __pyx_f_5pyart_3map_7ckdtree_min_dist_point_interval_p(__pyx_v_pt, __pyx_v_rect, __pyx_t_10, __pyx_v_p); if (unlikely(__pyx_t_3 == ((__pyx_t_5numpy_float64_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 704, __pyx_L1_error)
@@ -11917,7 +11917,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
  *             for i in range(rect.m):
  *                 self.min_distance += min_dist_point_interval_p(pt, rect, i, p)
  *                 self.max_distance += max_dist_point_interval_p(pt, rect, i, p)             # <<<<<<<<<<<<<<
- *
+ * 
  *     def __dealloc__(self):
 */
       __pyx_t_10 = __Pyx_PyLong_As_npy_intp(__pyx_v_i); if (unlikely((__pyx_t_10 == ((npy_intp)-1)) && PyErr_Occurred())) __PYX_ERR(0, 705, __pyx_L1_error)
@@ -11938,10 +11938,10 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
 
   /* "pyart/map/ckdtree.pyx":673
  *         return 0
- *
+ * 
  *     cdef init(self, np.float64_t *pt, Rectangle rect,             # <<<<<<<<<<<<<<
  *               np.float64_t p, np.float64_t eps, np.float64_t upper_bound):
- *
+ * 
 */
 
   /* function exit code */
@@ -11962,10 +11962,10 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_init(st
 
 /* "pyart/map/ckdtree.pyx":707
  *                 self.max_distance += max_dist_point_interval_p(pt, rect, i, p)
- *
+ * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         self._free_stack()
- *
+ * 
 */
 
 /* Python wrapper */
@@ -11988,20 +11988,20 @@ static void __pyx_pf_5pyart_3map_7ckdtree_24PointRectDistanceTracker___dealloc__
   int __pyx_clineno = 0;
 
   /* "pyart/map/ckdtree.pyx":708
- *
+ * 
  *     def __dealloc__(self):
  *         self._free_stack()             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef int push(self, np.intp_t direction,
 */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_PointRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->_free_stack(__pyx_v_self); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 708, __pyx_L1_error)
 
   /* "pyart/map/ckdtree.pyx":707
  *                 self.max_distance += max_dist_point_interval_p(pt, rect, i, p)
- *
+ * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         self._free_stack()
- *
+ * 
 */
 
   /* function exit code */
@@ -12013,7 +12013,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_24PointRectDistanceTracker___dealloc__
 
 /* "pyart/map/ckdtree.pyx":710
  *         self._free_stack()
- *
+ * 
  *     cdef int push(self, np.intp_t direction,             # <<<<<<<<<<<<<<
  *                   np.intp_t split_dim,
  *                   np.float64_t split_val) except -1:
@@ -12033,11 +12033,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
   __Pyx_RefNannySetupContext("push", 0);
 
   /* "pyart/map/ckdtree.pyx":715
- *
+ * 
  *         # Push onto stack
  *         if self.stack_size == self.stack_max_size:             # <<<<<<<<<<<<<<
  *             self._resize_stack(self.stack_max_size * 2)
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->stack_size == __pyx_v_self->stack_max_size);
   if (__pyx_t_1) {
@@ -12046,41 +12046,41 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *         # Push onto stack
  *         if self.stack_size == self.stack_max_size:
  *             self._resize_stack(self.stack_max_size * 2)             # <<<<<<<<<<<<<<
- *
+ * 
  *         cdef RP_stack_item *item = &self.stack[self.stack_size]
 */
     __pyx_t_2 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_PointRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->_resize_stack(__pyx_v_self, (__pyx_v_self->stack_max_size * 2)); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 716, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":715
- *
+ * 
  *         # Push onto stack
  *         if self.stack_size == self.stack_max_size:             # <<<<<<<<<<<<<<
  *             self._resize_stack(self.stack_max_size * 2)
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":718
  *             self._resize_stack(self.stack_max_size * 2)
- *
+ * 
  *         cdef RP_stack_item *item = &self.stack[self.stack_size]             # <<<<<<<<<<<<<<
  *         self.stack_size += 1
- *
+ * 
 */
   __pyx_v_item = (&(__pyx_v_self->stack[__pyx_v_self->stack_size]));
 
   /* "pyart/map/ckdtree.pyx":719
- *
+ * 
  *         cdef RP_stack_item *item = &self.stack[self.stack_size]
  *         self.stack_size += 1             # <<<<<<<<<<<<<<
- *
+ * 
  *         item.split_dim = split_dim
 */
   __pyx_v_self->stack_size = (__pyx_v_self->stack_size + 1);
 
   /* "pyart/map/ckdtree.pyx":721
  *         self.stack_size += 1
- *
+ * 
  *         item.split_dim = split_dim             # <<<<<<<<<<<<<<
  *         item.min_distance = self.min_distance
  *         item.max_distance = self.max_distance
@@ -12088,7 +12088,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
   __pyx_v_item->split_dim = __pyx_v_split_dim;
 
   /* "pyart/map/ckdtree.pyx":722
- *
+ * 
  *         item.split_dim = split_dim
  *         item.min_distance = self.min_distance             # <<<<<<<<<<<<<<
  *         item.max_distance = self.max_distance
@@ -12112,7 +12112,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *         item.max_distance = self.max_distance
  *         item.min_along_dim = self.rect.mins[split_dim]             # <<<<<<<<<<<<<<
  *         item.max_along_dim = self.rect.maxes[split_dim]
- *
+ * 
 */
   __pyx_v_item->min_along_dim = (__pyx_v_self->rect->mins[__pyx_v_split_dim]);
 
@@ -12120,14 +12120,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *         item.max_distance = self.max_distance
  *         item.min_along_dim = self.rect.mins[split_dim]
  *         item.max_along_dim = self.rect.maxes[split_dim]             # <<<<<<<<<<<<<<
- *
+ * 
  *         if self.p != infinity:
 */
   __pyx_v_item->max_along_dim = (__pyx_v_self->rect->maxes[__pyx_v_split_dim]);
 
   /* "pyart/map/ckdtree.pyx":727
  *         item.max_along_dim = self.rect.maxes[split_dim]
- *
+ * 
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance -= min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
  *             self.max_distance -= max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
@@ -12136,11 +12136,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":728
- *
+ * 
  *         if self.p != infinity:
  *             self.min_distance -= min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)             # <<<<<<<<<<<<<<
  *             self.max_distance -= max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
- *
+ * 
 */
     __pyx_t_4 = ((PyObject *)__pyx_v_self->rect);
     __Pyx_INCREF(__pyx_t_4);
@@ -12152,7 +12152,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *         if self.p != infinity:
  *             self.min_distance -= min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
  *             self.max_distance -= max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)             # <<<<<<<<<<<<<<
- *
+ * 
  *         if direction == LESS:
 */
     __pyx_t_4 = ((PyObject *)__pyx_v_self->rect);
@@ -12163,7 +12163,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 
     /* "pyart/map/ckdtree.pyx":727
  *         item.max_along_dim = self.rect.maxes[split_dim]
- *
+ * 
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance -= min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
  *             self.max_distance -= max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
@@ -12172,7 +12172,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 
   /* "pyart/map/ckdtree.pyx":731
  *             self.max_distance -= max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
- *
+ * 
  *         if direction == LESS:             # <<<<<<<<<<<<<<
  *             self.rect.maxes[split_dim] = split_val
  *         else:
@@ -12181,7 +12181,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":732
- *
+ * 
  *         if direction == LESS:
  *             self.rect.maxes[split_dim] = split_val             # <<<<<<<<<<<<<<
  *         else:
@@ -12191,7 +12191,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 
     /* "pyart/map/ckdtree.pyx":731
  *             self.max_distance -= max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
- *
+ * 
  *         if direction == LESS:             # <<<<<<<<<<<<<<
  *             self.rect.maxes[split_dim] = split_val
  *         else:
@@ -12203,7 +12203,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *             self.rect.maxes[split_dim] = split_val
  *         else:
  *             self.rect.mins[split_dim] = split_val             # <<<<<<<<<<<<<<
- *
+ * 
  *         if self.p != infinity:
 */
   /*else*/ {
@@ -12213,7 +12213,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 
   /* "pyart/map/ckdtree.pyx":736
  *             self.rect.mins[split_dim] = split_val
- *
+ * 
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance += min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
  *             self.max_distance += max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
@@ -12222,7 +12222,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":737
- *
+ * 
  *         if self.p != infinity:
  *             self.min_distance += min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)             # <<<<<<<<<<<<<<
  *             self.max_distance += max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
@@ -12249,7 +12249,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 
     /* "pyart/map/ckdtree.pyx":736
  *             self.rect.mins[split_dim] = split_val
- *
+ * 
  *         if self.p != infinity:             # <<<<<<<<<<<<<<
  *             self.min_distance += min_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
  *             self.max_distance += max_dist_point_interval_p(self.pt, self.rect, split_dim, self.p)
@@ -12262,7 +12262,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *         else:
  *             self.min_distance = min_dist_point_rect_p_inf(self.pt, self.rect)             # <<<<<<<<<<<<<<
  *             self.max_distance = max_dist_point_rect_p_inf(self.pt, self.rect)
- *
+ * 
 */
   /*else*/ {
     __pyx_t_4 = ((PyObject *)__pyx_v_self->rect);
@@ -12275,7 +12275,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
  *         else:
  *             self.min_distance = min_dist_point_rect_p_inf(self.pt, self.rect)
  *             self.max_distance = max_dist_point_rect_p_inf(self.pt, self.rect)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
     __pyx_t_4 = ((PyObject *)__pyx_v_self->rect);
@@ -12288,17 +12288,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 
   /* "pyart/map/ckdtree.pyx":743
  *             self.max_distance = max_dist_point_rect_p_inf(self.pt, self.rect)
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":710
  *         self._free_stack()
- *
+ * 
  *     cdef int push(self, np.intp_t direction,             # <<<<<<<<<<<<<<
  *                   np.intp_t split_dim,
  *                   np.float64_t split_val) except -1:
@@ -12315,11 +12315,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push(struct _
 }
 
 /* "pyart/map/ckdtree.pyx":746
- *
- *
+ * 
+ * 
  *     cdef inline int push_less_of(self, innernode* node) except -1:             # <<<<<<<<<<<<<<
  *         return self.push(LESS, node.split_dim, node.split)
- *
+ * 
 */
 
 static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push_less_of(struct __pyx_obj_5pyart_3map_7ckdtree_PointRectDistanceTracker *__pyx_v_self, struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_v_node) {
@@ -12330,22 +12330,22 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
   int __pyx_clineno = 0;
 
   /* "pyart/map/ckdtree.pyx":747
- *
+ * 
  *     cdef inline int push_less_of(self, innernode* node) except -1:
  *         return self.push(LESS, node.split_dim, node.split)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_PointRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->push(__pyx_v_self, __pyx_v_5pyart_3map_7ckdtree_LESS, __pyx_v_node->split_dim, __pyx_v_node->split); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 747, __pyx_L1_error)
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":746
- *
- *
+ * 
+ * 
  *     cdef inline int push_less_of(self, innernode* node) except -1:             # <<<<<<<<<<<<<<
  *         return self.push(LESS, node.split_dim, node.split)
- *
+ * 
 */
 
   /* function exit code */
@@ -12357,11 +12357,11 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
 }
 
 /* "pyart/map/ckdtree.pyx":750
- *
- *
+ * 
+ * 
  *     cdef inline int push_greater_of(self, innernode* node) except -1:             # <<<<<<<<<<<<<<
  *         return self.push(GREATER, node.split_dim, node.split)
- *
+ * 
 */
 
 static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push_greater_of(struct __pyx_obj_5pyart_3map_7ckdtree_PointRectDistanceTracker *__pyx_v_self, struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_v_node) {
@@ -12372,22 +12372,22 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
   int __pyx_clineno = 0;
 
   /* "pyart/map/ckdtree.pyx":751
- *
+ * 
  *     cdef inline int push_greater_of(self, innernode* node) except -1:
  *         return self.push(GREATER, node.split_dim, node.split)             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_t_1 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_PointRectDistanceTracker *)__pyx_v_self->__pyx_vtab)->push(__pyx_v_self, __pyx_v_5pyart_3map_7ckdtree_GREATER, __pyx_v_node->split_dim, __pyx_v_node->split); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 751, __pyx_L1_error)
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":750
- *
- *
+ * 
+ * 
  *     cdef inline int push_greater_of(self, innernode* node) except -1:             # <<<<<<<<<<<<<<
  *         return self.push(GREATER, node.split_dim, node.split)
- *
+ * 
 */
 
   /* function exit code */
@@ -12399,8 +12399,8 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
 }
 
 /* "pyart/map/ckdtree.pyx":754
- *
- *
+ * 
+ * 
  *     cdef inline int pop(self) except -1:             # <<<<<<<<<<<<<<
  *         self.stack_size -= 1
  *         assert self.stack_size >= 0
@@ -12417,11 +12417,11 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
   int __pyx_clineno = 0;
 
   /* "pyart/map/ckdtree.pyx":755
- *
+ * 
  *     cdef inline int pop(self) except -1:
  *         self.stack_size -= 1             # <<<<<<<<<<<<<<
  *         assert self.stack_size >= 0
- *
+ * 
 */
   __pyx_v_self->stack_size = (__pyx_v_self->stack_size - 1);
 
@@ -12429,7 +12429,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
  *     cdef inline int pop(self) except -1:
  *         self.stack_size -= 1
  *         assert self.stack_size >= 0             # <<<<<<<<<<<<<<
- *
+ * 
  *         cdef RP_stack_item* item = &self.stack[self.stack_size]
 */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
@@ -12446,7 +12446,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
 
   /* "pyart/map/ckdtree.pyx":758
  *         assert self.stack_size >= 0
- *
+ * 
  *         cdef RP_stack_item* item = &self.stack[self.stack_size]             # <<<<<<<<<<<<<<
  *         self.min_distance = item.min_distance
  *         self.max_distance = item.max_distance
@@ -12454,7 +12454,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
   __pyx_v_item = (&(__pyx_v_self->stack[__pyx_v_self->stack_size]));
 
   /* "pyart/map/ckdtree.pyx":759
- *
+ * 
  *         cdef RP_stack_item* item = &self.stack[self.stack_size]
  *         self.min_distance = item.min_distance             # <<<<<<<<<<<<<<
  *         self.max_distance = item.max_distance
@@ -12478,7 +12478,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
  *         self.max_distance = item.max_distance
  *         self.rect.mins[item.split_dim] = item.min_along_dim             # <<<<<<<<<<<<<<
  *         self.rect.maxes[item.split_dim] = item.max_along_dim
- *
+ * 
 */
   __pyx_t_3 = __pyx_v_item->min_along_dim;
   (__pyx_v_self->rect->mins[__pyx_v_item->split_dim]) = __pyx_t_3;
@@ -12487,7 +12487,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
  *         self.max_distance = item.max_distance
  *         self.rect.mins[item.split_dim] = item.min_along_dim
  *         self.rect.maxes[item.split_dim] = item.max_along_dim             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
   __pyx_t_3 = __pyx_v_item->max_along_dim;
@@ -12495,17 +12495,17 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
 
   /* "pyart/map/ckdtree.pyx":764
  *         self.rect.maxes[item.split_dim] = item.max_along_dim
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  * # Tree structure
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":754
- *
- *
+ * 
+ * 
  *     cdef inline int pop(self) except -1:             # <<<<<<<<<<<<<<
  *         self.stack_size -= 1
  *         assert self.stack_size >= 0
@@ -12526,7 +12526,7 @@ static CYTHON_INLINE int __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_3__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_3__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12534,7 +12534,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_24PointRectDistanceTracker_3__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_3__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_3__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_3__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12607,7 +12607,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_24PointRectDistanceTracker_2__red
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_5__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_5__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12615,7 +12615,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_24PointRectDistanceTracker_5__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_5__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_5__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_24PointRectDistanceTracker_5__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12725,7 +12725,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_24PointRectDistanceTracker_4__set
 
 /* "pyart/map/ckdtree.pyx":846
  *     cdef np.intp_t* raw_indices
- *
+ * 
  *     def __init__(cKDTree self, data, np.intp_t leafsize=10):             # <<<<<<<<<<<<<<
  *         self.data = np.ascontiguousarray(data,dtype=np.float64)
  *         self.n, self.m = np.shape(self.data)
@@ -12840,7 +12840,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "pyart/map/ckdtree.pyx":847
- *
+ * 
  *     def __init__(cKDTree self, data, np.intp_t leafsize=10):
  *         self.data = np.ascontiguousarray(data,dtype=np.float64)             # <<<<<<<<<<<<<<
  *         self.n, self.m = np.shape(self.data)
@@ -13113,7 +13113,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
  *         self.maxes = np.ascontiguousarray(np.amax(self.data,axis=0), dtype=np.float64)
  *         self.mins = np.ascontiguousarray(np.amin(self.data,axis=0), dtype=np.float64)             # <<<<<<<<<<<<<<
  *         self.indices = np.ascontiguousarray(np.arange(self.n,dtype=np.intp))
- *
+ * 
 */
   __pyx_t_3 = NULL;
   __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 853, __pyx_L1_error)
@@ -13193,7 +13193,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
  *         self.maxes = np.ascontiguousarray(np.amax(self.data,axis=0), dtype=np.float64)
  *         self.mins = np.ascontiguousarray(np.amin(self.data,axis=0), dtype=np.float64)
  *         self.indices = np.ascontiguousarray(np.arange(self.n,dtype=np.intp))             # <<<<<<<<<<<<<<
- *
+ * 
  *         self.raw_data = <np.float64_t*>np.PyArray_DATA(self.data)
 */
   __pyx_t_11 = NULL;
@@ -13271,7 +13271,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
 
   /* "pyart/map/ckdtree.pyx":856
  *         self.indices = np.ascontiguousarray(np.arange(self.n,dtype=np.intp))
- *
+ * 
  *         self.raw_data = <np.float64_t*>np.PyArray_DATA(self.data)             # <<<<<<<<<<<<<<
  *         self.raw_maxes = <np.float64_t*>np.PyArray_DATA(self.maxes)
  *         self.raw_mins = <np.float64_t*>np.PyArray_DATA(self.mins)
@@ -13282,7 +13282,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "pyart/map/ckdtree.pyx":857
- *
+ * 
  *         self.raw_data = <np.float64_t*>np.PyArray_DATA(self.data)
  *         self.raw_maxes = <np.float64_t*>np.PyArray_DATA(self.maxes)             # <<<<<<<<<<<<<<
  *         self.raw_mins = <np.float64_t*>np.PyArray_DATA(self.mins)
@@ -13298,7 +13298,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
  *         self.raw_maxes = <np.float64_t*>np.PyArray_DATA(self.maxes)
  *         self.raw_mins = <np.float64_t*>np.PyArray_DATA(self.mins)             # <<<<<<<<<<<<<<
  *         self.raw_indices = <np.intp_t*>np.PyArray_DATA(self.indices)
- *
+ * 
 */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->mins);
   __Pyx_INCREF(__pyx_t_1);
@@ -13309,7 +13309,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
  *         self.raw_maxes = <np.float64_t*>np.PyArray_DATA(self.maxes)
  *         self.raw_mins = <np.float64_t*>np.PyArray_DATA(self.mins)
  *         self.raw_indices = <np.intp_t*>np.PyArray_DATA(self.indices)             # <<<<<<<<<<<<<<
- *
+ * 
  *         self.tree = self.__build(0, self.n, self.raw_maxes, self.raw_mins)
 */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->indices);
@@ -13319,9 +13319,9 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
 
   /* "pyart/map/ckdtree.pyx":861
  *         self.raw_indices = <np.intp_t*>np.PyArray_DATA(self.indices)
- *
+ * 
  *         self.tree = self.__build(0, self.n, self.raw_maxes, self.raw_mins)             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef innernode* __build(cKDTree self, np.intp_t start_idx, np.intp_t end_idx,
 */
   __pyx_t_15 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__build(__pyx_v_self, 0, __pyx_v_self->n, __pyx_v_self->raw_maxes, __pyx_v_self->raw_mins); if (unlikely(__pyx_t_15 == ((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)NULL)) && PyErr_Occurred())) __PYX_ERR(0, 861, __pyx_L1_error)
@@ -13329,7 +13329,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
 
   /* "pyart/map/ckdtree.pyx":846
  *     cdef np.intp_t* raw_indices
- *
+ * 
  *     def __init__(cKDTree self, data, np.intp_t leafsize=10):             # <<<<<<<<<<<<<<
  *         self.data = np.ascontiguousarray(data,dtype=np.float64)
  *         self.n, self.m = np.shape(self.data)
@@ -13357,7 +13357,7 @@ static int __pyx_pf_5pyart_3map_7ckdtree_7cKDTree___init__(struct __pyx_obj_5pya
 
 /* "pyart/map/ckdtree.pyx":863
  *         self.tree = self.__build(0, self.n, self.raw_maxes, self.raw_mins)
- *
+ * 
  *     cdef innernode* __build(cKDTree self, np.intp_t start_idx, np.intp_t end_idx,             # <<<<<<<<<<<<<<
  *                             np.float64_t* maxes, np.float64_t* mins) except? <innernode*> NULL:
  *         cdef leafnode* n
@@ -13663,7 +13663,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 n.start_idx = start_idx
  *                 n.end_idx = end_idx             # <<<<<<<<<<<<<<
  *                 return <innernode*>n
- *
+ * 
 */
       __pyx_v_n->end_idx = __pyx_v_end_idx;
 
@@ -13671,7 +13671,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 n.start_idx = start_idx
  *                 n.end_idx = end_idx
  *                 return <innernode*>n             # <<<<<<<<<<<<<<
- *
+ * 
  *             split = (maxval+minval)/2
 */
       __pyx_r = ((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)__pyx_v_n);
@@ -13688,16 +13688,16 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
     /* "pyart/map/ckdtree.pyx":899
  *                 return <innernode*>n
- *
+ * 
  *             split = (maxval+minval)/2             # <<<<<<<<<<<<<<
- *
+ * 
  *             p = start_idx
 */
     __pyx_v_split = ((__pyx_v_maxval + __pyx_v_minval) / 2.0);
 
     /* "pyart/map/ckdtree.pyx":901
  *             split = (maxval+minval)/2
- *
+ * 
  *             p = start_idx             # <<<<<<<<<<<<<<
  *             q = end_idx-1
  *             while p<=q:
@@ -13705,7 +13705,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
     __pyx_v_p = __pyx_v_start_idx;
 
     /* "pyart/map/ckdtree.pyx":902
- *
+ * 
  *             p = start_idx
  *             q = end_idx-1             # <<<<<<<<<<<<<<
  *             while p<=q:
@@ -13815,7 +13815,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                     self.raw_indices[q] = t
  *                     p+=1             # <<<<<<<<<<<<<<
  *                     q-=1
- *
+ * 
 */
         __pyx_v_p = (__pyx_v_p + 1);
 
@@ -13823,7 +13823,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                     self.raw_indices[q] = t
  *                     p+=1
  *                     q-=1             # <<<<<<<<<<<<<<
- *
+ * 
  *             # slide midpoint if necessary
 */
         __pyx_v_q = (__pyx_v_q - 1);
@@ -13832,7 +13832,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
     }
 
     /* "pyart/map/ckdtree.pyx":916
- *
+ * 
  *             # slide midpoint if necessary
  *             if p==start_idx:             # <<<<<<<<<<<<<<
  *                 # no points less than split
@@ -13955,7 +13955,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
       __pyx_v_q = __pyx_v_start_idx;
 
       /* "pyart/map/ckdtree.pyx":916
- *
+ * 
  *             # slide midpoint if necessary
  *             if p==start_idx:             # <<<<<<<<<<<<<<
  *                 # no points less than split
@@ -14074,7 +14074,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 self.raw_indices[j] = t
  *                 p = end_idx-1             # <<<<<<<<<<<<<<
  *                 q = end_idx-2
- *
+ * 
 */
       __pyx_v_p = (__pyx_v_end_idx - 1);
 
@@ -14082,7 +14082,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 self.raw_indices[j] = t
  *                 p = end_idx-1
  *                 q = end_idx-2             # <<<<<<<<<<<<<<
- *
+ * 
  *             # construct new node representation
 */
       __pyx_v_q = (__pyx_v_end_idx - 2);
@@ -14098,7 +14098,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
     __pyx_L13:;
 
     /* "pyart/map/ckdtree.pyx":944
- *
+ * 
  *             # construct new node representation
  *             ni = <innernode*>stdlib.malloc(sizeof(innernode))             # <<<<<<<<<<<<<<
  *             if ni ==  <innernode*> NULL:
@@ -14111,7 +14111,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             ni = <innernode*>stdlib.malloc(sizeof(innernode))
  *             if ni ==  <innernode*> NULL:             # <<<<<<<<<<<<<<
  *                 raise MemoryError
- *
+ * 
 */
     __pyx_t_1 = (__pyx_v_ni == ((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)NULL));
     if (unlikely(__pyx_t_1)) {
@@ -14120,7 +14120,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             ni = <innernode*>stdlib.malloc(sizeof(innernode))
  *             if ni ==  <innernode*> NULL:
  *                 raise MemoryError             # <<<<<<<<<<<<<<
- *
+ * 
  *             try:
 */
       PyErr_NoMemory(); __PYX_ERR(0, 946, __pyx_L1_error)
@@ -14130,13 +14130,13 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             ni = <innernode*>stdlib.malloc(sizeof(innernode))
  *             if ni ==  <innernode*> NULL:             # <<<<<<<<<<<<<<
  *                 raise MemoryError
- *
+ * 
 */
     }
 
     /* "pyart/map/ckdtree.pyx":948
  *                 raise MemoryError
- *
+ * 
  *             try:             # <<<<<<<<<<<<<<
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)
  *                 if mids == <np.float64_t*> NULL:
@@ -14151,7 +14151,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
       /*try:*/ {
 
         /* "pyart/map/ckdtree.pyx":949
- *
+ * 
  *             try:
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)             # <<<<<<<<<<<<<<
  *                 if mids == <np.float64_t*> NULL:
@@ -14164,7 +14164,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)
  *                 if mids == <np.float64_t*> NULL:             # <<<<<<<<<<<<<<
  *                     raise MemoryError
- *
+ * 
 */
         __pyx_t_1 = (__pyx_v_mids == ((__pyx_t_5numpy_float64_t *)NULL));
         if (unlikely(__pyx_t_1)) {
@@ -14173,7 +14173,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)
  *                 if mids == <np.float64_t*> NULL:
  *                     raise MemoryError             # <<<<<<<<<<<<<<
- *
+ * 
  *                 for i in range(self.m):
 */
           PyErr_NoMemory(); __PYX_ERR(0, 951, __pyx_L21_error)
@@ -14183,13 +14183,13 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)
  *                 if mids == <np.float64_t*> NULL:             # <<<<<<<<<<<<<<
  *                     raise MemoryError
- *
+ * 
 */
         }
 
         /* "pyart/map/ckdtree.pyx":953
  *                     raise MemoryError
- *
+ * 
  *                 for i in range(self.m):             # <<<<<<<<<<<<<<
  *                     mids[i] = maxes[i]
  *                 mids[d] = split
@@ -14200,7 +14200,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
           __pyx_v_i = __pyx_t_4;
 
           /* "pyart/map/ckdtree.pyx":954
- *
+ * 
  *                 for i in range(self.m):
  *                     mids[i] = maxes[i]             # <<<<<<<<<<<<<<
  *                 mids[d] = split
@@ -14214,7 +14214,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                     mids[i] = maxes[i]
  *                 mids[d] = split             # <<<<<<<<<<<<<<
  *                 ni.less = self.__build(start_idx,p,mids,mins)
- *
+ * 
 */
         (__pyx_v_mids[__pyx_v_d]) = __pyx_v_split;
 
@@ -14222,7 +14222,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                     mids[i] = maxes[i]
  *                 mids[d] = split
  *                 ni.less = self.__build(start_idx,p,mids,mins)             # <<<<<<<<<<<<<<
- *
+ * 
  *                 for i in range(self.m):
 */
         __pyx_t_8 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__build(__pyx_v_self, __pyx_v_start_idx, __pyx_v_p, __pyx_v_mids, __pyx_v_mins); if (unlikely(__pyx_t_8 == ((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)NULL)) && PyErr_Occurred())) __PYX_ERR(0, 956, __pyx_L21_error)
@@ -14230,7 +14230,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
         /* "pyart/map/ckdtree.pyx":958
  *                 ni.less = self.__build(start_idx,p,mids,mins)
- *
+ * 
  *                 for i in range(self.m):             # <<<<<<<<<<<<<<
  *                     mids[i] = mins[i]
  *                 mids[d] = split
@@ -14241,7 +14241,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
           __pyx_v_i = __pyx_t_4;
 
           /* "pyart/map/ckdtree.pyx":959
- *
+ * 
  *                 for i in range(self.m):
  *                     mids[i] = mins[i]             # <<<<<<<<<<<<<<
  *                 mids[d] = split
@@ -14255,7 +14255,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                     mids[i] = mins[i]
  *                 mids[d] = split             # <<<<<<<<<<<<<<
  *                 ni.greater = self.__build(p,end_idx,maxes,mids)
- *
+ * 
 */
         (__pyx_v_mids[__pyx_v_d]) = __pyx_v_split;
 
@@ -14263,7 +14263,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *                     mids[i] = mins[i]
  *                 mids[d] = split
  *                 ni.greater = self.__build(p,end_idx,maxes,mids)             # <<<<<<<<<<<<<<
- *
+ * 
  *                 ni.children = ni.less.children + ni.greater.children
 */
         __pyx_t_8 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__build(__pyx_v_self, __pyx_v_p, __pyx_v_end_idx, __pyx_v_maxes, __pyx_v_mids); if (unlikely(__pyx_t_8 == ((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)((struct __pyx_t_5pyart_3map_7ckdtree_innernode *)NULL)) && PyErr_Occurred())) __PYX_ERR(0, 961, __pyx_L21_error)
@@ -14271,16 +14271,16 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
         /* "pyart/map/ckdtree.pyx":963
  *                 ni.greater = self.__build(p,end_idx,maxes,mids)
- *
+ * 
  *                 ni.children = ni.less.children + ni.greater.children             # <<<<<<<<<<<<<<
- *
+ * 
  *             except:
 */
         __pyx_v_ni->children = (__pyx_v_ni->less->children + __pyx_v_ni->greater->children);
 
         /* "pyart/map/ckdtree.pyx":948
  *                 raise MemoryError
- *
+ * 
  *             try:             # <<<<<<<<<<<<<<
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)
  *                 if mids == <np.float64_t*> NULL:
@@ -14292,7 +14292,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             else:
  *                 if mids != <np.float64_t*> NULL:             # <<<<<<<<<<<<<<
  *                     stdlib.free(mids)
- *
+ * 
 */
       /*else:*/ {
         __pyx_t_1 = (__pyx_v_mids != ((__pyx_t_5numpy_float64_t *)NULL));
@@ -14302,7 +14302,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             else:
  *                 if mids != <np.float64_t*> NULL:
  *                     stdlib.free(mids)             # <<<<<<<<<<<<<<
- *
+ * 
  *             ni.split_dim = d
 */
           free(__pyx_v_mids);
@@ -14312,7 +14312,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             else:
  *                 if mids != <np.float64_t*> NULL:             # <<<<<<<<<<<<<<
  *                     stdlib.free(mids)
- *
+ * 
 */
         }
       }
@@ -14324,7 +14324,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
       /* "pyart/map/ckdtree.pyx":965
  *                 ni.children = ni.less.children + ni.greater.children
- *
+ * 
  *             except:             # <<<<<<<<<<<<<<
  *                 # free ni if it cannot be returned
  *                 if ni !=  <innernode*> NULL:
@@ -14403,13 +14403,13 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
         __Pyx_GIVEREF(__pyx_t_10);
         __Pyx_XGIVEREF(__pyx_t_11);
         __Pyx_ErrRestoreWithState(__pyx_t_9, __pyx_t_10, __pyx_t_11);
-        __pyx_t_9 = 0;  __pyx_t_10 = 0;  __pyx_t_11 = 0;
+        __pyx_t_9 = 0;  __pyx_t_10 = 0;  __pyx_t_11 = 0; 
         __PYX_ERR(0, 971, __pyx_L23_except_error)
       }
 
       /* "pyart/map/ckdtree.pyx":948
  *                 raise MemoryError
- *
+ * 
  *             try:             # <<<<<<<<<<<<<<
  *                 mids = <np.float64_t*>stdlib.malloc(sizeof(np.float64_t)*self.m)
  *                 if mids == <np.float64_t*> NULL:
@@ -14425,7 +14425,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
     /* "pyart/map/ckdtree.pyx":976
  *                     stdlib.free(mids)
- *
+ * 
  *             ni.split_dim = d             # <<<<<<<<<<<<<<
  *             ni.split = split
  *             return ni
@@ -14433,11 +14433,11 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
     __pyx_v_ni->split_dim = __pyx_v_d;
 
     /* "pyart/map/ckdtree.pyx":977
- *
+ * 
  *             ni.split_dim = d
  *             ni.split = split             # <<<<<<<<<<<<<<
  *             return ni
- *
+ * 
 */
     __pyx_v_ni->split = __pyx_v_split;
 
@@ -14445,7 +14445,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
  *             ni.split_dim = d
  *             ni.split = split
  *             return ni             # <<<<<<<<<<<<<<
- *
+ * 
  *     cdef __free_tree(cKDTree self, innernode* node):
 */
     __pyx_r = __pyx_v_ni;
@@ -14454,7 +14454,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
   /* "pyart/map/ckdtree.pyx":863
  *         self.tree = self.__build(0, self.n, self.raw_maxes, self.raw_mins)
- *
+ * 
  *     cdef innernode* __build(cKDTree self, np.intp_t start_idx, np.intp_t end_idx,             # <<<<<<<<<<<<<<
  *                             np.float64_t* maxes, np.float64_t* mins) except? <innernode*> NULL:
  *         cdef leafnode* n
@@ -14474,7 +14474,7 @@ static struct __pyx_t_5pyart_3map_7ckdtree_innernode *__pyx_f_5pyart_3map_7ckdtr
 
 /* "pyart/map/ckdtree.pyx":980
  *             return ni
- *
+ * 
  *     cdef __free_tree(cKDTree self, innernode* node):             # <<<<<<<<<<<<<<
  *         if node.split_dim!=-1:
  *             self.__free_tree(node.less)
@@ -14491,7 +14491,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__free_tree(struc
   __Pyx_RefNannySetupContext("_cKDTree__free_tree", 0);
 
   /* "pyart/map/ckdtree.pyx":981
- *
+ * 
  *     cdef __free_tree(cKDTree self, innernode* node):
  *         if node.split_dim!=-1:             # <<<<<<<<<<<<<<
  *             self.__free_tree(node.less)
@@ -14516,14 +14516,14 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__free_tree(struc
  *             self.__free_tree(node.less)
  *             self.__free_tree(node.greater)             # <<<<<<<<<<<<<<
  *         stdlib.free(node)
- *
+ * 
 */
     __pyx_t_2 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__free_tree(__pyx_v_self, __pyx_v_node->greater); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 983, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
     /* "pyart/map/ckdtree.pyx":981
- *
+ * 
  *     cdef __free_tree(cKDTree self, innernode* node):
  *         if node.split_dim!=-1:             # <<<<<<<<<<<<<<
  *             self.__free_tree(node.less)
@@ -14535,14 +14535,14 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__free_tree(struc
  *             self.__free_tree(node.less)
  *             self.__free_tree(node.greater)
  *         stdlib.free(node)             # <<<<<<<<<<<<<<
- *
+ * 
  *     def __dealloc__(cKDTree self):
 */
   free(__pyx_v_node);
 
   /* "pyart/map/ckdtree.pyx":980
  *             return ni
- *
+ * 
  *     cdef __free_tree(cKDTree self, innernode* node):             # <<<<<<<<<<<<<<
  *         if node.split_dim!=-1:
  *             self.__free_tree(node.less)
@@ -14563,7 +14563,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__free_tree(struc
 
 /* "pyart/map/ckdtree.pyx":986
  *         stdlib.free(node)
- *
+ * 
  *     def __dealloc__(cKDTree self):             # <<<<<<<<<<<<<<
  *         if <np.intp_t>(self.tree) == 0:
  *             # should happen only if __init__ was never called
@@ -14592,7 +14592,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_7cKDTree_2__dealloc__(struct __pyx_obj
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
   /* "pyart/map/ckdtree.pyx":987
- *
+ * 
  *     def __dealloc__(cKDTree self):
  *         if <np.intp_t>(self.tree) == 0:             # <<<<<<<<<<<<<<
  *             # should happen only if __init__ was never called
@@ -14606,12 +14606,12 @@ static void __pyx_pf_5pyart_3map_7ckdtree_7cKDTree_2__dealloc__(struct __pyx_obj
  *             # should happen only if __init__ was never called
  *             return             # <<<<<<<<<<<<<<
  *         self.__free_tree(self.tree)
- *
+ * 
 */
     goto __pyx_L0;
 
     /* "pyart/map/ckdtree.pyx":987
- *
+ * 
  *     def __dealloc__(cKDTree self):
  *         if <np.intp_t>(self.tree) == 0:             # <<<<<<<<<<<<<<
  *             # should happen only if __init__ was never called
@@ -14623,7 +14623,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_7cKDTree_2__dealloc__(struct __pyx_obj
  *             # should happen only if __init__ was never called
  *             return
  *         self.__free_tree(self.tree)             # <<<<<<<<<<<<<<
- *
+ * 
  *     # -----
 */
   __pyx_t_2 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__free_tree(__pyx_v_self, __pyx_v_self->tree); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 990, __pyx_L1_error)
@@ -14632,7 +14632,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_7cKDTree_2__dealloc__(struct __pyx_obj
 
   /* "pyart/map/ckdtree.pyx":986
  *         stdlib.free(node)
- *
+ * 
  *     def __dealloc__(cKDTree self):             # <<<<<<<<<<<<<<
  *         if <np.intp_t>(self.tree) == 0:
  *             # should happen only if __init__ was never called
@@ -14649,7 +14649,7 @@ static void __pyx_pf_5pyart_3map_7ckdtree_7cKDTree_2__dealloc__(struct __pyx_obj
 
 /* "pyart/map/ckdtree.pyx":996
  *     # -----
- *
+ * 
  *     cdef int __query(cKDTree self,             # <<<<<<<<<<<<<<
  *             np.float64_t*result_distances,
  *             np.intp_t*result_indices,
@@ -14706,7 +14706,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *         #  distances between the nearest side of the cell and the target
  *         #  the head node of the cell
  *         q = heap(12)             # <<<<<<<<<<<<<<
- *
+ * 
  *         # priority queue for the nearest neighbors
 */
   __pyx_t_2 = NULL;
@@ -14725,7 +14725,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *         # furthest known neighbor first
  *         # entries are (-distance**p, i)
  *         neighbors = heap(k)             # <<<<<<<<<<<<<<
- *
+ * 
  *         inf = inf2 = <nodeinfo*> NULL
 */
   __pyx_t_2 = NULL;
@@ -14745,9 +14745,9 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
   /* "pyart/map/ckdtree.pyx":1036
  *         neighbors = heap(k)
- *
+ * 
  *         inf = inf2 = <nodeinfo*> NULL             # <<<<<<<<<<<<<<
- *
+ * 
  *         try:
 */
   __pyx_v_inf = ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL);
@@ -14755,7 +14755,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
   /* "pyart/map/ckdtree.pyx":1038
  *         inf = inf2 = <nodeinfo*> NULL
- *
+ * 
  *         try:             # <<<<<<<<<<<<<<
  *             # set up first nodeinfo
  *             inf = <nodeinfo*>stdlib.malloc(sizeof(nodeinfo)+self.m*sizeof(np.float64_t))
@@ -14913,7 +14913,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         inf.side_distances[i] = t
  *                 if p!=1 and p!=infinity:             # <<<<<<<<<<<<<<
  *                     inf.side_distances[i]=inf.side_distances[i]**p
- *
+ * 
 */
       __pyx_t_10 = (__pyx_v_p != 1.0);
       if (__pyx_t_10) {
@@ -14930,7 +14930,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         inf.side_distances[i] = t
  *                 if p!=1 and p!=infinity:
  *                     inf.side_distances[i]=inf.side_distances[i]**p             # <<<<<<<<<<<<<<
- *
+ * 
  *             # compute first distance
 */
         (__pyx_v_inf->side_distances[__pyx_v_i]) = pow((__pyx_v_inf->side_distances[__pyx_v_i]), __pyx_v_p);
@@ -14940,13 +14940,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         inf.side_distances[i] = t
  *                 if p!=1 and p!=infinity:             # <<<<<<<<<<<<<<
  *                     inf.side_distances[i]=inf.side_distances[i]**p
- *
+ * 
 */
       }
     }
 
     /* "pyart/map/ckdtree.pyx":1057
- *
+ * 
  *             # compute first distance
  *             min_distance = 0.             # <<<<<<<<<<<<<<
  *             for i in range(self.m):
@@ -15000,7 +15000,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     min_distance = dmax(min_distance,inf.side_distances[i])
  *                 else:
  *                     min_distance += inf.side_distances[i]             # <<<<<<<<<<<<<<
- *
+ * 
  *             # fiddle approximation factor
 */
       /*else*/ {
@@ -15010,7 +15010,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
     }
 
     /* "pyart/map/ckdtree.pyx":1065
- *
+ * 
  *             # fiddle approximation factor
  *             if eps==0:             # <<<<<<<<<<<<<<
  *                 epsfac=1
@@ -15029,7 +15029,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
       __pyx_v_epsfac = 1.0;
 
       /* "pyart/map/ckdtree.pyx":1065
- *
+ * 
  *             # fiddle approximation factor
  *             if eps==0:             # <<<<<<<<<<<<<<
  *                 epsfac=1
@@ -15076,7 +15076,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                 epsfac = 1/(1+eps)
  *             else:
  *                 epsfac = 1/(1+eps)**p             # <<<<<<<<<<<<<<
- *
+ * 
  *             # internally we represent all distances as distance**p
 */
     /*else*/ {
@@ -15090,11 +15090,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
     __pyx_L17:;
 
     /* "pyart/map/ckdtree.pyx":1073
- *
+ * 
  *             # internally we represent all distances as distance**p
  *             if p!=infinity and distance_upper_bound!=infinity:             # <<<<<<<<<<<<<<
  *                 distance_upper_bound = distance_upper_bound**p
- *
+ * 
 */
     __pyx_t_10 = (__pyx_v_p != __pyx_v_5pyart_3map_7ckdtree_infinity);
     if (__pyx_t_10) {
@@ -15111,23 +15111,23 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *             # internally we represent all distances as distance**p
  *             if p!=infinity and distance_upper_bound!=infinity:
  *                 distance_upper_bound = distance_upper_bound**p             # <<<<<<<<<<<<<<
- *
+ * 
  *             while True:
 */
       __pyx_v_distance_upper_bound = pow(__pyx_v_distance_upper_bound, __pyx_v_p);
 
       /* "pyart/map/ckdtree.pyx":1073
- *
+ * 
  *             # internally we represent all distances as distance**p
  *             if p!=infinity and distance_upper_bound!=infinity:             # <<<<<<<<<<<<<<
  *                 distance_upper_bound = distance_upper_bound**p
- *
+ * 
 */
     }
 
     /* "pyart/map/ckdtree.pyx":1076
  *                 distance_upper_bound = distance_upper_bound**p
- *
+ * 
  *             while True:             # <<<<<<<<<<<<<<
  *                 if inf.node.split_dim==-1:
  *                     node = <leafnode*>inf.node
@@ -15135,11 +15135,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
     while (1) {
 
       /* "pyart/map/ckdtree.pyx":1077
- *
+ * 
  *             while True:
  *                 if inf.node.split_dim==-1:             # <<<<<<<<<<<<<<
  *                     node = <leafnode*>inf.node
- *
+ * 
 */
       __pyx_t_5 = (__pyx_v_inf->node->split_dim == -1L);
       if (__pyx_t_5) {
@@ -15148,13 +15148,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *             while True:
  *                 if inf.node.split_dim==-1:
  *                     node = <leafnode*>inf.node             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # brute-force
 */
         __pyx_v_node = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_inf->node);
 
         /* "pyart/map/ckdtree.pyx":1081
- *
+ * 
  *                     # brute-force
  *                     for i in range(node.start_idx,node.end_idx):             # <<<<<<<<<<<<<<
  *                         d = _distance_p(
@@ -15177,7 +15177,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
           /* "pyart/map/ckdtree.pyx":1086
  *                                 x,p,self.m,distance_upper_bound)
- *
+ * 
  *                         if d<distance_upper_bound:             # <<<<<<<<<<<<<<
  *                             # replace furthest neighbor
  *                             if neighbors.n==k:
@@ -15227,7 +15227,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                             neighbor.priority = -d
  *                             neighbor.contents.intdata = self.raw_indices[i]             # <<<<<<<<<<<<<<
  *                             neighbors.push(neighbor)
- *
+ * 
 */
             __pyx_v_neighbor.contents.intdata = (__pyx_v_self->raw_indices[__pyx_v_i]);
 
@@ -15235,17 +15235,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                             neighbor.priority = -d
  *                             neighbor.contents.intdata = self.raw_indices[i]
  *                             neighbors.push(neighbor)             # <<<<<<<<<<<<<<
- *
+ * 
  *                             # adjust upper bound for efficiency
 */
             __pyx_t_12 = __pyx_f_5pyart_3map_7ckdtree_4heap_push(__pyx_v_neighbors, __pyx_v_neighbor); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 1092, __pyx_L4_error)
 
             /* "pyart/map/ckdtree.pyx":1095
- *
+ * 
  *                             # adjust upper bound for efficiency
  *                             if neighbors.n==k:             # <<<<<<<<<<<<<<
  *                                 distance_upper_bound = -neighbors.peek().priority
- *
+ * 
 */
             __pyx_t_5 = (__pyx_v_neighbors->n == __pyx_v_k);
             if (__pyx_t_5) {
@@ -15254,24 +15254,24 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                             # adjust upper bound for efficiency
  *                             if neighbors.n==k:
  *                                 distance_upper_bound = -neighbors.peek().priority             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # done with this node, get another
 */
               __pyx_t_13 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_heap *)__pyx_v_neighbors->__pyx_vtab)->peek(__pyx_v_neighbors); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1096, __pyx_L4_error)
               __pyx_v_distance_upper_bound = (-__pyx_t_13.priority);
 
               /* "pyart/map/ckdtree.pyx":1095
- *
+ * 
  *                             # adjust upper bound for efficiency
  *                             if neighbors.n==k:             # <<<<<<<<<<<<<<
  *                                 distance_upper_bound = -neighbors.peek().priority
- *
+ * 
 */
             }
 
             /* "pyart/map/ckdtree.pyx":1086
  *                                 x,p,self.m,distance_upper_bound)
- *
+ * 
  *                         if d<distance_upper_bound:             # <<<<<<<<<<<<<<
  *                             # replace furthest neighbor
  *                             if neighbors.n==k:
@@ -15280,11 +15280,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
         }
 
         /* "pyart/map/ckdtree.pyx":1099
- *
+ * 
  *                     # done with this node, get another
  *                     stdlib.free(inf)             # <<<<<<<<<<<<<<
  *                     inf = <nodeinfo*> NULL
- *
+ * 
 */
         free(__pyx_v_inf);
 
@@ -15292,14 +15292,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     # done with this node, get another
  *                     stdlib.free(inf)
  *                     inf = <nodeinfo*> NULL             # <<<<<<<<<<<<<<
- *
+ * 
  *                     if q.n==0:
 */
         __pyx_v_inf = ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL);
 
         /* "pyart/map/ckdtree.pyx":1102
  *                     inf = <nodeinfo*> NULL
- *
+ * 
  *                     if q.n==0:             # <<<<<<<<<<<<<<
  *                         # no more nodes to visit
  *                         break
@@ -15318,7 +15318,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
           /* "pyart/map/ckdtree.pyx":1102
  *                     inf = <nodeinfo*> NULL
- *
+ * 
  *                     if q.n==0:             # <<<<<<<<<<<<<<
  *                         # no more nodes to visit
  *                         break
@@ -15356,11 +15356,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
         }
 
         /* "pyart/map/ckdtree.pyx":1077
- *
+ * 
  *             while True:
  *                 if inf.node.split_dim==-1:             # <<<<<<<<<<<<<<
  *                     node = <leafnode*>inf.node
- *
+ * 
 */
         goto __pyx_L23;
       }
@@ -15369,7 +15369,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         min_distance = it.priority
  *                 else:
  *                     inode = <innernode*>inf.node             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # we don't push cells that are too far onto the queue at all,
 */
       /*else*/ {
@@ -15379,18 +15379,18 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     # but since the distance_upper_bound decreases, we might get
  *                     # here even if the cell's too far
  *                     if min_distance>distance_upper_bound*epsfac:             # <<<<<<<<<<<<<<
- *
+ * 
  *                         # since this is the nearest cell, we're done, bail out
 */
         __pyx_t_5 = (__pyx_v_min_distance > (__pyx_v_distance_upper_bound * __pyx_v_epsfac));
         if (__pyx_t_5) {
 
           /* "pyart/map/ckdtree.pyx":1118
- *
+ * 
  *                         # since this is the nearest cell, we're done, bail out
  *                         stdlib.free(inf)             # <<<<<<<<<<<<<<
  *                         inf = <nodeinfo*> NULL
- *
+ * 
 */
           free(__pyx_v_inf);
 
@@ -15398,13 +15398,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         # since this is the nearest cell, we're done, bail out
  *                         stdlib.free(inf)
  *                         inf = <nodeinfo*> NULL             # <<<<<<<<<<<<<<
- *
+ * 
  *                         # free all the nodes still on the heap
 */
           __pyx_v_inf = ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL);
 
           /* "pyart/map/ckdtree.pyx":1122
- *
+ * 
  *                         # free all the nodes still on the heap
  *                         for i in range(q.n):             # <<<<<<<<<<<<<<
  *                             stdlib.free(q.heap[i].contents.ptrdata)
@@ -15429,7 +15429,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                             stdlib.free(q.heap[i].contents.ptrdata)
  *                             q.heap[i].contents.ptrdata = <char*> NULL             # <<<<<<<<<<<<<<
  *                         break
- *
+ * 
 */
             (__pyx_v_q->heap[__pyx_v_i]).contents.ptrdata = ((char *)NULL);
           }
@@ -15438,7 +15438,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                             stdlib.free(q.heap[i].contents.ptrdata)
  *                             q.heap[i].contents.ptrdata = <char*> NULL
  *                         break             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # set up children for searching
 */
           goto __pyx_L22_break;
@@ -15447,13 +15447,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     # but since the distance_upper_bound decreases, we might get
  *                     # here even if the cell's too far
  *                     if min_distance>distance_upper_bound*epsfac:             # <<<<<<<<<<<<<<
- *
+ * 
  *                         # since this is the nearest cell, we're done, bail out
 */
         }
 
         /* "pyart/map/ckdtree.pyx":1128
- *
+ * 
  *                     # set up children for searching
  *                     if x[inode.split_dim]<inode.split:             # <<<<<<<<<<<<<<
  *                         near = inode.less
@@ -15483,7 +15483,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
           __pyx_v_far = __pyx_t_6;
 
           /* "pyart/map/ckdtree.pyx":1128
- *
+ * 
  *                     # set up children for searching
  *                     if x[inode.split_dim]<inode.split:             # <<<<<<<<<<<<<<
  *                         near = inode.less
@@ -15497,7 +15497,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     else:
  *                         near = inode.greater             # <<<<<<<<<<<<<<
  *                         far = inode.less
- *
+ * 
 */
         /*else*/ {
           __pyx_t_6 = __pyx_v_inode->greater;
@@ -15507,7 +15507,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     else:
  *                         near = inode.greater
  *                         far = inode.less             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # near child is at the same distance as the current node
 */
           __pyx_t_6 = __pyx_v_inode->less;
@@ -15519,7 +15519,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     # we're going here next, so no point pushing it on the queue
  *                     # no need to recompute the distance or the side_distances
  *                     inf.node = near             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # far child is further by an amount depending only
 */
         __pyx_v_inf->node = __pyx_v_near;
@@ -15538,7 +15538,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     inf2 = <nodeinfo*>stdlib.malloc(sizeof(nodeinfo)+self.m*sizeof(np.float64_t))
  *                     if inf2 == <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                         raise MemoryError
- *
+ * 
 */
         __pyx_t_5 = (__pyx_v_inf2 == ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL));
         if (unlikely(__pyx_t_5)) {
@@ -15547,7 +15547,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     inf2 = <nodeinfo*>stdlib.malloc(sizeof(nodeinfo)+self.m*sizeof(np.float64_t))
  *                     if inf2 == <nodeinfo*> NULL:
  *                         raise MemoryError             # <<<<<<<<<<<<<<
- *
+ * 
  *                     it2.contents.ptrdata = <char*> inf2
 */
           PyErr_NoMemory(); __PYX_ERR(0, 1145, __pyx_L4_error)
@@ -15557,13 +15557,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     inf2 = <nodeinfo*>stdlib.malloc(sizeof(nodeinfo)+self.m*sizeof(np.float64_t))
  *                     if inf2 == <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                         raise MemoryError
- *
+ * 
 */
         }
 
         /* "pyart/map/ckdtree.pyx":1147
  *                         raise MemoryError
- *
+ * 
  *                     it2.contents.ptrdata = <char*> inf2             # <<<<<<<<<<<<<<
  *                     inf2.node = far
  *                     # most side distances unchanged
@@ -15571,7 +15571,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
         __pyx_v_it2.contents.ptrdata = ((char *)__pyx_v_inf2);
 
         /* "pyart/map/ckdtree.pyx":1148
- *
+ * 
  *                     it2.contents.ptrdata = <char*> inf2
  *                     inf2.node = far             # <<<<<<<<<<<<<<
  *                     # most side distances unchanged
@@ -15584,7 +15584,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     # most side distances unchanged
  *                     for i in range(self.m):             # <<<<<<<<<<<<<<
  *                         inf2.side_distances[i] = inf.side_distances[i]
- *
+ * 
 */
         __pyx_t_7 = __pyx_v_self->m;
         __pyx_t_8 = __pyx_t_7;
@@ -15595,7 +15595,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     # most side distances unchanged
  *                     for i in range(self.m):
  *                         inf2.side_distances[i] = inf.side_distances[i]             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # one side distance changes
 */
           (__pyx_v_inf2->side_distances[__pyx_v_i]) = (__pyx_v_inf->side_distances[__pyx_v_i]);
@@ -15703,7 +15703,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         far_min_distance = min_distance - \
  *                             inf.side_distances[inode.split_dim] + \             # <<<<<<<<<<<<<<
  *                             inf2.side_distances[inode.split_dim]
- *
+ * 
 */
           __pyx_v_far_min_distance = ((__pyx_v_min_distance - (__pyx_v_inf->side_distances[__pyx_v_inode->split_dim])) + (__pyx_v_inf2->side_distances[__pyx_v_inode->split_dim]));
         }
@@ -15711,15 +15711,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
         /* "pyart/map/ckdtree.pyx":1171
  *                             inf2.side_distances[inode.split_dim]
- *
+ * 
  *                     it2.priority = far_min_distance             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
         __pyx_v_it2.priority = __pyx_v_far_min_distance;
 
         /* "pyart/map/ckdtree.pyx":1175
- *
+ * 
  *                     # far child might be too far, if so, don't bother pushing it
  *                     if far_min_distance<=distance_upper_bound*epsfac:             # <<<<<<<<<<<<<<
  *                         q.push(it2)
@@ -15738,7 +15738,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
           __pyx_t_12 = __pyx_f_5pyart_3map_7ckdtree_4heap_push(__pyx_v_q, __pyx_v_it2); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 1176, __pyx_L4_error)
 
           /* "pyart/map/ckdtree.pyx":1175
- *
+ * 
  *                     # far child might be too far, if so, don't bother pushing it
  *                     if far_min_distance<=distance_upper_bound*epsfac:             # <<<<<<<<<<<<<<
  *                         q.push(it2)
@@ -15770,7 +15770,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                         inf2 = <nodeinfo*> NULL
  *                         # just in case
  *                         it2.contents.ptrdata = <char*> NULL             # <<<<<<<<<<<<<<
- *
+ * 
  *             # fill output arrays with sorted neighbors
 */
           __pyx_v_it2.contents.ptrdata = ((char *)NULL);
@@ -15782,7 +15782,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
     __pyx_L22_break:;
 
     /* "pyart/map/ckdtree.pyx":1184
- *
+ * 
  *             # fill output arrays with sorted neighbors
  *             for i in range(neighbors.n-1,-1,-1):             # <<<<<<<<<<<<<<
  *                 neighbors.pop(&neighbor)
@@ -15851,7 +15851,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *                     result_distances[i] = -neighbor.priority
  *                 else:
  *                     result_distances[i] = (-neighbor.priority)**(1./p)             # <<<<<<<<<<<<<<
- *
+ * 
  *             inf = inf2 = <nodeinfo*> NULL
 */
       /*else*/ {
@@ -15866,9 +15866,9 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
     /* "pyart/map/ckdtree.pyx":1192
  *                     result_distances[i] = (-neighbor.priority)**(1./p)
- *
+ * 
  *             inf = inf2 = <nodeinfo*> NULL             # <<<<<<<<<<<<<<
- *
+ * 
  *         finally:
 */
     __pyx_v_inf = ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL);
@@ -15876,11 +15876,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
   }
 
   /* "pyart/map/ckdtree.pyx":1195
- *
+ * 
  *         finally:
  *             if inf2 != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf2)
- *
+ * 
 */
   /*finally:*/ {
     /*normal exit:*/{
@@ -15891,45 +15891,45 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *         finally:
  *             if inf2 != <nodeinfo*> NULL:
  *                 stdlib.free(inf2)             # <<<<<<<<<<<<<<
- *
+ * 
  *             if inf != <nodeinfo*> NULL:
 */
         free(__pyx_v_inf2);
 
         /* "pyart/map/ckdtree.pyx":1195
- *
+ * 
  *         finally:
  *             if inf2 != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf2)
- *
+ * 
 */
       }
 
       /* "pyart/map/ckdtree.pyx":1198
  *                 stdlib.free(inf2)
- *
+ * 
  *             if inf != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf)
- *
+ * 
 */
       __pyx_t_5 = (__pyx_v_inf != ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL));
       if (__pyx_t_5) {
 
         /* "pyart/map/ckdtree.pyx":1199
- *
+ * 
  *             if inf != <nodeinfo*> NULL:
  *                 stdlib.free(inf)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
         free(__pyx_v_inf);
 
         /* "pyart/map/ckdtree.pyx":1198
  *                 stdlib.free(inf2)
- *
+ * 
  *             if inf != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf)
- *
+ * 
 */
       }
       goto __pyx_L5;
@@ -15954,11 +15954,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
       {
 
         /* "pyart/map/ckdtree.pyx":1195
- *
+ * 
  *         finally:
  *             if inf2 != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf2)
- *
+ * 
 */
         __pyx_t_5 = (__pyx_v_inf2 != ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL));
         if (__pyx_t_5) {
@@ -15967,45 +15967,45 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
  *         finally:
  *             if inf2 != <nodeinfo*> NULL:
  *                 stdlib.free(inf2)             # <<<<<<<<<<<<<<
- *
+ * 
  *             if inf != <nodeinfo*> NULL:
 */
           free(__pyx_v_inf2);
 
           /* "pyart/map/ckdtree.pyx":1195
- *
+ * 
  *         finally:
  *             if inf2 != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf2)
- *
+ * 
 */
         }
 
         /* "pyart/map/ckdtree.pyx":1198
  *                 stdlib.free(inf2)
- *
+ * 
  *             if inf != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf)
- *
+ * 
 */
         __pyx_t_5 = (__pyx_v_inf != ((struct __pyx_t_5pyart_3map_7ckdtree_nodeinfo *)NULL));
         if (__pyx_t_5) {
 
           /* "pyart/map/ckdtree.pyx":1199
- *
+ * 
  *             if inf != <nodeinfo*> NULL:
  *                 stdlib.free(inf)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
           free(__pyx_v_inf);
 
           /* "pyart/map/ckdtree.pyx":1198
  *                 stdlib.free(inf2)
- *
+ * 
  *             if inf != <nodeinfo*> NULL:             # <<<<<<<<<<<<<<
  *                 stdlib.free(inf)
- *
+ * 
 */
         }
       }
@@ -16026,17 +16026,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 
   /* "pyart/map/ckdtree.pyx":1201
  *                 stdlib.free(inf)
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":996
  *     # -----
- *
+ * 
  *     cdef int __query(cKDTree self,             # <<<<<<<<<<<<<<
  *             np.float64_t*result_distances,
  *             np.intp_t*result_indices,
@@ -16057,15 +16057,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query(struct __pyx_ob
 }
 
 /* "pyart/map/ckdtree.pyx":1204
- *
- *
+ * 
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def query(cKDTree self, object x, np.intp_t k=1, np.float64_t eps=0,
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_5query(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_5query(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16074,7 +16074,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 PyDoc_STRVAR(__pyx_doc_5pyart_3map_7ckdtree_7cKDTree_4query, "query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf)\n\n        Query the kd-tree for nearest neighbors\n\n        Parameters\n        ----------\n        x : array_like, last dimension self.m\n            An array of points to query.\n        k : integer\n            The number of nearest neighbors to return.\n        eps : non-negative float\n            Return approximate nearest neighbors; the kth returned value\n            is guaranteed to be no further than (1+eps) times the\n            distance to the real k-th nearest neighbor.\n        p : float, 1<=p<=infinity\n            Which Minkowski p-norm to use.\n            1 is the sum-of-absolute-values \"Manhattan\" distance\n            2 is the usual Euclidean distance\n            infinity is the maximum-coordinate-difference distance\n        distance_upper_bound : nonnegative float\n            Return only neighbors within this distance.  This is used to prune\n            tree searches, so if you are doing a series of nearest-neighbor\n            queries, it may help to supply the distance to the nearest neighbor\n            of the most recent point.\n\n        Returns\n        -------\n        d : array of floats\n            The distances to the nearest neighbors.\n            If x has shape tuple+(self.m,), then d has shape tuple+(k,).\n            Missing neighbors are indicated with infinite distances.\n        i : ndarray of ints\n            The locations of the neighbors in self.data.\n            If `x` has shape tuple+(self.m,), then `i` has shape tuple+(k,).\n            Missing neighbors are indicated with self.n.\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_5query = {"query", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_5query, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_7ckdtree_7cKDTree_4query};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_5query(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_5query(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17001,7 +17001,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
  *         for c in range(n):
  *             self.__query(&dd[c, 0], &ii[c, 0], &xx[c, 0],             # <<<<<<<<<<<<<<
  *                          k, eps, p, distance_upper_bound)
- *
+ * 
 */
     __pyx_t_19 = __pyx_v_c;
     __pyx_t_20 = 0;
@@ -17014,7 +17014,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
  *         for c in range(n):
  *             self.__query(&dd[c, 0], &ii[c, 0], &xx[c, 0],
  *                          k, eps, p, distance_upper_bound)             # <<<<<<<<<<<<<<
- *
+ * 
  *         if single:
 */
     __pyx_t_13 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query(__pyx_v_self, (&(*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_dd.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_dd.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_dd.diminfo[1].strides))), (&(*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_intp_t *, __pyx_pybuffernd_ii.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_ii.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_ii.diminfo[1].strides))), (&(*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_24, __pyx_pybuffernd_xx.diminfo[1].strides))), __pyx_v_k, __pyx_v_eps, __pyx_v_p, __pyx_v_distance_upper_bound); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 1271, __pyx_L1_error)
@@ -17022,7 +17022,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
 
   /* "pyart/map/ckdtree.pyx":1274
  *                          k, eps, p, distance_upper_bound)
- *
+ * 
  *         if single:             # <<<<<<<<<<<<<<
  *             if k==1:
  *                 if sizeof(long) < sizeof(np.intp_t):
@@ -17030,7 +17030,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
   if (__pyx_v_single) {
 
     /* "pyart/map/ckdtree.pyx":1275
- *
+ * 
  *         if single:
  *             if k==1:             # <<<<<<<<<<<<<<
  *                 if sizeof(long) < sizeof(np.intp_t):
@@ -17178,7 +17178,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
       }
 
       /* "pyart/map/ckdtree.pyx":1275
- *
+ * 
  *         if single:
  *             if k==1:             # <<<<<<<<<<<<<<
  *                 if sizeof(long) < sizeof(np.intp_t):
@@ -17214,7 +17214,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
 
     /* "pyart/map/ckdtree.pyx":1274
  *                          k, eps, p, distance_upper_bound)
- *
+ * 
  *         if single:             # <<<<<<<<<<<<<<
  *             if k==1:
  *                 if sizeof(long) < sizeof(np.intp_t):
@@ -17369,7 +17369,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
  *                                 return np.reshape(dd[...,0],retshape), np.reshape(ii[...,0],retshape)
  *                             else:
  *                                 return np.reshape(dd,retshape+(k,)), np.reshape(ii,retshape+(k,))             # <<<<<<<<<<<<<<
- *
+ * 
  *                 # no C long overlow, return array of dtype=int
 */
             /*else*/ {
@@ -17473,7 +17473,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
       }
 
       /* "pyart/map/ckdtree.pyx":1300
- *
+ * 
  *                 # no C long overlow, return array of dtype=int
  *                 if k==1:             # <<<<<<<<<<<<<<
  *                     return np.reshape(dd[...,0],retshape), np.reshape(ii[...,0],retshape).astype(int)
@@ -17572,7 +17572,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
         goto __pyx_L0;
 
         /* "pyart/map/ckdtree.pyx":1300
- *
+ * 
  *                 # no C long overlow, return array of dtype=int
  *                 if k==1:             # <<<<<<<<<<<<<<
  *                     return np.reshape(dd[...,0],retshape), np.reshape(ii[...,0],retshape).astype(int)
@@ -17584,7 +17584,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
  *                     return np.reshape(dd[...,0],retshape), np.reshape(ii[...,0],retshape).astype(int)
  *                 else:
  *                     return np.reshape(dd,retshape+(k,)), np.reshape(ii,retshape+(k,)).astype(int)             # <<<<<<<<<<<<<<
- *
+ * 
  *             else:
 */
       /*else*/ {
@@ -17798,7 +17798,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
  *                     return np.reshape(dd[...,0],retshape), np.reshape(ii[...,0],retshape)
  *                 else:
  *                     return np.reshape(dd,retshape+(k,)), np.reshape(ii,retshape+(k,))             # <<<<<<<<<<<<<<
- *
+ * 
  *     # ----------------
 */
       /*else*/ {
@@ -17893,8 +17893,8 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4query(struct __pyx_obj_
   }
 
   /* "pyart/map/ckdtree.pyx":1204
- *
- *
+ * 
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def query(cKDTree self, object x, np.intp_t k=1, np.float64_t eps=0,
@@ -17960,7 +17960,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 
   /* "pyart/map/ckdtree.pyx":1321
  *         cdef np.intp_t i
- *
+ * 
  *         if node.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *             lnode = <leafnode*> node
  *             for i in range(lnode.start_idx, lnode.end_idx):
@@ -17969,7 +17969,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1322
- *
+ * 
  *         if node.split_dim == -1:  # leaf node
  *             lnode = <leafnode*> node             # <<<<<<<<<<<<<<
  *             for i in range(lnode.start_idx, lnode.end_idx):
@@ -18001,7 +18001,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 
     /* "pyart/map/ckdtree.pyx":1321
  *         cdef np.intp_t i
- *
+ * 
  *         if node.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *             lnode = <leafnode*> node
  *             for i in range(lnode.start_idx, lnode.end_idx):
@@ -18014,7 +18014,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
  *         else:
  *             self.__query_ball_point_traverse_no_checking(results, node.less)             # <<<<<<<<<<<<<<
  *             self.__query_ball_point_traverse_no_checking(results, node.greater)
- *
+ * 
 */
   /*else*/ {
     __pyx_t_5 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_point_traverse_no_checking(__pyx_v_self, __pyx_v_results, __pyx_v_node->less); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 1326, __pyx_L1_error)
@@ -18023,7 +18023,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
  *         else:
  *             self.__query_ball_point_traverse_no_checking(results, node.less)
  *             self.__query_ball_point_traverse_no_checking(results, node.greater)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
     __pyx_t_5 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_point_traverse_no_checking(__pyx_v_self, __pyx_v_results, __pyx_v_node->greater); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 1327, __pyx_L1_error)
@@ -18032,10 +18032,10 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 
   /* "pyart/map/ckdtree.pyx":1329
  *             self.__query_ball_point_traverse_no_checking(results, node.greater)
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
@@ -18057,8 +18057,8 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 }
 
 /* "pyart/map/ckdtree.pyx":1332
- *
- *
+ * 
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int __query_ball_point_traverse_checking(cKDTree self,
  *                                                   list results,
@@ -18081,7 +18081,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 
   /* "pyart/map/ckdtree.pyx":1341
  *         cdef np.intp_t i
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -18090,7 +18090,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1342
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:
  *             return 0             # <<<<<<<<<<<<<<
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -18101,7 +18101,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 
     /* "pyart/map/ckdtree.pyx":1341
  *         cdef np.intp_t i
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -18240,14 +18240,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
  *             self.__query_ball_point_traverse_checking(
  *                 results, node.less, tracker)
  *             tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *             tracker.push_greater_of(node)
 */
     __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1358, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":1360
  *             tracker.pop()
- *
+ * 
  *             tracker.push_greater_of(node)             # <<<<<<<<<<<<<<
  *             self.__query_ball_point_traverse_checking(
  *                 results, node.greater, tracker)
@@ -18255,7 +18255,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
     __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_push_greater_of(__pyx_v_tracker, __pyx_v_node); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1360, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":1361
- *
+ * 
  *             tracker.push_greater_of(node)
  *             self.__query_ball_point_traverse_checking(             # <<<<<<<<<<<<<<
  *                 results, node.greater, tracker)
@@ -18267,7 +18267,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
  *             self.__query_ball_point_traverse_checking(
  *                 results, node.greater, tracker)
  *             tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
     __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_24PointRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1363, __pyx_L1_error)
@@ -18276,17 +18276,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 
   /* "pyart/map/ckdtree.pyx":1365
  *             tracker.pop()
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":1332
- *
- *
+ * 
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int __query_ball_point_traverse_checking(cKDTree self,
  *                                                   list results,
@@ -18301,8 +18301,8 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_point_trav
 }
 
 /* "pyart/map/ckdtree.pyx":1368
- *
- *
+ * 
+ * 
  *     cdef list __query_ball_point(cKDTree self,             # <<<<<<<<<<<<<<
  *                                  np.float64_t* x,
  *                                  np.float64_t r,
@@ -18324,7 +18324,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
 
   /* "pyart/map/ckdtree.pyx":1374
  *                                  np.float64_t eps):
- *
+ * 
  *         tracker = PointRectDistanceTracker()             # <<<<<<<<<<<<<<
  *         tracker.init(x, Rectangle(self.mins, self.maxes),
  *                      p, eps, r)
@@ -18342,11 +18342,11 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
   __pyx_t_1 = 0;
 
   /* "pyart/map/ckdtree.pyx":1375
- *
+ * 
  *         tracker = PointRectDistanceTracker()
  *         tracker.init(x, Rectangle(self.mins, self.maxes),             # <<<<<<<<<<<<<<
  *                      p, eps, r)
- *
+ * 
 */
   __pyx_t_2 = NULL;
   __pyx_t_3 = 1;
@@ -18362,7 +18362,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
  *         tracker = PointRectDistanceTracker()
  *         tracker.init(x, Rectangle(self.mins, self.maxes),
  *                      p, eps, r)             # <<<<<<<<<<<<<<
- *
+ * 
  *         results = []
 */
   __pyx_t_2 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_PointRectDistanceTracker *)__pyx_v_tracker->__pyx_vtab)->init(__pyx_v_tracker, __pyx_v_x, ((struct __pyx_obj_5pyart_3map_7ckdtree_Rectangle *)__pyx_t_1), __pyx_v_p, __pyx_v_eps, __pyx_v_r); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1375, __pyx_L1_error)
@@ -18372,7 +18372,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
 
   /* "pyart/map/ckdtree.pyx":1378
  *                      p, eps, r)
- *
+ * 
  *         results = []             # <<<<<<<<<<<<<<
  *         self.__query_ball_point_traverse_checking(
  *             results, self.tree, tracker)
@@ -18383,7 +18383,7 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
   __pyx_t_2 = 0;
 
   /* "pyart/map/ckdtree.pyx":1379
- *
+ * 
  *         results = []
  *         self.__query_ball_point_traverse_checking(             # <<<<<<<<<<<<<<
  *             results, self.tree, tracker)
@@ -18395,8 +18395,8 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
  *         self.__query_ball_point_traverse_checking(
  *             results, self.tree, tracker)
  *         return results             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_results);
@@ -18404,8 +18404,8 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":1368
- *
- *
+ * 
+ * 
  *     cdef list __query_ball_point(cKDTree self,             # <<<<<<<<<<<<<<
  *                                  np.float64_t* x,
  *                                  np.float64_t r,
@@ -18426,15 +18426,15 @@ static PyObject *__pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_poin
 }
 
 /* "pyart/map/ckdtree.pyx":1384
- *
- *
+ * 
+ * 
  *     def query_ball_point(cKDTree self, object x, np.float64_t r,             # <<<<<<<<<<<<<<
  *                          np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_point(self, x, r, p, eps)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_7query_ball_point(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_7query_ball_point(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18443,7 +18443,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 PyDoc_STRVAR(__pyx_doc_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point, "query_ball_point(self, x, r, p, eps)\n\n        Find all points within distance r of point(s) x.\n\n        Parameters\n        ----------\n        x : array_like, shape tuple + (self.m,)\n            The point or points to search for neighbors of.\n        r : positive float\n            The radius of points to return.\n        p : float, optional\n            Which Minkowski p-norm to use.  Should be in the range [1, inf].\n        eps : nonnegative float, optional\n            Approximate search. Branches of the tree are not explored if their\n            nearest points are further than ``r / (1 + eps)``, and branches are\n            added in bulk if their furthest points are nearer than\n            ``r * (1 + eps)``.\n\n        Returns\n        -------\n        results : list or array of lists\n            If `x` is a single point, returns a list of the indices of the\n            neighbors of `x`. If `x` is an array of points, returns an object\n            array of shape tuple containing lists of neighbors.\n\n        Notes\n        -----\n        If you have many points whose neighbors you want to find, you may save\n        substantial amounts of time by putting them in a cKDTree and using\n        query_ball_tree.\n\n        Examples\n        --------\n        >>> from scipy import spatial\n        >>> x, y = np.mgrid[0:4, 0:4]\n        >>> points = zip(x.ravel(), y.ravel())\n        >>> tree = spatial.cKDTree(points)\n        >>> tree.query_ball_point([2, 0], 1)\n        [4, 8, 9, 12]\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_7query_ball_point = {"query_ball_point", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_7query_ball_point, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_7query_ball_point(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_7query_ball_point(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18596,7 +18596,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point(struct
 
   /* "pyart/map/ckdtree.pyx":1429
  *         cdef np.ndarray[np.float64_t, ndim=1, mode="c"] xx
- *
+ * 
  *         x = np.asarray(x).astype(np.float64)             # <<<<<<<<<<<<<<
  *         if x.shape[-1] != self.m:
  *             raise ValueError("Searching for a %d-dimensional point in a " \
@@ -18648,7 +18648,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point(struct
   __pyx_t_1 = 0;
 
   /* "pyart/map/ckdtree.pyx":1430
- *
+ * 
  *         x = np.asarray(x).astype(np.float64)
  *         if x.shape[-1] != self.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Searching for a %d-dimensional point in a " \
@@ -18735,7 +18735,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point(struct
     __PYX_ERR(0, 1431, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":1430
- *
+ * 
  *         x = np.asarray(x).astype(np.float64)
  *         if x.shape[-1] != self.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Searching for a %d-dimensional point in a " \
@@ -19074,7 +19074,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point(struct
  *                 xx = np.ascontiguousarray(x[c], dtype=np.float64)
  *                 result[c] = self.__query_ball_point(&xx[0], r, p, eps)             # <<<<<<<<<<<<<<
  *             return result
- *
+ * 
 */
       __pyx_t_15 = 0;
       __pyx_t_11 = -1;
@@ -19105,7 +19105,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point(struct
  *                 xx = np.ascontiguousarray(x[c], dtype=np.float64)
  *                 result[c] = self.__query_ball_point(&xx[0], r, p, eps)
  *             return result             # <<<<<<<<<<<<<<
- *
+ * 
  *     # ---------------
 */
     __Pyx_XDECREF(__pyx_r);
@@ -19115,8 +19115,8 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_6query_ball_point(struct
   }
 
   /* "pyart/map/ckdtree.pyx":1384
- *
- *
+ * 
+ * 
  *     def query_ball_point(cKDTree self, object x, np.float64_t r,             # <<<<<<<<<<<<<<
  *                          np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_point(self, x, r, p, eps)
@@ -19185,45 +19185,45 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
   /* "pyart/map/ckdtree.pyx":1457
  *         cdef np.intp_t i, j
- *
+ * 
  *         if node1.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_node1->split_dim == -1L);
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1458
- *
+ * 
  *         if node1.split_dim == -1:  # leaf node
  *             lnode1 = <leafnode*>node1             # <<<<<<<<<<<<<<
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node
 */
     __pyx_v_lnode1 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node1);
 
     /* "pyart/map/ckdtree.pyx":1460
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
     __pyx_t_1 = (__pyx_v_node2->split_dim == -1L);
     if (__pyx_t_1) {
 
       /* "pyart/map/ckdtree.pyx":1461
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node
  *                 lnode2 = <leafnode*>node2             # <<<<<<<<<<<<<<
- *
+ * 
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):
 */
       __pyx_v_lnode2 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node2);
 
       /* "pyart/map/ckdtree.pyx":1463
  *                 lnode2 = <leafnode*>node2
- *
+ * 
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):             # <<<<<<<<<<<<<<
  *                     results_i = results[self.raw_indices[i]]
  *                     for j in range(lnode2.start_idx, lnode2.end_idx):
@@ -19234,7 +19234,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
         __pyx_v_i = __pyx_t_4;
 
         /* "pyart/map/ckdtree.pyx":1464
- *
+ * 
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):
  *                     results_i = results[self.raw_indices[i]]             # <<<<<<<<<<<<<<
  *                     for j in range(lnode2.start_idx, lnode2.end_idx):
@@ -19267,7 +19267,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                     for j in range(lnode2.start_idx, lnode2.end_idx):
  *                         list_append(results_i, other.raw_indices[j])             # <<<<<<<<<<<<<<
  *             else:
- *
+ * 
 */
           __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_list_append(__pyx_v_results_i, (__pyx_v_other->raw_indices[__pyx_v_j])); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 1466, __pyx_L1_error)
         }
@@ -19275,17 +19275,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
       /* "pyart/map/ckdtree.pyx":1460
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
       goto __pyx_L4;
     }
 
     /* "pyart/map/ckdtree.pyx":1469
  *             else:
- *
+ * 
  *                 self.__query_ball_tree_traverse_no_checking(other, results, node1, node2.less)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_no_checking(other, results, node1, node2.greater)
  *         else:
@@ -19294,11 +19294,11 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_9 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_tree_traverse_no_checking(__pyx_v_self, __pyx_v_other, __pyx_v_results, __pyx_v_node1, __pyx_v_node2->less); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 1469, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1470
- *
+ * 
  *                 self.__query_ball_tree_traverse_no_checking(other, results, node1, node2.less)
  *                 self.__query_ball_tree_traverse_no_checking(other, results, node1, node2.greater)             # <<<<<<<<<<<<<<
  *         else:
- *
+ * 
 */
       __pyx_t_9 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_tree_traverse_no_checking(__pyx_v_self, __pyx_v_other, __pyx_v_results, __pyx_v_node1, __pyx_v_node2->greater); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 1470, __pyx_L1_error)
     }
@@ -19306,29 +19306,29 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
     /* "pyart/map/ckdtree.pyx":1457
  *         cdef np.intp_t i, j
- *
+ * 
  *         if node1.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
     goto __pyx_L3;
   }
 
   /* "pyart/map/ckdtree.pyx":1473
  *         else:
- *
+ * 
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1.less, node2)             # <<<<<<<<<<<<<<
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1.greater, node2)
- *
+ * 
 */
   /*else*/ {
     __pyx_t_9 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_tree_traverse_no_checking(__pyx_v_self, __pyx_v_other, __pyx_v_results, __pyx_v_node1->less, __pyx_v_node2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 1473, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":1474
- *
+ * 
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1.less, node2)
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1.greater, node2)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
     __pyx_t_9 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_tree_traverse_no_checking(__pyx_v_self, __pyx_v_other, __pyx_v_results, __pyx_v_node1->greater, __pyx_v_node2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 1474, __pyx_L1_error)
@@ -19337,10 +19337,10 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
   /* "pyart/map/ckdtree.pyx":1476
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1.greater, node2)
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
@@ -19365,8 +19365,8 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 }
 
 /* "pyart/map/ckdtree.pyx":1479
- *
- *
+ * 
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int __query_ball_tree_traverse_checking(cKDTree self,
  *                                                  cKDTree other,
@@ -19398,7 +19398,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
   /* "pyart/map/ckdtree.pyx":1492
  *         cdef np.intp_t i, j
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -19407,7 +19407,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1493
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:
  *             return 0             # <<<<<<<<<<<<<<
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -19418,7 +19418,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
     /* "pyart/map/ckdtree.pyx":1492
  *         cdef np.intp_t i, j
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -19459,7 +19459,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1, node2)
  *         elif node1.split_dim == -1:  # 1 is leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_node1->split_dim == -1L);
   if (__pyx_t_1) {
@@ -19468,32 +19468,32 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1, node2)
  *         elif node1.split_dim == -1:  # 1 is leaf node
  *             lnode1 = <leafnode*>node1             # <<<<<<<<<<<<<<
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves
 */
     __pyx_v_lnode1 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node1);
 
     /* "pyart/map/ckdtree.pyx":1499
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
     __pyx_t_1 = (__pyx_v_node2->split_dim == -1L);
     if (__pyx_t_1) {
 
       /* "pyart/map/ckdtree.pyx":1500
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves
  *                 lnode2 = <leafnode*>node2             # <<<<<<<<<<<<<<
- *
+ * 
  *                 # brute-force
 */
       __pyx_v_lnode2 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node2);
 
       /* "pyart/map/ckdtree.pyx":1503
- *
+ * 
  *                 # brute-force
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):             # <<<<<<<<<<<<<<
  *                     results_i = results[self.raw_indices[i]]
@@ -19548,7 +19548,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                             tracker.p, self.m, tracker.upper_bound)
  *                         if d <= tracker.upper_bound:             # <<<<<<<<<<<<<<
  *                             list_append(results_i, other.raw_indices[j])
- *
+ * 
 */
           __pyx_t_1 = (__pyx_v_d <= __pyx_v_tracker->upper_bound);
           if (__pyx_t_1) {
@@ -19557,7 +19557,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                             tracker.p, self.m, tracker.upper_bound)
  *                         if d <= tracker.upper_bound:
  *                             list_append(results_i, other.raw_indices[j])             # <<<<<<<<<<<<<<
- *
+ * 
  *             else:  # 1 is a leaf node, 2 is inner node
 */
             __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_list_append(__pyx_v_results_i, (__pyx_v_other->raw_indices[__pyx_v_j])); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1511, __pyx_L1_error)
@@ -19567,7 +19567,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                             tracker.p, self.m, tracker.upper_bound)
  *                         if d <= tracker.upper_bound:             # <<<<<<<<<<<<<<
  *                             list_append(results_i, other.raw_indices[j])
- *
+ * 
 */
           }
         }
@@ -19575,17 +19575,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
       /* "pyart/map/ckdtree.pyx":1499
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
       goto __pyx_L4;
     }
 
     /* "pyart/map/ckdtree.pyx":1515
  *             else:  # 1 is a leaf node, 2 is inner node
- *
+ * 
  *                 tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1, node2.less, tracker)
@@ -19594,7 +19594,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_less_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1515, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1516
- *
+ * 
  *                 tracker.push_less_of(2, node2)
  *                 self.__query_ball_tree_traverse_checking(             # <<<<<<<<<<<<<<
  *                     other, results, node1, node2.less, tracker)
@@ -19606,14 +19606,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1518, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1520
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1, node2.greater, tracker)
@@ -19621,7 +19621,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1520, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1521
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__query_ball_tree_traverse_checking(             # <<<<<<<<<<<<<<
  *                     other, results, node1, node2.greater, tracker)
@@ -19633,8 +19633,8 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1523, __pyx_L1_error)
     }
@@ -19645,13 +19645,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *             self.__query_ball_tree_traverse_no_checking(other, results, node1, node2)
  *         elif node1.split_dim == -1:  # 1 is leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
     goto __pyx_L3;
   }
 
   /* "pyart/map/ckdtree.pyx":1527
- *
+ * 
  *         else:  # 1 is an inner node
  *             if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(1, node1)
@@ -19683,14 +19683,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.less, node2, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1531, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1533
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.greater, node2, tracker)
@@ -19698,7 +19698,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1533, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1534
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 self.__query_ball_tree_traverse_checking(             # <<<<<<<<<<<<<<
  *                     other, results, node1.greater, node2, tracker)
@@ -19710,13 +19710,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.greater, node2, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *             else: # 1 & 2 are inner nodes
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1536, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1527
- *
+ * 
  *         else:  # 1 is an inner node
  *             if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(1, node1)
@@ -19727,7 +19727,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
     /* "pyart/map/ckdtree.pyx":1540
  *             else: # 1 & 2 are inner nodes
- *
+ * 
  *                 tracker.push_less_of(1, node1)             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(2, node2)
  *                 self.__query_ball_tree_traverse_checking(
@@ -19736,7 +19736,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_less_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1540, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1541
- *
+ * 
  *                 tracker.push_less_of(1, node1)
  *                 tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
@@ -19757,14 +19757,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.less, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1544, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1546
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.less, node2.greater, tracker)
@@ -19772,7 +19772,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1546, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1547
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__query_ball_tree_traverse_checking(             # <<<<<<<<<<<<<<
  *                     other, results, node1.less, node2.greater, tracker)
@@ -19785,7 +19785,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                     other, results, node1.less, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
  *                 tracker.pop()
- *
+ * 
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1549, __pyx_L1_error)
 
@@ -19793,14 +19793,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                     other, results, node1.less, node2.greater, tracker)
  *                 tracker.pop()
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1550, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1553
- *
- *
+ * 
+ * 
  *                 tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(2, node2)
  *                 self.__query_ball_tree_traverse_checking(
@@ -19808,7 +19808,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1553, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1554
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
@@ -19829,14 +19829,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.greater, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1557, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1559
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_ball_tree_traverse_checking(
  *                     other, results, node1.greater, node2.greater, tracker)
@@ -19844,7 +19844,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1559, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1560
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__query_ball_tree_traverse_checking(             # <<<<<<<<<<<<<<
  *                     other, results, node1.greater, node2.greater, tracker)
@@ -19857,7 +19857,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                     other, results, node1.greater, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
  *                 tracker.pop()
- *
+ * 
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1562, __pyx_L1_error)
 
@@ -19865,7 +19865,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
  *                     other, results, node1.greater, node2.greater, tracker)
  *                 tracker.pop()
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1563, __pyx_L1_error)
@@ -19876,17 +19876,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 
   /* "pyart/map/ckdtree.pyx":1565
  *                 tracker.pop()
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":1479
- *
- *
+ * 
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int __query_ball_tree_traverse_checking(cKDTree self,
  *                                                  cKDTree other,
@@ -19904,15 +19904,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_ball_tree_trave
 }
 
 /* "pyart/map/ckdtree.pyx":1568
- *
- *
+ * 
+ * 
  *     def query_ball_tree(cKDTree self, cKDTree other,             # <<<<<<<<<<<<<<
  *                         np.float64_t r, np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_tree(self, other, r, p, eps)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_9query_ball_tree(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_9query_ball_tree(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19921,7 +19921,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 PyDoc_STRVAR(__pyx_doc_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree, "query_ball_tree(self, other, r, p, eps)\n\n        Find all pairs of points whose distance is at most r\n\n        Parameters\n        ----------\n        other : KDTree instance\n            The tree containing points to search against.\n        r : float\n            The maximum distance, has to be positive.\n        p : float, optional\n            Which Minkowski norm to use.  `p` has to meet the condition\n            ``1 <= p <= infinity``.\n        eps : float, optional\n            Approximate search.  Branches of the tree are not explored\n            if their nearest points are further than ``r/(1+eps)``, and\n            branches are added in bulk if their furthest points are nearer\n            than ``r * (1+eps)``.  `eps` has to be non-negative.\n\n        Returns\n        -------\n        results : list of lists\n            For each element ``self.data[i]`` of this tree, ``results[i]`` is a\n            list of the indices of its neighbors in ``other.data``.\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_9query_ball_tree = {"query_ball_tree", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_9query_ball_tree, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_9query_ball_tree(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_9query_ball_tree(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20071,11 +20071,11 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
   __Pyx_RefNannySetupContext("query_ball_tree", 0);
 
   /* "pyart/map/ckdtree.pyx":1598
- *
+ * 
  *         # Make sure trees are compatible
  *         if self.m != other.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->m != __pyx_v_other->m);
   if (unlikely(__pyx_t_1)) {
@@ -20084,7 +20084,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
  *         # Make sure trees are compatible
  *         if self.m != other.m:
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Track node-to-node min/max distances
 */
     __pyx_t_3 = NULL;
@@ -20101,16 +20101,16 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
     __PYX_ERR(0, 1599, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":1598
- *
+ * 
  *         # Make sure trees are compatible
  *         if self.m != other.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":1602
- *
+ * 
  *         # Track node-to-node min/max distances
  *         tracker = RectRectDistanceTracker(             # <<<<<<<<<<<<<<
  *             Rectangle(self.mins, self.maxes),
@@ -20140,7 +20140,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(other.mins, other.maxes),             # <<<<<<<<<<<<<<
  *             p, eps, r)
- *
+ * 
 */
   __pyx_t_7 = NULL;
   __pyx_t_4 = 1;
@@ -20156,7 +20156,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(other.mins, other.maxes),
  *             p, eps, r)             # <<<<<<<<<<<<<<
- *
+ * 
  *         results = [[] for i in range(self.n)]
 */
   __pyx_t_7 = PyFloat_FromDouble(__pyx_v_p); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1605, __pyx_L1_error)
@@ -20183,7 +20183,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
 
   /* "pyart/map/ckdtree.pyx":1607
  *             p, eps, r)
- *
+ * 
  *         results = [[] for i in range(self.n)]             # <<<<<<<<<<<<<<
  *         self.__query_ball_tree_traverse_checking(
  *             other, results, self.tree, other.tree, tracker)
@@ -20205,20 +20205,20 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
   __pyx_t_2 = 0;
 
   /* "pyart/map/ckdtree.pyx":1608
- *
+ * 
  *         results = [[] for i in range(self.n)]
  *         self.__query_ball_tree_traverse_checking(             # <<<<<<<<<<<<<<
  *             other, results, self.tree, other.tree, tracker)
- *
+ * 
 */
   __pyx_t_13 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_ball_tree_traverse_checking(__pyx_v_self, __pyx_v_other, __pyx_v_results, __pyx_v_self->tree, __pyx_v_other->tree, __pyx_v_tracker); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 1608, __pyx_L1_error)
 
   /* "pyart/map/ckdtree.pyx":1611
  *             other, results, self.tree, other.tree, tracker)
- *
+ * 
  *         return results             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_results);
@@ -20226,8 +20226,8 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_8query_ball_tree(struct 
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":1568
- *
- *
+ * 
+ * 
  *     def query_ball_tree(cKDTree self, cKDTree other,             # <<<<<<<<<<<<<<
  *                         np.float64_t r, np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_tree(self, other, r, p, eps)
@@ -20281,45 +20281,45 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
   /* "pyart/map/ckdtree.pyx":1626
  *         cdef np.intp_t i, j, min_j
- *
+ * 
  *         if node1.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_node1->split_dim == -1L);
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1627
- *
+ * 
  *         if node1.split_dim == -1:  # leaf node
  *             lnode1 = <leafnode*>node1             # <<<<<<<<<<<<<<
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node
 */
     __pyx_v_lnode1 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node1);
 
     /* "pyart/map/ckdtree.pyx":1629
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
     __pyx_t_1 = (__pyx_v_node2->split_dim == -1L);
     if (__pyx_t_1) {
 
       /* "pyart/map/ckdtree.pyx":1630
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node
  *                 lnode2 = <leafnode*>node2             # <<<<<<<<<<<<<<
- *
+ * 
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):
 */
       __pyx_v_lnode2 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node2);
 
       /* "pyart/map/ckdtree.pyx":1632
  *                 lnode2 = <leafnode*>node2
- *
+ * 
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):             # <<<<<<<<<<<<<<
  *                     # Special care here to avoid duplicate pairs
  *                     if node1 == node2:
@@ -20362,7 +20362,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                         min_j = i + 1
  *                     else:
  *                         min_j = lnode2.start_idx             # <<<<<<<<<<<<<<
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):
 */
         /*else*/ {
@@ -20373,7 +20373,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
         /* "pyart/map/ckdtree.pyx":1639
  *                         min_j = lnode2.start_idx
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):             # <<<<<<<<<<<<<<
  *                         set_add_ordered_pair(results,
  *                                              self.raw_indices[i],
@@ -20384,7 +20384,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
           __pyx_v_j = __pyx_t_7;
 
           /* "pyart/map/ckdtree.pyx":1640
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):
  *                         set_add_ordered_pair(results,             # <<<<<<<<<<<<<<
  *                                              self.raw_indices[i],
@@ -20396,16 +20396,16 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
       /* "pyart/map/ckdtree.pyx":1629
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
       goto __pyx_L4;
     }
 
     /* "pyart/map/ckdtree.pyx":1645
- *
+ * 
  *             else:
  *                 self.__query_pairs_traverse_no_checking(results, node1, node2.less)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_no_checking(results, node1, node2.greater)
@@ -20427,10 +20427,10 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
     /* "pyart/map/ckdtree.pyx":1626
  *         cdef np.intp_t i, j, min_j
- *
+ * 
  *         if node1.split_dim == -1:  # leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
     goto __pyx_L3;
   }
@@ -20488,7 +20488,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *             else:
  *                 self.__query_pairs_traverse_no_checking(results, node1.less, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_no_checking(results, node1.greater, node2)
- *
+ * 
 */
     /*else*/ {
       __pyx_t_8 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_pairs_traverse_no_checking(__pyx_v_self, __pyx_v_results, __pyx_v_node1->less, __pyx_v_node2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1657, __pyx_L1_error)
@@ -20497,7 +20497,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *             else:
  *                 self.__query_pairs_traverse_no_checking(results, node1.less, node2)
  *                 self.__query_pairs_traverse_no_checking(results, node1.greater, node2)             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
       __pyx_t_8 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_pairs_traverse_no_checking(__pyx_v_self, __pyx_v_results, __pyx_v_node1->greater, __pyx_v_node2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1658, __pyx_L1_error)
@@ -20508,9 +20508,9 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
   /* "pyart/map/ckdtree.pyx":1660
  *                 self.__query_pairs_traverse_no_checking(results, node1.greater, node2)
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     @cython.cdivision(True)
 */
   __pyx_r = 0;
@@ -20534,7 +20534,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
 /* "pyart/map/ckdtree.pyx":1662
  *         return 0
- *
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int __query_pairs_traverse_checking(cKDTree self,
  *                                              set results,
@@ -20563,7 +20563,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
   /* "pyart/map/ckdtree.pyx":1674
  *         cdef np.intp_t i, j, min_j
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -20572,7 +20572,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1675
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:
  *             return 0             # <<<<<<<<<<<<<<
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -20583,7 +20583,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
     /* "pyart/map/ckdtree.pyx":1674
  *         cdef np.intp_t i, j, min_j
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound * tracker.epsfac:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif tracker.max_distance < tracker.upper_bound / tracker.epsfac:
@@ -20624,7 +20624,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *             self.__query_pairs_traverse_no_checking(results, node1, node2)
  *         elif node1.split_dim == -1:  # 1 is leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_node1->split_dim == -1L);
   if (__pyx_t_1) {
@@ -20633,35 +20633,35 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *             self.__query_pairs_traverse_no_checking(results, node1, node2)
  *         elif node1.split_dim == -1:  # 1 is leaf node
  *             lnode1 = <leafnode*>node1             # <<<<<<<<<<<<<<
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves
 */
     __pyx_v_lnode1 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node1);
 
     /* "pyart/map/ckdtree.pyx":1681
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
     __pyx_t_1 = (__pyx_v_node2->split_dim == -1L);
     if (__pyx_t_1) {
 
       /* "pyart/map/ckdtree.pyx":1682
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves
  *                 lnode2 = <leafnode*>node2             # <<<<<<<<<<<<<<
- *
+ * 
  *                 # brute-force
 */
       __pyx_v_lnode2 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node2);
 
       /* "pyart/map/ckdtree.pyx":1685
- *
+ * 
  *                 # brute-force
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # Special care here to avoid duplicate pairs
 */
       __pyx_t_3 = __pyx_v_lnode1->end_idx;
@@ -20670,7 +20670,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
         __pyx_v_i = __pyx_t_5;
 
         /* "pyart/map/ckdtree.pyx":1688
- *
+ * 
  *                     # Special care here to avoid duplicate pairs
  *                     if node1 == node2:             # <<<<<<<<<<<<<<
  *                         min_j = i + 1
@@ -20689,7 +20689,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
           __pyx_v_min_j = (__pyx_v_i + 1);
 
           /* "pyart/map/ckdtree.pyx":1688
- *
+ * 
  *                     # Special care here to avoid duplicate pairs
  *                     if node1 == node2:             # <<<<<<<<<<<<<<
  *                         min_j = i + 1
@@ -20702,7 +20702,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                         min_j = i + 1
  *                     else:
  *                         min_j = lnode2.start_idx             # <<<<<<<<<<<<<<
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):
 */
         /*else*/ {
@@ -20713,7 +20713,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
         /* "pyart/map/ckdtree.pyx":1693
  *                         min_j = lnode2.start_idx
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):             # <<<<<<<<<<<<<<
  *                         d = _distance_p(
  *                             self.raw_data + self.raw_indices[i] * self.m,
@@ -20724,7 +20724,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
           __pyx_v_j = __pyx_t_8;
 
           /* "pyart/map/ckdtree.pyx":1694
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):
  *                         d = _distance_p(             # <<<<<<<<<<<<<<
  *                             self.raw_data + self.raw_indices[i] * self.m,
@@ -20765,16 +20765,16 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
       /* "pyart/map/ckdtree.pyx":1681
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
       goto __pyx_L4;
     }
 
     /* "pyart/map/ckdtree.pyx":1704
- *
+ * 
  *             else:  # 1 is a leaf node, 2 is inner node
  *                 tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_checking(
@@ -20796,14 +20796,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1707, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1709
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1, node2.greater, tracker)
@@ -20811,7 +20811,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1709, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1710
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__query_pairs_traverse_checking(             # <<<<<<<<<<<<<<
  *                     results, node1, node2.greater, tracker)
@@ -20823,7 +20823,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         else:  # 1 is an inner node
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1712, __pyx_L1_error)
@@ -20835,13 +20835,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *             self.__query_pairs_traverse_no_checking(results, node1, node2)
  *         elif node1.split_dim == -1:  # 1 is leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
     goto __pyx_L3;
   }
 
   /* "pyart/map/ckdtree.pyx":1715
- *
+ * 
  *         else:  # 1 is an inner node
  *             if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(1, node1)
@@ -20873,14 +20873,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1.less, node2, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1719, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1721
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1.greater, node2, tracker)
@@ -20888,7 +20888,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1721, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1722
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 self.__query_pairs_traverse_checking(             # <<<<<<<<<<<<<<
  *                     results, node1.greater, node2, tracker)
@@ -20900,13 +20900,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1.greater, node2, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *             else: # 1 and 2 are inner nodes
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1724, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1715
- *
+ * 
  *         else:  # 1 is an inner node
  *             if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(1, node1)
@@ -20916,7 +20916,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
     }
 
     /* "pyart/map/ckdtree.pyx":1727
- *
+ * 
  *             else: # 1 and 2 are inner nodes
  *                 tracker.push_less_of(1, node1)             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(2, node2)
@@ -20947,14 +20947,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1.less, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1731, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1733
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1.less, node2.greater, tracker)
@@ -20962,7 +20962,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1733, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1734
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__query_pairs_traverse_checking(             # <<<<<<<<<<<<<<
  *                     results, node1.less, node2.greater, tracker)
@@ -20975,7 +20975,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                     results, node1.less, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
  *                 tracker.pop()
- *
+ * 
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1736, __pyx_L1_error)
 
@@ -20983,14 +20983,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                     results, node1.less, node2.greater, tracker)
  *                 tracker.pop()
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1737, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1739
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                 if node1 != node2:
  *                     # Avoid traversing (node1.less, node2.greater) and
@@ -20998,7 +20998,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1739, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1740
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 if node1 != node2:             # <<<<<<<<<<<<<<
  *                     # Avoid traversing (node1.less, node2.greater) and
@@ -21029,13 +21029,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                     self.__query_pairs_traverse_checking(
  *                         results, node1.greater, node2.less, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
         __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1748, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1740
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 if node1 != node2:             # <<<<<<<<<<<<<<
  *                     # Avoid traversing (node1.less, node2.greater) and
@@ -21045,7 +21045,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
       /* "pyart/map/ckdtree.pyx":1750
  *                     tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__query_pairs_traverse_checking(
  *                     results, node1.greater, node2.greater, tracker)
@@ -21053,7 +21053,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1750, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":1751
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__query_pairs_traverse_checking(             # <<<<<<<<<<<<<<
  *                     results, node1.greater, node2.greater, tracker)
@@ -21066,7 +21066,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                     results, node1.greater, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
  *                 tracker.pop()
- *
+ * 
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1753, __pyx_L1_error)
 
@@ -21074,7 +21074,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
  *                     results, node1.greater, node2.greater, tracker)
  *                 tracker.pop()
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
       __pyx_t_2 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 1754, __pyx_L1_error)
@@ -21085,17 +21085,17 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 
   /* "pyart/map/ckdtree.pyx":1756
  *                 tracker.pop()
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_r = 0;
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":1662
  *         return 0
- *
+ * 
  *     @cython.cdivision(True)             # <<<<<<<<<<<<<<
  *     cdef int __query_pairs_traverse_checking(cKDTree self,
  *                                              set results,
@@ -21110,15 +21110,15 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__query_pairs_traverse_
 }
 
 /* "pyart/map/ckdtree.pyx":1759
- *
- *
+ * 
+ * 
  *     def query_pairs(cKDTree self, np.float64_t r, np.float64_t p=2.,             # <<<<<<<<<<<<<<
  *                     np.float64_t eps=0):
  *         """query_pairs(self, r, p, eps)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_11query_pairs(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_11query_pairs(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21127,7 +21127,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 PyDoc_STRVAR(__pyx_doc_5pyart_3map_7ckdtree_7cKDTree_10query_pairs, "query_pairs(self, r, p, eps)\n\n        Find all pairs of points whose distance is at most r.\n\n        Parameters\n        ----------\n        r : positive float\n            The maximum distance.\n        p : float, optional\n            Which Minkowski norm to use.  `p` has to meet the condition\n            ``1 <= p <= infinity``.\n        eps : float, optional\n            Approximate search.  Branches of the tree are not explored\n            if their nearest points are further than ``r/(1+eps)``, and\n            branches are added in bulk if their furthest points are nearer\n            than ``r * (1+eps)``.  `eps` has to be non-negative.\n\n        Returns\n        -------\n        results : set\n            Set of pairs ``(i,j)``, with ``i < j`, for which the corresponding\n            positions are close.\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_11query_pairs = {"query_pairs", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_11query_pairs, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_7ckdtree_7cKDTree_10query_pairs};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_11query_pairs(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_11query_pairs(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21255,7 +21255,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
 
   /* "pyart/map/ckdtree.pyx":1786
  *         """
- *
+ * 
  *         tracker = RectRectDistanceTracker(             # <<<<<<<<<<<<<<
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(self.mins, self.maxes),
@@ -21263,7 +21263,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
   __pyx_t_2 = NULL;
 
   /* "pyart/map/ckdtree.pyx":1787
- *
+ * 
  *         tracker = RectRectDistanceTracker(
  *             Rectangle(self.mins, self.maxes),             # <<<<<<<<<<<<<<
  *             Rectangle(self.mins, self.maxes),
@@ -21284,7 +21284,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(self.mins, self.maxes),             # <<<<<<<<<<<<<<
  *             p, eps, r)
- *
+ * 
 */
   __pyx_t_6 = NULL;
   __pyx_t_5 = 1;
@@ -21300,7 +21300,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(self.mins, self.maxes),
  *             p, eps, r)             # <<<<<<<<<<<<<<
- *
+ * 
  *         results = set()
 */
   __pyx_t_6 = PyFloat_FromDouble(__pyx_v_p); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1789, __pyx_L1_error)
@@ -21327,7 +21327,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
 
   /* "pyart/map/ckdtree.pyx":1791
  *             p, eps, r)
- *
+ * 
  *         results = set()             # <<<<<<<<<<<<<<
  *         self.__query_pairs_traverse_checking(
  *             results, self.tree, self.tree, tracker)
@@ -21338,20 +21338,20 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
   __pyx_t_1 = 0;
 
   /* "pyart/map/ckdtree.pyx":1792
- *
+ * 
  *         results = set()
  *         self.__query_pairs_traverse_checking(             # <<<<<<<<<<<<<<
  *             results, self.tree, self.tree, tracker)
- *
+ * 
 */
   __pyx_t_9 = ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_cKDTree *)__pyx_v_self->__pyx_vtab)->_cKDTree__query_pairs_traverse_checking(__pyx_v_self, __pyx_v_results, __pyx_v_self->tree, __pyx_v_self->tree, __pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 1792, __pyx_L1_error)
 
   /* "pyart/map/ckdtree.pyx":1795
  *             results, self.tree, self.tree, tracker)
- *
+ * 
  *         return results             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_results);
@@ -21359,8 +21359,8 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_10query_pairs(struct __p
   goto __pyx_L0;
 
   /* "pyart/map/ckdtree.pyx":1759
- *
- *
+ * 
+ * 
  *     def query_pairs(cKDTree self, np.float64_t r, np.float64_t p=2.,             # <<<<<<<<<<<<<<
  *                     np.float64_t eps=0):
  *         """query_pairs(self, r, p, eps)
@@ -21454,7 +21454,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *         cdef np.ndarray[np.intp_t, ndim=1] inner_idx
  *         inner_idx = np.empty((n_queries,), dtype=np.intp)             # <<<<<<<<<<<<<<
  *         idx = &inner_idx[0]
- *
+ * 
 */
   __pyx_t_2 = NULL;
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1820, __pyx_L1_error)
@@ -21525,7 +21525,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *         cdef np.ndarray[np.intp_t, ndim=1] inner_idx
  *         inner_idx = np.empty((n_queries,), dtype=np.intp)
  *         idx = &inner_idx[0]             # <<<<<<<<<<<<<<
- *
+ * 
  *         old_n_queries = n_queries
 */
   __pyx_t_12 = 0;
@@ -21542,7 +21542,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
 
   /* "pyart/map/ckdtree.pyx":1823
  *         idx = &inner_idx[0]
- *
+ * 
  *         old_n_queries = n_queries             # <<<<<<<<<<<<<<
  *         n_queries = 0
  *         for i in range(old_n_queries):
@@ -21550,7 +21550,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
   __pyx_v_old_n_queries = __pyx_v_n_queries;
 
   /* "pyart/map/ckdtree.pyx":1824
- *
+ * 
  *         old_n_queries = n_queries
  *         n_queries = 0             # <<<<<<<<<<<<<<
  *         for i in range(old_n_queries):
@@ -21615,7 +21615,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *             elif tracker.min_distance <= r[old_idx[i]]:
  *                 idx[n_queries] = old_idx[i]             # <<<<<<<<<<<<<<
  *                 n_queries += 1
- *
+ * 
 */
       (__pyx_v_idx[__pyx_v_n_queries]) = (__pyx_v_old_idx[__pyx_v_i]);
 
@@ -21623,7 +21623,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *             elif tracker.min_distance <= r[old_idx[i]]:
  *                 idx[n_queries] = old_idx[i]
  *                 n_queries += 1             # <<<<<<<<<<<<<<
- *
+ * 
  *         if n_queries > 0:
 */
       __pyx_v_n_queries = (__pyx_v_n_queries + 1);
@@ -21641,7 +21641,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
 
   /* "pyart/map/ckdtree.pyx":1832
  *                 n_queries += 1
- *
+ * 
  *         if n_queries > 0:             # <<<<<<<<<<<<<<
  *             # OK, need to probe a bit deeper
  *             if node1.split_dim == -1:  # 1 is leaf node
@@ -21673,7 +21673,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                 lnode1 = <leafnode*>node1
  *                 if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                     lnode2 = <leafnode*>node2
- *
+ * 
 */
       __pyx_t_16 = (__pyx_v_node2->split_dim == -1L);
       if (__pyx_t_16) {
@@ -21682,13 +21682,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                 lnode1 = <leafnode*>node1
  *                 if node2.split_dim == -1:  # 1 & 2 are leaves
  *                     lnode2 = <leafnode*>node2             # <<<<<<<<<<<<<<
- *
+ * 
  *                     # brute-force
 */
         __pyx_v_lnode2 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node2);
 
         /* "pyart/map/ckdtree.pyx":1840
- *
+ * 
  *                     # brute-force
  *                     for i in range(lnode1.start_idx, lnode1.end_idx):             # <<<<<<<<<<<<<<
  *                         for j in range(lnode2.start_idx, lnode2.end_idx):
@@ -21738,7 +21738,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                             for l in range(n_queries):
  *                                 if d <= r[idx[l]]:             # <<<<<<<<<<<<<<
  *                                     results[idx[l]] += 1
- *
+ * 
 */
               __pyx_t_16 = (__pyx_v_d <= (__pyx_v_r[(__pyx_v_idx[__pyx_v_l])]));
               if (__pyx_t_16) {
@@ -21747,7 +21747,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                             for l in range(n_queries):
  *                                 if d <= r[idx[l]]:
  *                                     results[idx[l]] += 1             # <<<<<<<<<<<<<<
- *
+ * 
  *                 else:  # 1 is a leaf node, 2 is inner node
 */
                 __pyx_t_24 = (__pyx_v_idx[__pyx_v_l]);
@@ -21758,7 +21758,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                             for l in range(n_queries):
  *                                 if d <= r[idx[l]]:             # <<<<<<<<<<<<<<
  *                                     results[idx[l]] += 1
- *
+ * 
 */
               }
             }
@@ -21770,13 +21770,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                 lnode1 = <leafnode*>node1
  *                 if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                     lnode2 = <leafnode*>node2
- *
+ * 
 */
         goto __pyx_L8;
       }
 
       /* "pyart/map/ckdtree.pyx":1854
- *
+ * 
  *                 else:  # 1 is a leaf node, 2 is inner node
  *                     tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                     self.__count_neighbors_traverse(
@@ -21798,14 +21798,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         other, n_queries, r, results, idx,
  *                         node1, node2.less, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                     tracker.push_greater_of(2, node2)
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1858, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1860
  *                     tracker.pop()
- *
+ * 
  *                     tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                     self.__count_neighbors_traverse(
  *                         other, n_queries, r, results, idx,
@@ -21813,7 +21813,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1860, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1861
- *
+ * 
  *                     tracker.push_greater_of(2, node2)
  *                     self.__count_neighbors_traverse(             # <<<<<<<<<<<<<<
  *                         other, n_queries, r, results, idx,
@@ -21825,7 +21825,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         other, n_queries, r, results, idx,
  *                         node1, node2.greater, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *             else:  # 1 is an inner node
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1864, __pyx_L1_error)
@@ -21843,7 +21843,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
     }
 
     /* "pyart/map/ckdtree.pyx":1867
- *
+ * 
  *             else:  # 1 is an inner node
  *                 if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                     tracker.push_less_of(1, node1)
@@ -21875,14 +21875,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         other, n_queries, r, results, idx,
  *                         node1.less, node2, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                     tracker.push_greater_of(1, node1)
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1872, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1874
  *                     tracker.pop()
- *
+ * 
  *                     tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                     self.__count_neighbors_traverse(
  *                         other, n_queries, r, results, idx,
@@ -21890,7 +21890,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1874, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1875
- *
+ * 
  *                     tracker.push_greater_of(1, node1)
  *                     self.__count_neighbors_traverse(             # <<<<<<<<<<<<<<
  *                         other, n_queries, r, results, idx,
@@ -21902,13 +21902,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         other, n_queries, r, results, idx,
  *                         node1.greater, node2, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 else: # 1 and 2 are inner nodes
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1878, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1867
- *
+ * 
  *             else:  # 1 is an inner node
  *                 if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                     tracker.push_less_of(1, node1)
@@ -21918,7 +21918,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
       }
 
       /* "pyart/map/ckdtree.pyx":1881
- *
+ * 
  *                 else: # 1 and 2 are inner nodes
  *                     tracker.push_less_of(1, node1)             # <<<<<<<<<<<<<<
  *                     tracker.push_less_of(2, node2)
@@ -21949,14 +21949,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         other, n_queries, r, results, idx,
  *                         node1.less, node2.less, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                     tracker.push_greater_of(2, node2)
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1886, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1888
  *                     tracker.pop()
- *
+ * 
  *                     tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                     self.__count_neighbors_traverse(
  *                         other, n_queries, r, results, idx,
@@ -21964,7 +21964,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1888, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1889
- *
+ * 
  *                     tracker.push_greater_of(2, node2)
  *                     self.__count_neighbors_traverse(             # <<<<<<<<<<<<<<
  *                         other, n_queries, r, results, idx,
@@ -21977,7 +21977,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         node1.less, node2.greater, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
  *                     tracker.pop()
- *
+ * 
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1892, __pyx_L1_error)
 
@@ -21985,14 +21985,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         node1.less, node2.greater, tracker)
  *                     tracker.pop()
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                     tracker.push_greater_of(1, node1)
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1893, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1895
  *                     tracker.pop()
- *
+ * 
  *                     tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                     tracker.push_less_of(2, node2)
  *                     self.__count_neighbors_traverse(
@@ -22000,7 +22000,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1895, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1896
- *
+ * 
  *                     tracker.push_greater_of(1, node1)
  *                     tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                     self.__count_neighbors_traverse(
@@ -22021,14 +22021,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         other, n_queries, r, results, idx,
  *                         node1.greater, node2.less, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                     tracker.push_greater_of(2, node2)
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1900, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1902
  *                     tracker.pop()
- *
+ * 
  *                     tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                     self.__count_neighbors_traverse(
  *                         other, n_queries, r, results, idx,
@@ -22036,7 +22036,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1902, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":1903
- *
+ * 
  *                     tracker.push_greater_of(2, node2)
  *                     self.__count_neighbors_traverse(             # <<<<<<<<<<<<<<
  *                         other, n_queries, r, results, idx,
@@ -22049,7 +22049,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         node1.greater, node2.greater, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
  *                     tracker.pop()
- *
+ * 
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1906, __pyx_L1_error)
 
@@ -22057,7 +22057,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
  *                         node1.greater, node2.greater, tracker)
  *                     tracker.pop()
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
         __pyx_t_8 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 1907, __pyx_L1_error)
@@ -22068,7 +22068,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
 
     /* "pyart/map/ckdtree.pyx":1832
  *                 n_queries += 1
- *
+ * 
  *         if n_queries > 0:             # <<<<<<<<<<<<<<
  *             # OK, need to probe a bit deeper
  *             if node1.split_dim == -1:  # 1 is leaf node
@@ -22077,9 +22077,9 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
 
   /* "pyart/map/ckdtree.pyx":1909
  *                     tracker.pop()
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     @cython.boundscheck(False)
 */
   __pyx_r = 0;
@@ -22120,14 +22120,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__count_neighbors_trave
 
 /* "pyart/map/ckdtree.pyx":1911
  *         return 0
- *
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def count_neighbors(cKDTree self, cKDTree other, object r, np.float64_t p=2.):
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_13count_neighbors(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_13count_neighbors(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22136,7 +22136,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 PyDoc_STRVAR(__pyx_doc_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors, "count_neighbors(self, other, r, p)\n\n        Count how many nearby pairs can be formed.\n\n        Count the number of pairs (x1,x2) can be formed, with x1 drawn\n        from self and x2 drawn from `other`, and where\n        ``distance(x1, x2, p) <= r``.\n        This is the \"two-point correlation\" described in Gray and Moore 2000,\n        \"N-body problems in statistical learning\", and the code here is based\n        on their algorithm.\n\n        Parameters\n        ----------\n        other : KDTree instance\n            The other tree to draw points from.\n        r : float or one-dimensional array of floats\n            The radius to produce a count for. Multiple radii are searched with\n            a single tree traversal.\n        p : float, 1<=p<=infinity\n            Which Minkowski p-norm to use\n\n        Returns\n        -------\n        result : int or 1-D array of ints\n            The number of pairs. Note that this is internally stored in a numpy int,\n            and so may overflow if very large (2e9).\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_13count_neighbors = {"count_neighbors", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_13count_neighbors, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_13count_neighbors(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_13count_neighbors(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22299,11 +22299,11 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
   __pyx_pybuffernd_idx.rcbuffer = &__pyx_pybuffer_idx;
 
   /* "pyart/map/ckdtree.pyx":1947
- *
+ * 
  *         # Make sure trees are compatible
  *         if self.m != other.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->m != __pyx_v_other->m);
   if (unlikely(__pyx_t_1)) {
@@ -22312,7 +22312,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *         # Make sure trees are compatible
  *         if self.m != other.m:
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Make a copy of r array to ensure it's contiguous and to modify it
 */
     __pyx_t_3 = NULL;
@@ -22329,11 +22329,11 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
     __PYX_ERR(0, 1948, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":1947
- *
+ * 
  *         # Make sure trees are compatible
  *         if self.m != other.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")
- *
+ * 
 */
   }
 
@@ -22597,7 +22597,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *             n_queries = r.shape[0]
  *         else:
  *             raise ValueError("r must be either a single value or a one-dimensional array of values")             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Internally, we represent all distances as distance ** p
 */
   /*else*/ {
@@ -22617,7 +22617,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
   __pyx_L4:;
 
   /* "pyart/map/ckdtree.pyx":1962
- *
+ * 
  *         # Internally, we represent all distances as distance ** p
  *         if p != infinity:             # <<<<<<<<<<<<<<
  *             for i in range(n_queries):
@@ -22643,7 +22643,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *             for i in range(n_queries):
  *                 if real_r[i] != infinity:             # <<<<<<<<<<<<<<
  *                     real_r[i] = real_r[i] ** p
- *
+ * 
 */
       __pyx_t_17 = __pyx_v_i;
       __pyx_t_1 = ((*__Pyx_BufPtrCContig1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_real_r.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_real_r.diminfo[0].strides)) != __pyx_v_5pyart_3map_7ckdtree_infinity);
@@ -22653,7 +22653,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *             for i in range(n_queries):
  *                 if real_r[i] != infinity:
  *                     real_r[i] = real_r[i] ** p             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Track node-to-node min/max distances
 */
         __pyx_t_17 = __pyx_v_i;
@@ -22665,13 +22665,13 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *             for i in range(n_queries):
  *                 if real_r[i] != infinity:             # <<<<<<<<<<<<<<
  *                     real_r[i] = real_r[i] ** p
- *
+ * 
 */
       }
     }
 
     /* "pyart/map/ckdtree.pyx":1962
- *
+ * 
  *         # Internally, we represent all distances as distance ** p
  *         if p != infinity:             # <<<<<<<<<<<<<<
  *             for i in range(n_queries):
@@ -22680,7 +22680,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
   }
 
   /* "pyart/map/ckdtree.pyx":1968
- *
+ * 
  *         # Track node-to-node min/max distances
  *         tracker = RectRectDistanceTracker(             # <<<<<<<<<<<<<<
  *             Rectangle(self.mins, self.maxes),
@@ -22710,7 +22710,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(other.mins, other.maxes),             # <<<<<<<<<<<<<<
  *             p, 0.0, 0.0)
- *
+ * 
 */
   __pyx_t_8 = NULL;
   __pyx_t_4 = 1;
@@ -22726,7 +22726,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(other.mins, other.maxes),
  *             p, 0.0, 0.0)             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Go!
 */
   __pyx_t_8 = PyFloat_FromDouble(__pyx_v_p); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1971, __pyx_L1_error)
@@ -22746,7 +22746,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
   __pyx_t_7 = 0;
 
   /* "pyart/map/ckdtree.pyx":1974
- *
+ * 
  *         # Go!
  *         results = np.zeros((n_queries,), dtype=np.intp)             # <<<<<<<<<<<<<<
  *         idx = np.arange(n_queries, dtype=np.intp)
@@ -22906,7 +22906,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
 
   /* "pyart/map/ckdtree.pyx":1981
  *                                         tracker)
- *
+ * 
  *         if np.shape(r) == ():             # <<<<<<<<<<<<<<
  *             if results[0] <= <np.intp_t> LONG_MAX:
  *                 return int(results[0])
@@ -22944,7 +22944,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":1982
- *
+ * 
  *         if np.shape(r) == ():
  *             if results[0] <= <np.intp_t> LONG_MAX:             # <<<<<<<<<<<<<<
  *                 return int(results[0])
@@ -22980,7 +22980,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
       goto __pyx_L0;
 
       /* "pyart/map/ckdtree.pyx":1982
- *
+ * 
  *         if np.shape(r) == ():
  *             if results[0] <= <np.intp_t> LONG_MAX:             # <<<<<<<<<<<<<<
  *                 return int(results[0])
@@ -23007,7 +23007,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
 
     /* "pyart/map/ckdtree.pyx":1981
  *                                         tracker)
- *
+ * 
  *         if np.shape(r) == ():             # <<<<<<<<<<<<<<
  *             if results[0] <= <np.intp_t> LONG_MAX:
  *                 return int(results[0])
@@ -23019,7 +23019,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *                 return results[0]
  *         elif len(np.shape(r))==1:             # <<<<<<<<<<<<<<
  *             return results
- *
+ * 
 */
   __pyx_t_2 = NULL;
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1986, __pyx_L1_error)
@@ -23056,7 +23056,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *                 return results[0]
  *         elif len(np.shape(r))==1:
  *             return results             # <<<<<<<<<<<<<<
- *
+ * 
  *     # ----------------------
 */
     __Pyx_XDECREF(__pyx_r);
@@ -23069,13 +23069,13 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_12count_neighbors(struct
  *                 return results[0]
  *         elif len(np.shape(r))==1:             # <<<<<<<<<<<<<<
  *             return results
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":1911
  *         return 0
- *
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def count_neighbors(cKDTree self, cKDTree other, object r, np.float64_t p=2.):
@@ -23147,7 +23147,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
   /* "pyart/map/ckdtree.pyx":2002
  *         cdef np.intp_t i, j, min_j
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif node1.split_dim == -1:  # 1 is leaf node
@@ -23156,7 +23156,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
   if (__pyx_t_1) {
 
     /* "pyart/map/ckdtree.pyx":2003
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound:
  *             return 0             # <<<<<<<<<<<<<<
  *         elif node1.split_dim == -1:  # 1 is leaf node
@@ -23167,7 +23167,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
     /* "pyart/map/ckdtree.pyx":2002
  *         cdef np.intp_t i, j, min_j
- *
+ * 
  *         if tracker.min_distance > tracker.upper_bound:             # <<<<<<<<<<<<<<
  *             return 0
  *         elif node1.split_dim == -1:  # 1 is leaf node
@@ -23179,7 +23179,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *             return 0
  *         elif node1.split_dim == -1:  # 1 is leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_node1->split_dim == -1L);
   if (__pyx_t_1) {
@@ -23188,32 +23188,32 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *             return 0
  *         elif node1.split_dim == -1:  # 1 is leaf node
  *             lnode1 = <leafnode*>node1             # <<<<<<<<<<<<<<
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves
 */
     __pyx_v_lnode1 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node1);
 
     /* "pyart/map/ckdtree.pyx":2007
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
     __pyx_t_1 = (__pyx_v_node2->split_dim == -1L);
     if (__pyx_t_1) {
 
       /* "pyart/map/ckdtree.pyx":2008
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves
  *                 lnode2 = <leafnode*>node2             # <<<<<<<<<<<<<<
- *
+ * 
  *                 # brute-force
 */
       __pyx_v_lnode2 = ((struct __pyx_t_5pyart_3map_7ckdtree_leafnode *)__pyx_v_node2);
 
       /* "pyart/map/ckdtree.pyx":2011
- *
+ * 
  *                 # brute-force
  *                 for i in range(lnode1.start_idx, lnode1.end_idx):             # <<<<<<<<<<<<<<
  *                     # Special care here to avoid duplicate pairs
@@ -23257,7 +23257,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                         min_j = i+1
  *                     else:
  *                         min_j = lnode2.end_idx             # <<<<<<<<<<<<<<
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):
 */
         /*else*/ {
@@ -23268,7 +23268,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
         /* "pyart/map/ckdtree.pyx":2018
  *                         min_j = lnode2.end_idx
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):             # <<<<<<<<<<<<<<
  *                         d = _distance_p(
  *                             self.raw_data + self.raw_indices[i] * self.m,
@@ -23279,7 +23279,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
           __pyx_v_j = __pyx_t_7;
 
           /* "pyart/map/ckdtree.pyx":2019
- *
+ * 
  *                     for j in range(min_j, lnode2.end_idx):
  *                         d = _distance_p(             # <<<<<<<<<<<<<<
  *                             self.raw_data + self.raw_indices[i] * self.m,
@@ -23322,7 +23322,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                             if node1 == node2:
  *                                 results.add(self.raw_indices[j],             # <<<<<<<<<<<<<<
  *                                             self.raw_indices[i], d)
- *
+ * 
 */
               ((struct __pyx_vtabstruct_5pyart_3map_7ckdtree_coo_entries *)__pyx_v_results->__pyx_vtab)->add(__pyx_v_results, (__pyx_v_self->raw_indices[__pyx_v_j]), (__pyx_v_self->raw_indices[__pyx_v_i]), __pyx_v_d); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 2027, __pyx_L1_error)
 
@@ -23348,16 +23348,16 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
       /* "pyart/map/ckdtree.pyx":2007
  *             lnode1 = <leafnode*>node1
- *
+ * 
  *             if node2.split_dim == -1:  # 1 & 2 are leaves             # <<<<<<<<<<<<<<
  *                 lnode2 = <leafnode*>node2
- *
+ * 
 */
       goto __pyx_L4;
     }
 
     /* "pyart/map/ckdtree.pyx":2031
- *
+ * 
  *             else:  # 1 is a leaf node, 2 is inner node
  *                 tracker.push_less_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__sparse_distance_matrix_traverse(
@@ -23379,14 +23379,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2034, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2036
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1, node2.greater, tracker)
@@ -23394,7 +23394,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2036, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2037
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__sparse_distance_matrix_traverse(             # <<<<<<<<<<<<<<
  *                     other, results, node1, node2.greater, tracker)
@@ -23406,7 +23406,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         else:  # 1 is an inner node
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2039, __pyx_L1_error)
@@ -23418,13 +23418,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *             return 0
  *         elif node1.split_dim == -1:  # 1 is leaf node             # <<<<<<<<<<<<<<
  *             lnode1 = <leafnode*>node1
- *
+ * 
 */
     goto __pyx_L3;
   }
 
   /* "pyart/map/ckdtree.pyx":2042
- *
+ * 
  *         else:  # 1 is an inner node
  *             if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(1, node1)
@@ -23456,14 +23456,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1.less, node2, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2046, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2048
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1.greater, node2, tracker)
@@ -23471,7 +23471,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2048, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2049
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 self.__sparse_distance_matrix_traverse(             # <<<<<<<<<<<<<<
  *                     other, results, node1.greater, node2, tracker)
@@ -23483,13 +23483,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1.greater, node2, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *             else: # 1 and 2 are inner nodes
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2051, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2042
- *
+ * 
  *         else:  # 1 is an inner node
  *             if node2.split_dim == -1:  # 1 is an inner node, 2 is a leaf node             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(1, node1)
@@ -23499,7 +23499,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
     }
 
     /* "pyart/map/ckdtree.pyx":2054
- *
+ * 
  *             else: # 1 and 2 are inner nodes
  *                 tracker.push_less_of(1, node1)             # <<<<<<<<<<<<<<
  *                 tracker.push_less_of(2, node2)
@@ -23530,14 +23530,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1.less, node2.less, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2058, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2060
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1.less, node2.greater, tracker)
@@ -23545,7 +23545,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2060, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2061
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__sparse_distance_matrix_traverse(             # <<<<<<<<<<<<<<
  *                     other, results, node1.less, node2.greater, tracker)
@@ -23558,7 +23558,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                     other, results, node1.less, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
  *                 tracker.pop()
- *
+ * 
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2063, __pyx_L1_error)
 
@@ -23566,14 +23566,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                     other, results, node1.less, node2.greater, tracker)
  *                 tracker.pop()
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2064, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2066
  *                 tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(1, node1)             # <<<<<<<<<<<<<<
  *                 if node1 != node2:
  *                     # Avoid traversing (node1.less, node2.greater) and
@@ -23581,7 +23581,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 1, __pyx_v_node1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2066, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2067
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 if node1 != node2:             # <<<<<<<<<<<<<<
  *                     # Avoid traversing (node1.less, node2.greater) and
@@ -23612,13 +23612,13 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                     self.__sparse_distance_matrix_traverse(
  *                         other, results, node1.greater, node2.less, tracker)
  *                     tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
 */
         __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2075, __pyx_L1_error)
 
         /* "pyart/map/ckdtree.pyx":2067
- *
+ * 
  *                 tracker.push_greater_of(1, node1)
  *                 if node1 != node2:             # <<<<<<<<<<<<<<
  *                     # Avoid traversing (node1.less, node2.greater) and
@@ -23628,7 +23628,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
       /* "pyart/map/ckdtree.pyx":2077
  *                     tracker.pop()
- *
+ * 
  *                 tracker.push_greater_of(2, node2)             # <<<<<<<<<<<<<<
  *                 self.__sparse_distance_matrix_traverse(
  *                     other, results, node1.greater, node2.greater, tracker)
@@ -23636,7 +23636,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_push_greater_of(__pyx_v_tracker, 2, __pyx_v_node2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2077, __pyx_L1_error)
 
       /* "pyart/map/ckdtree.pyx":2078
- *
+ * 
  *                 tracker.push_greater_of(2, node2)
  *                 self.__sparse_distance_matrix_traverse(             # <<<<<<<<<<<<<<
  *                     other, results, node1.greater, node2.greater, tracker)
@@ -23649,7 +23649,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                     other, results, node1.greater, node2.greater, tracker)
  *                 tracker.pop()             # <<<<<<<<<<<<<<
  *                 tracker.pop()
- *
+ * 
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2080, __pyx_L1_error)
 
@@ -23657,7 +23657,7 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
  *                     other, results, node1.greater, node2.greater, tracker)
  *                 tracker.pop()
  *                 tracker.pop()             # <<<<<<<<<<<<<<
- *
+ * 
  *         return 0
 */
       __pyx_t_9 = __pyx_f_5pyart_3map_7ckdtree_23RectRectDistanceTracker_pop(__pyx_v_tracker); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 2081, __pyx_L1_error)
@@ -23668,9 +23668,9 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
   /* "pyart/map/ckdtree.pyx":2083
  *                 tracker.pop()
- *
+ * 
  *         return 0             # <<<<<<<<<<<<<<
- *
+ * 
  *     def sparse_distance_matrix(cKDTree self, cKDTree other,
 */
   __pyx_r = 0;
@@ -23694,14 +23694,14 @@ static int __pyx_f_5pyart_3map_7ckdtree_7cKDTree__cKDTree__sparse_distance_matri
 
 /* "pyart/map/ckdtree.pyx":2085
  *         return 0
- *
+ * 
  *     def sparse_distance_matrix(cKDTree self, cKDTree other,             # <<<<<<<<<<<<<<
  *                                np.float64_t max_distance,
  *                                np.float64_t p=2.):
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_15sparse_distance_matrix(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_15sparse_distance_matrix(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23710,7 +23710,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 PyDoc_STRVAR(__pyx_doc_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix, "sparse_distance_matrix(self, max_distance, p)\n\n        Compute a sparse distance matrix\n\n        Computes a distance matrix between two KDTrees, leaving as zero\n        any distance greater than max_distance.\n\n        Parameters\n        ----------\n        other : cKDTree\n\n        max_distance : positive float\n\n        Returns\n        -------\n        result : dok_matrix\n            Sparse matrix representing the results in \"dictionary of keys\" format.\n            FIXME: Internally, built as a COO matrix, it would be more\n            efficient to return this COO matrix.\n\n        ");
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_15sparse_distance_matrix = {"sparse_distance_matrix", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_15sparse_distance_matrix, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_15sparse_distance_matrix(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_15sparse_distance_matrix(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23842,11 +23842,11 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
   __Pyx_RefNannySetupContext("sparse_distance_matrix", 0);
 
   /* "pyart/map/ckdtree.pyx":2111
- *
+ * 
  *         # Make sure trees are compatible
  *         if self.m != other.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")
- *
+ * 
 */
   __pyx_t_1 = (__pyx_v_self->m != __pyx_v_other->m);
   if (unlikely(__pyx_t_1)) {
@@ -23855,7 +23855,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
  *         # Make sure trees are compatible
  *         if self.m != other.m:
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")             # <<<<<<<<<<<<<<
- *
+ * 
  *         # Calculate mins and maxes to outer box
 */
     __pyx_t_3 = NULL;
@@ -23872,16 +23872,16 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
     __PYX_ERR(0, 2112, __pyx_L1_error)
 
     /* "pyart/map/ckdtree.pyx":2111
- *
+ * 
  *         # Make sure trees are compatible
  *         if self.m != other.m:             # <<<<<<<<<<<<<<
  *             raise ValueError("Trees passed to query_ball_trees have different dimensionality")
- *
+ * 
 */
   }
 
   /* "pyart/map/ckdtree.pyx":2115
- *
+ * 
  *         # Calculate mins and maxes to outer box
  *         tracker = RectRectDistanceTracker(             # <<<<<<<<<<<<<<
  *             Rectangle(self.mins, self.maxes),
@@ -23911,7 +23911,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(other.mins, other.maxes),             # <<<<<<<<<<<<<<
  *             p, 0, max_distance)
- *
+ * 
 */
   __pyx_t_7 = NULL;
   __pyx_t_4 = 1;
@@ -23927,7 +23927,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
  *             Rectangle(self.mins, self.maxes),
  *             Rectangle(other.mins, other.maxes),
  *             p, 0, max_distance)             # <<<<<<<<<<<<<<
- *
+ * 
  *         results = coo_entries()
 */
   __pyx_t_7 = PyFloat_FromDouble(__pyx_v_p); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 2118, __pyx_L1_error)
@@ -23951,7 +23951,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
 
   /* "pyart/map/ckdtree.pyx":2120
  *             p, 0, max_distance)
- *
+ * 
  *         results = coo_entries()             # <<<<<<<<<<<<<<
  *         self.__sparse_distance_matrix_traverse(other, results,
  *                                                self.tree, other.tree,
@@ -23969,7 +23969,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
   __pyx_t_2 = 0;
 
   /* "pyart/map/ckdtree.pyx":2121
- *
+ * 
  *         results = coo_entries()
  *         self.__sparse_distance_matrix_traverse(other, results,             # <<<<<<<<<<<<<<
  *                                                self.tree, other.tree,
@@ -23979,7 +23979,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
 
   /* "pyart/map/ckdtree.pyx":2125
  *                                                tracker)
- *
+ * 
  *         return results.to_matrix(shape=(self.n, other.n)).todok()             # <<<<<<<<<<<<<<
 */
   __Pyx_XDECREF(__pyx_r);
@@ -24027,7 +24027,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
 
   /* "pyart/map/ckdtree.pyx":2085
  *         return 0
- *
+ * 
  *     def sparse_distance_matrix(cKDTree self, cKDTree other,             # <<<<<<<<<<<<<<
  *                                np.float64_t max_distance,
  *                                np.float64_t p=2.):
@@ -24053,7 +24053,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_14sparse_distance_matrix
 }
 
 /* "pyart/map/ckdtree.pyx":835
- *
+ * 
  *     cdef innernode* tree
  *     cdef readonly np.ndarray data             # <<<<<<<<<<<<<<
  *     cdef np.float64_t* raw_data
@@ -24315,7 +24315,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_4mins___get__(struct __p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_17__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_17__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24323,7 +24323,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_17__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_17__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_17__reduce_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_17__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24396,7 +24396,7 @@ static PyObject *__pyx_pf_5pyart_3map_7ckdtree_7cKDTree_16__reduce_cython__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_19__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_19__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24404,7 +24404,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_5pyart_3map_7ckdtree_7cKDTree_19__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_19__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_19__setstate_cython__(PyObject *__pyx_v_self,
+static PyObject *__pyx_pw_5pyart_3map_7ckdtree_7cKDTree_19__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26200,7 +26200,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_ckdtree(PyObject *__pyx_pyinit_mod
         Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-
+  
 __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
   __Pyx_init_runtime_version();
   if (__Pyx_check_binary_version(__PYX_LIMITED_VERSION_HEX, __Pyx_get_runtime_version(), CYTHON_COMPILING_IN_LIMITED_API) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -26241,7 +26241,7 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
  * # Released under the scipy license
  * import numpy as np             # <<<<<<<<<<<<<<
  * import scipy.sparse
- *
+ * 
 */
   __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   __pyx_t_2 = __pyx_t_1;
@@ -26253,7 +26253,7 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
  * # Released under the scipy license
  * import numpy as np
  * import scipy.sparse             # <<<<<<<<<<<<<<
- *
+ * 
  * cimport cython
 */
   __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_scipy_sparse, 0, 0, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
@@ -26266,7 +26266,7 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
  * cdef extern from "limits.h":
  *     long LONG_MAX
  * cdef np.float64_t infinity = np.inf             # <<<<<<<<<<<<<<
- *
+ * 
  * __all__ = ['cKDTree']
 */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
@@ -26280,10 +26280,10 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
 
   /* "pyart/map/ckdtree.pyx":52
  * cdef np.float64_t infinity = np.inf
- *
+ * 
  * __all__ = ['cKDTree']             # <<<<<<<<<<<<<<
- *
- *
+ * 
+ * 
 */
   __pyx_t_3 = __Pyx_PyList_Pack(1, __pyx_mstate_global->__pyx_n_u_cKDTree); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -26319,7 +26319,7 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
 
   /* "pyart/map/ckdtree.pyx":273
  *         self.n += 1
- *
+ * 
  *     def to_matrix(coo_entries self, shape=None):             # <<<<<<<<<<<<<<
  *         # Shrink arrays to size
  *         self.i.resize(self.n)
@@ -26389,18 +26389,18 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
 
   /* "pyart/map/ckdtree.pyx":455
  *     np.float64_t min_distance, max_distance
- *
+ * 
  * cdef np.intp_t LESS = 1             # <<<<<<<<<<<<<<
  * cdef np.intp_t GREATER = 2
- *
+ * 
 */
   __pyx_v_5pyart_3map_7ckdtree_LESS = 1;
 
   /* "pyart/map/ckdtree.pyx":456
- *
+ * 
  * cdef np.intp_t LESS = 1
  * cdef np.intp_t GREATER = 2             # <<<<<<<<<<<<<<
- *
+ * 
  * cdef class RectRectDistanceTracker(object):
 */
   __pyx_v_5pyart_3map_7ckdtree_GREATER = 2;
@@ -26464,13 +26464,13 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
  *     def query(cKDTree self, object x, np.intp_t k=1, np.float64_t eps=0,
  *               np.float64_t p=2, np.float64_t distance_upper_bound=infinity):             # <<<<<<<<<<<<<<
  *         """query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf)
- *
+ * 
 */
   __pyx_mstate_global->__pyx_k_ = __pyx_v_5pyart_3map_7ckdtree_infinity;
 
   /* "pyart/map/ckdtree.pyx":1204
- *
- *
+ * 
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def query(cKDTree self, object x, np.intp_t k=1, np.float64_t eps=0,
@@ -26491,8 +26491,8 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "pyart/map/ckdtree.pyx":1384
- *
- *
+ * 
+ * 
  *     def query_ball_point(cKDTree self, object x, np.float64_t r,             # <<<<<<<<<<<<<<
  *                          np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_point(self, x, r, p, eps)
@@ -26507,8 +26507,8 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "pyart/map/ckdtree.pyx":1568
- *
- *
+ * 
+ * 
  *     def query_ball_tree(cKDTree self, cKDTree other,             # <<<<<<<<<<<<<<
  *                         np.float64_t r, np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_tree(self, other, r, p, eps)
@@ -26523,8 +26523,8 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "pyart/map/ckdtree.pyx":1759
- *
- *
+ * 
+ * 
  *     def query_pairs(cKDTree self, np.float64_t r, np.float64_t p=2.,             # <<<<<<<<<<<<<<
  *                     np.float64_t eps=0):
  *         """query_pairs(self, r, p, eps)
@@ -26540,7 +26540,7 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
 
   /* "pyart/map/ckdtree.pyx":1911
  *         return 0
- *
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def count_neighbors(cKDTree self, cKDTree other, object r, np.float64_t p=2.):
@@ -26556,7 +26556,7 @@ __Pyx_RefNannySetupContext("PyInit_ckdtree", 0);
 
   /* "pyart/map/ckdtree.pyx":2085
  *         return 0
- *
+ * 
  *     def sparse_distance_matrix(cKDTree self, cKDTree other,             # <<<<<<<<<<<<<<
  *                                np.float64_t max_distance,
  *                                np.float64_t p=2.):
@@ -26697,7 +26697,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 
   /* "pyart/map/ckdtree.pyx":273
  *         self.n += 1
- *
+ * 
  *     def to_matrix(coo_entries self, shape=None):             # <<<<<<<<<<<<<<
  *         # Shrink arrays to size
  *         self.i.resize(self.n)
@@ -26707,8 +26707,8 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
 
   /* "pyart/map/ckdtree.pyx":1384
- *
- *
+ * 
+ * 
  *     def query_ball_point(cKDTree self, object x, np.float64_t r,             # <<<<<<<<<<<<<<
  *                          np.float64_t p=2., np.float64_t eps=0):
  *         """query_ball_point(self, x, r, p, eps)
@@ -26719,7 +26719,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 
   /* "pyart/map/ckdtree.pyx":1911
  *         return 0
- *
+ * 
  *     @cython.boundscheck(False)             # <<<<<<<<<<<<<<
  *     @cython.wraparound(False)
  *     def count_neighbors(cKDTree self, cKDTree other, object r, np.float64_t p=2.):
@@ -27015,12 +27015,12 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitGlobals(void) {
   /* PythonCompatibility.init */
   if (likely(__Pyx_init_co_variables() == 0)); else
-
+  
   if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
   /* AssertionsEnabled.init */
   if (likely(__Pyx_init_assertions_enabled() == 0)); else
-
+  
   if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
   /* NumpyImportArray.init */
@@ -27039,12 +27039,12 @@ static int __Pyx_InitGlobals(void) {
   }
   #endif
   #endif
-
+  
   if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
   /* CommonTypesMetaclass.init */
   if (likely(__pyx_CommonTypesMetaclass_init(__pyx_m) == 0)); else
-
+  
   if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
   /* CachedMethodType.init */
@@ -27058,12 +27058,12 @@ static int __Pyx_InitGlobals(void) {
       }
   } // error handling follows
   #endif
-
+  
   if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
   /* CythonFunctionShared.init */
   if (likely(__pyx_CyFunction_init(__pyx_m) == 0)); else
-
+  
   if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L1_error)
 
   return 0;
@@ -29721,19 +29721,19 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
     __Pyx_SafeReleaseBuffer(buf);
     return -1;
   }
-
+  
 /* BufferFallbackError */
   static void __Pyx_RaiseBufferFallbackError(void) {
     PyErr_SetString(PyExc_ValueError,
        "Buffer acquisition failed on assignment; and then reacquiring the old buffer failed too!");
   }
-
+  
 /* BufferIndexError */
   static void __Pyx_RaiseBufferIndexError(int axis) {
     PyErr_Format(PyExc_IndexError,
        "Out of bounds on buffer access (axis %d)", axis);
   }
-
+  
 /* SliceObject */
   static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,
           Py_ssize_t cstart, Py_ssize_t cstop,
@@ -29795,7 +29795,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   bad:
       return NULL;
   }
-
+  
 /* RaiseUnexpectedTypeError */
   static int
   __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj)
@@ -29806,7 +29806,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       __Pyx_DECREF_TypeName(obj_type_name);
       return 0;
   }
-
+  
 /* AllocateExtensionType */
   static PyObject *__Pyx_AllocateExtensionType(PyTypeObject *t, int is_final) {
       if (is_final || likely(!__Pyx_PyType_HasFeature(t, Py_TPFLAGS_IS_ABSTRACT))) {
@@ -29828,7 +29828,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           return tp_new(t, __pyx_mstate_global->__pyx_empty_tuple, 0);
       }
   }
-
+  
 /* CallTypeTraverse */
   #if !CYTHON_USE_TYPE_SPECS || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x03090000)
   #else
@@ -29847,7 +29847,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return 0;
   }
   #endif
-
+  
 /* LimitedApiGetTypeDict (used by SetItemOnTypeDict) */
   #if CYTHON_COMPILING_IN_LIMITED_API
   static Py_ssize_t __Pyx_GetTypeDictOffset(void) {
@@ -29883,7 +29883,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return *(PyObject**)((char*)tp + tp_dictoffset);
   }
   #endif
-
+  
 /* SetItemOnTypeDict (used by FixUpExtensionType) */
   static int __Pyx__SetItemOnTypeDict(PyTypeObject *tp, PyObject *k, PyObject *v) {
       int result;
@@ -29905,7 +29905,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       }
       return result;
   }
-
+  
 /* FixUpExtensionType */
   static int __Pyx_fix_up_extension_type_from_spec(PyType_Spec *spec, PyTypeObject *type) {
   #if __PYX_LIMITED_VERSION_HEX > 0x030900B1
@@ -30006,13 +30006,13 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   #endif  // PY_VERSION_HEX > 0x030900B1
       return 0;
   }
-
+  
 /* PyObjectCallNoArg (used by PyObjectCallMethod0) */
   static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
       PyObject *arg[2] = {NULL, NULL};
       return __Pyx_PyObject_FastCall(func, arg + 1, 0 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET);
   }
-
+  
 /* PyObjectGetMethod (used by PyObjectCallMethod0) */
   #if !(CYTHON_VECTORCALL && (__PYX_LIMITED_VERSION_HEX >= 0x030C0000 || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX >= 0x03090000)))
   static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
@@ -30104,7 +30104,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return 0;
   }
   #endif
-
+  
 /* PyObjectCallMethod0 (used by PyType_Ready) */
   static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name) {
   #if CYTHON_VECTORCALL && (__PYX_LIMITED_VERSION_HEX >= 0x030C0000 || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX >= 0x03090000))
@@ -30127,7 +30127,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return result;
   #endif
   }
-
+  
 /* ValidateBasesTuple (used by PyType_Ready) */
   #if CYTHON_COMPILING_IN_CPYTHON || CYTHON_COMPILING_IN_LIMITED_API || CYTHON_USE_TYPE_SPECS
   static int __Pyx_validate_bases_tuple(const char *type_name, Py_ssize_t dictoffset, PyObject *bases) {
@@ -30201,7 +30201,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return 0;
   }
   #endif
-
+  
 /* PyType_Ready */
   CYTHON_UNUSED static int __Pyx_PyType_HasMultipleInheritance(PyTypeObject *t) {
       while (t) {
@@ -30297,7 +30297,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return r;
   #endif
   }
-
+  
 /* SetVTable */
   static int __Pyx_SetVtable(PyTypeObject *type, void *vtable) {
       PyObject *ob = PyCapsule_New(vtable, 0, 0);
@@ -30315,7 +30315,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_XDECREF(ob);
       return -1;
   }
-
+  
 /* GetVTable (used by MergeVTables) */
   static void* __Pyx_GetVtable(PyTypeObject *type) {
       void* ptr;
@@ -30335,7 +30335,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_XDECREF(ob);
       return NULL;
   }
-
+  
 /* MergeVTables */
   static int __Pyx_MergeVtables(PyTypeObject *type) {
       int i=0;
@@ -30429,7 +30429,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       PyMem_Free(base_vtables);
       return -1;
   }
-
+  
 /* DelItemOnTypeDict (used by SetupReduce) */
   static int __Pyx__DelItemOnTypeDict(PyTypeObject *tp, PyObject *k) {
       int result;
@@ -30444,7 +30444,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       if (likely(!result)) PyType_Modified(tp);
       return result;
   }
-
+  
 /* SetupReduce */
   static int __Pyx_setup_reduce_is_named(PyObject* meth, PyObject* name) {
     int ret;
@@ -30553,7 +30553,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_XDECREF(setstate_cython);
       return ret;
   }
-
+  
 /* TypeImport */
   #ifndef __PYX_HAVE_RT_ImportType_3_2_4
   #define __PYX_HAVE_RT_ImportType_3_2_4
@@ -30636,7 +30636,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return NULL;
   }
   #endif
-
+  
 /* HasAttr (used by ImportImpl) */
   #if __PYX_LIMITED_VERSION_HEX < 0x030d0000
   static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
@@ -30655,7 +30655,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       }
   }
   #endif
-
+  
 /* ImportImpl (used by Import) */
   static int __Pyx__Import_GetModule(PyObject *qualname, PyObject **module) {
       PyObject *imported_module = PyImport_GetModule(qualname);
@@ -30769,12 +30769,12 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_XDECREF(empty_dict);
       return module;
   }
-
+  
 /* Import */
   static PyObject *__Pyx_Import(PyObject *name, PyObject *const *imported_names, Py_ssize_t len_imported_names, PyObject *qualname, int level) {
       return __Pyx__Import(name, imported_names, len_imported_names, qualname, __pyx_mstate_global->__pyx_d, level);
   }
-
+  
 /* ListPack */
   static PyObject *__Pyx_PyList_Pack(Py_ssize_t n, ...) {
       va_list va;
@@ -30793,7 +30793,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       va_end(va);
       return l;
   }
-
+  
 /* dict_setdefault (used by FetchCommonType) */
   static CYTHON_INLINE PyObject *__Pyx_PyDict_SetDefault(PyObject *d, PyObject *key, PyObject *default_value) {
       PyObject* value;
@@ -30811,7 +30811,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   #endif
       return value;
   }
-
+  
 /* AddModuleRef (used by FetchSharedCythonModule) */
   #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
     static PyObject *__Pyx_PyImport_AddModuleObjectRef(PyObject *name) {
@@ -30856,12 +30856,12 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
         return module;
     }
   #endif
-
+  
 /* FetchSharedCythonModule (used by FetchCommonType) */
   static PyObject *__Pyx_FetchSharedCythonABIModule(void) {
       return __Pyx_PyImport_AddModuleRef(__PYX_ABI_MODULE_NAME);
   }
-
+  
 /* FetchCommonType (used by CommonTypesMetaclass) */
   #if __PYX_LIMITED_VERSION_HEX < 0x030C0000
   static PyObject* __Pyx_PyType_FromMetaclass(PyTypeObject *metaclass, PyObject *module, PyType_Spec *spec, PyObject *bases) {
@@ -30966,7 +30966,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       cached_type = NULL;
       goto done;
   }
-
+  
 /* CommonTypesMetaclass (used by CythonFunctionShared) */
   static PyObject* __pyx_CommonTypesMetaclass_get_module(CYTHON_UNUSED PyObject *self, CYTHON_UNUSED void* context) {
       return PyUnicode_FromString(__PYX_ABI_MODULE_NAME);
@@ -31016,7 +31016,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       }
       return 0;
   }
-
+  
 /* PyMethodNew (used by CythonFunctionShared) */
   #if CYTHON_COMPILING_IN_LIMITED_API
   static PyObject *__Pyx_PyMethod_New(PyObject *func, PyObject *self, PyObject *typ) {
@@ -31042,7 +31042,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return PyMethod_New(func, self);
   }
   #endif
-
+  
 /* PyVectorcallFastCallDict (used by CythonFunctionShared) */
   #if CYTHON_METH_FASTCALL && CYTHON_VECTORCALL
   static PyObject *__Pyx_PyVectorcall_FastCallDict_kw(PyObject *func, __pyx_vectorcallfunc vc, PyObject *const *args, size_t nargs, PyObject *kw)
@@ -31132,7 +31132,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return __Pyx_PyVectorcall_FastCallDict_kw(func, vc, args, nargs, kw);
   }
   #endif
-
+  
 /* CythonFunctionShared (used by CythonFunction) */
   #if CYTHON_COMPILING_IN_LIMITED_API
   static CYTHON_INLINE int __Pyx__IsSameCyOrCFunctionNoMethod(PyObject *func, void (*cfunc)(void)) {
@@ -32141,7 +32141,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       m->func_annotations = dict;
       Py_INCREF(dict);
   }
-
+  
 /* CythonFunction */
   static PyObject *__Pyx_CyFunction_New(PyMethodDef *ml, int flags, PyObject* qualname,
                                         PyObject *closure, PyObject *module, PyObject* globals, PyObject* code) {
@@ -32154,7 +32154,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       }
       return op;
   }
-
+  
 /* CLineInTraceback (used by AddTraceback) */
   #if CYTHON_CLINE_IN_TRACEBACK && CYTHON_CLINE_IN_TRACEBACK_RUNTIME
   #if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030A0000
@@ -32191,7 +32191,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return c_line;
   }
   #endif
-
+  
 /* CodeObjectCache (used by AddTraceback) */
   static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
       int start = 0, mid = 0, end = count - 1;
@@ -32311,7 +32311,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   #endif
   #endif
   }
-
+  
 /* AddTraceback */
   #include "compile.h"
   #include "frameobject.h"
@@ -32448,7 +32448,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_XDECREF(py_frame);
   }
   #endif
-
+  
 /* CIntFromPyVerify */
   #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
       __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -32470,7 +32470,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           }\
           return (target_type) value;\
       }
-
+  
 /* Declarations */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
     #ifdef __cplusplus
@@ -32490,7 +32490,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
         return z;
       }
   #endif
-
+  
 /* Arithmetic */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
   #else
@@ -32624,7 +32624,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           }
       #endif
   #endif
-
+  
 /* Declarations */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
     #ifdef __cplusplus
@@ -32644,7 +32644,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
         return z;
       }
   #endif
-
+  
 /* Arithmetic */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
   #else
@@ -32778,7 +32778,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           }
       #endif
   #endif
-
+  
 /* Declarations */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
     #ifdef __cplusplus
@@ -32798,7 +32798,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
         return z;
       }
   #endif
-
+  
 /* Arithmetic */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
   #else
@@ -32932,7 +32932,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           }
       #endif
   #endif
-
+  
 /* CIntFromPy */
   static CYTHON_INLINE npy_intp __Pyx_PyLong_As_npy_intp(PyObject *x) {
   #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -33182,7 +33182,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           "can't convert negative value to npy_intp");
       return (npy_intp) -1;
   }
-
+  
 /* CIntToPy */
   static CYTHON_INLINE PyObject* __Pyx_PyLong_From_npy_intp(npy_intp value) {
   #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -33251,7 +33251,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   #endif
       }
   }
-
+  
 /* CIntToPy */
   static CYTHON_INLINE PyObject* __Pyx_PyLong_From_long(long value) {
   #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -33320,7 +33320,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   #endif
       }
   }
-
+  
 /* FormatTypeName */
   #if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030d0000
   static __Pyx_TypeName
@@ -33359,7 +33359,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       goto done;
   }
   #endif
-
+  
 /* CIntFromPy */
   static CYTHON_INLINE long __Pyx_PyLong_As_long(PyObject *x) {
   #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -33609,7 +33609,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           "can't convert negative value to long");
       return (long) -1;
   }
-
+  
 /* CIntFromPy */
   static CYTHON_INLINE int __Pyx_PyLong_As_int(PyObject *x) {
   #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -33859,7 +33859,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           "can't convert negative value to int");
       return (int) -1;
   }
-
+  
 /* FastTypeChecks */
   #if CYTHON_COMPILING_IN_CPYTHON
   static int __Pyx_InBases(PyTypeObject *a, PyTypeObject *b) {
@@ -33946,7 +33946,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return (PyErr_GivenExceptionMatches(err, exc_type1) || PyErr_GivenExceptionMatches(err, exc_type2));
   }
   #endif
-
+  
 /* GetRuntimeVersion */
   #if __PYX_LIMITED_VERSION_HEX < 0x030b0000
   void __Pyx_init_runtime_version(void) {
@@ -33979,7 +33979,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       return __Pyx_cached_runtime_version;
   #endif
   }
-
+  
 /* CheckBinaryVersion */
   static int __Pyx_check_binary_version(unsigned long ct_version, unsigned long rt_version, int allow_newer) {
       const unsigned long MAJOR_MINOR = 0xFFFF0000UL;
@@ -34002,7 +34002,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
           return PyErr_WarnEx(NULL, message, 1);
       }
   }
-
+  
 /* NewCodeObj */
   #if CYTHON_COMPILING_IN_LIMITED_API
       static PyObject* __Pyx__PyCode_New(int a, int p, int k, int l, int s, int f,
@@ -34143,7 +34143,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_DECREF(varnames_tuple);
       return code_obj;
   }
-
+  
 /* DecompressString */
   static PyObject *__Pyx_DecompressString(const char *s, Py_ssize_t length, int algo) {
       PyObject *module = NULL, *decompress, *compressed_bytes, *decompressed;
@@ -34207,7 +34207,7 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       Py_DECREF(methodname);
       return NULL;
   }
-
+  
 #include <string.h>
 static CYTHON_INLINE Py_ssize_t __Pyx_ssize_strlen(const char *s) {
     size_t len = strlen(s);
@@ -34748,7 +34748,7 @@ static CYTHON_INLINE PyObject * __Pyx_PyLong_FromSize_t(size_t ival) {
       return 0;
   }
   #endif
-
+  
 /* #### Code section: utility_code_pragmas_end ### */
 #ifdef _MSC_VER
 #pragma warning( pop )
