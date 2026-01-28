@@ -180,31 +180,27 @@ def test_get_gate_lat_lon_alt():
     radar = pyart.testing.make_empty_ppi_radar(5, 4, 2)
     lat, lon, alt = radar.get_gate_lat_lon_alt(0)
     assert lat.shape == (4, 5)
-    assert_allclose(lat[0], [36.5, 36.502243, 36.50449, 36.506744, 36.50899], atol=1e-3)
     assert_allclose(
-        lat[1], [36.5, 36.502243, 36.50449, 36.506737, 36.508984], atol=1e-3
+        lat[0], [36.5, 36.50224814, 36.50449635, 36.50674462, 36.50899296], atol=1e-3
     )
     assert_allclose(
-        lat[2], [36.5, 36.502243, 36.50449, 36.506737, 36.508984], atol=1e-3
+        lat[1], [36.5, 36.5022478, 36.50449567, 36.5067436, 36.50899159], atol=1e-3
     )
-    assert_allclose(lat[3], [36.5, 36.50224, 36.504486, 36.50673, 36.508976], atol=1e-3)
+    assert_allclose(
+        lat[2], [36.5, 36.50224677, 36.50449361, 36.50674051, 36.50898748], atol=1e-3
+    )
+    assert_allclose(
+        lat[3], [36.5, 36.50224506, 36.50449019, 36.50673538, 36.50898063], atol=1e-3
+    )
 
     assert lon.shape == (4, 5)
-    assert_allclose(
-        lon[0], [-97.49999, -97.49999, -97.49999, -97.49999, -97.49999], atol=1e-3
-    )
-    assert_allclose(
-        lon[1], [-97.49999, -97.49995, -97.4999, -97.499855, -97.499794], atol=1e-3
-    )
-    assert_allclose(
-        lon[2], [-97.49999, -97.4999, -97.499794, -97.4997, -97.4996], atol=1e-3
-    )
-    assert_allclose(
-        lon[3], [-97.49999, -97.499855, -97.4997, -97.49956, -97.499405], atol=1e-3
-    )
+    assert_allclose(lon[0], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
+    assert_allclose(lon[1], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
+    assert_allclose(lon[2], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
+    assert_allclose(lon[3], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
 
     assert lat.shape == (4, 5)
-    alt_sweep0 = np.array([200.0, 203.0, 206.0, 209.0, 213.0])
+    alt_sweep0 = np.array([200.0, 203.5, 206.5, 210.0, 213.5])
     assert_allclose(alt[0], alt_sweep0, atol=1e-3)
     assert_allclose(alt[1], alt_sweep0, atol=1e-3)
     assert_allclose(alt[2], alt_sweep0, atol=1e-3)
@@ -216,25 +212,23 @@ def test_get_gate_lat_lon_alt_transitions():
     radar.antenna_transition = {"data": np.array([0, 0, 1, 0, 0, 0, 0, 0])}
     lat, lon, alt = radar.get_gate_lat_lon_alt(0, filter_transitions=True)
     assert lat.shape == (3, 5)
-    assert_allclose(lat[0], [36.5, 36.502243, 36.50449, 36.506744, 36.50899], atol=1e-3)
     assert_allclose(
-        lat[1], [36.5, 36.502243, 36.50449, 36.506737, 36.508984], atol=1e-3
+        lat[0], [36.5, 36.50224814, 36.50449635, 36.50674462, 36.50899296], atol=1e-3
     )
-    assert_allclose(lat[2], [36.5, 36.50224, 36.504486, 36.50673, 36.508976], atol=1e-3)
+    assert_allclose(
+        lat[1], [36.5, 36.5022478, 36.50449567, 36.5067436, 36.50899159], atol=1e-3
+    )
+    assert_allclose(
+        lat[2], [36.5, 36.50224677, 36.50449361, 36.50674051, 36.50898748], atol=1e-3
+    )
 
     assert lon.shape == (3, 5)
-    assert_allclose(
-        lon[0], [-97.49999, -97.49999, -97.49999, -97.49999, -97.49999], atol=1e-3
-    )
-    assert_allclose(
-        lon[1], [-97.49999, -97.49995, -97.4999, -97.499855, -97.499794], atol=1e-3
-    )
-    assert_allclose(
-        lon[2], [-97.49999, -97.499855, -97.4997, -97.49956, -97.499405], atol=1e-3
-    )
+    assert_allclose(lon[0], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
+    assert_allclose(lon[1], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
+    assert_allclose(lon[2], [-97.5, -97.5, -97.5, -97.5, -97.5], atol=1e-3)
 
     assert lat.shape == (3, 5)
-    alt_sweep0 = np.array([200.0, 203.0, 206.0, 209.0, 213.0])
+    alt_sweep0 = np.array([200.0, 203.5, 206.5, 210.0, 213.5])
     assert_allclose(alt[0], alt_sweep0, atol=1e-3)
     assert_allclose(alt[1], alt_sweep0, atol=1e-3)
     assert_allclose(alt[2], alt_sweep0, atol=1e-3)

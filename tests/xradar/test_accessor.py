@@ -76,11 +76,11 @@ def test_get_gate_lat_lon(filename=filename):
     lat, lon, alt = radar.get_gate_lat_lon_alt(0)
     # Check lat, lon, and alt values
     assert lat.shape == (480, 996)
-    assert_allclose(lat.min(), 21.183521)
+    assert_allclose(lat.min(), 21.1835544)
     assert lon.shape == (480, 996)
-    assert_allclose(lon.min(), 118.97935)
+    assert_allclose(lon.min(), 118.979397)
     assert alt.shape == (480, 996)
-    assert_allclose(alt.min(), 45.0000017)
+    assert_allclose(alt.min(), 45.50000)
 
 
 def test_add_field(filename=filename):
@@ -113,7 +113,9 @@ def test_grid(filename=filename):
         fields=["DBZ"],
     )
     assert_allclose(grid.x["data"], np.arange(-100_000, 120_000, 20_000))
-    assert_allclose(grid.fields["DBZ"]["data"][0, -1, 0], np.array(-0.511), rtol=1e-03)
+    assert_allclose(
+        grid.fields["DBZ"]["data"][0, -1, 0], np.array(-0.5336845), rtol=1e-03
+    )
 
 
 def test_extract_sweeps():
@@ -249,4 +251,4 @@ def test_grid_xradar():
     radar = dtree.pyart.to_radar()
     grid = pyart.map.grid_from_radars([radar], **COMMON_MAP_TO_GRID_ARGS)
     assert (10, 9, 3) == (grid.nx, grid.ny, grid.nz)
-    assert_allclose(np.min(grid.fields["DBZ"]["data"]), -1.3202062)
+    assert_allclose(np.min(grid.fields["DBZ"]["data"]), -4.789426)
