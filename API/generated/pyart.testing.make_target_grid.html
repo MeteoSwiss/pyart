@@ -558,6 +558,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_cfradial.html">pyart.io.read_cfradial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_cfradial2.html">pyart.io.read_cfradial2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_chl.html">pyart.io.read_chl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.io.read_files.html">pyart.io.read_files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_grid.html">pyart.io.read_grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_grid_mdv.html">pyart.io.read_grid_mdv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_mdv.html">pyart.io.read_mdv</a></li>
@@ -685,6 +686,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_field_name.html">pyart.config.get_field_name</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_fillvalue.html">pyart.config.get_fillvalue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_metadata.html">pyart.config.get_metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.config.get_rgba_bounds.html">pyart.config.get_rgba_bounds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.load_config.html">pyart.config.load_config</a></li>
 </ul>
 </details></li>
@@ -1829,8 +1831,18 @@
 <h1>pyart.testing.make_target_grid<a class="headerlink" href="#pyart-testing-make-target-grid" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyart.testing.make_target_grid">
-<span class="sig-prename descclassname"><span class="pre">pyart.testing.</span></span><span class="sig-name descname"><span class="pre">make_target_grid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyart.testing.make_target_grid" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyart.testing.</span></span><span class="sig-name descname"><span class="pre">make_target_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rgb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.testing.make_target_grid" title="Permalink to this definition">#</a></dt>
 <dd><p>Make a sample Grid with a rectangular target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rgb</strong> (<em>bool, default False</em>) – If True, also add fields needed for RGB-style composites:
+- cross_correlation_ratio (0.7..1.0)
+- differential_reflectivity (0..4)</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>rgb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – </p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

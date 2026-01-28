@@ -558,6 +558,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_cfradial.html">pyart.io.read_cfradial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_cfradial2.html">pyart.io.read_cfradial2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_chl.html">pyart.io.read_chl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_files.html">pyart.io.read_files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_grid.html">pyart.io.read_grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_grid_mdv.html">pyart.io.read_grid_mdv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.io.read_mdv.html">pyart.io.read_mdv</a></li>
@@ -685,6 +686,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyart.config.get_field_name.html">pyart.config.get_field_name</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.config.get_fillvalue.html">pyart.config.get_fillvalue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.config.get_metadata.html">pyart.config.get_metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pyart.config.get_rgba_bounds.html">pyart.config.get_rgba_bounds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyart.config.load_config.html">pyart.config.load_config</a></li>
 </ul>
 </details></li>
@@ -1847,14 +1849,16 @@
 field prior to plotting, for example to mask all data where
 NCP &lt; 0.5 set mask_tuple to [‘NCP’, 0.5]. None performs no masking.</p></li>
 <li><p><strong>vmin</strong> (<em>float</em>) – Luminance minimum value, None for default value.
-Parameter is ignored is norm is not None.</p></li>
+Parameter is ignored is norm is not None and for RGB plots.</p></li>
 <li><p><strong>vmax</strong> (<em>float</em>) – Luminance maximum value, None for default value.
-Parameter is ignored is norm is not None.</p></li>
+Parameter is ignored is norm is not None and for RGB plots.</p></li>
 <li><p><strong>norm</strong> (<em>Normalize or None, optional</em>) – matplotlib Normalize instance used to scale luminance data. If not
 None the vmax and vmin parameters are ignored. If None, vmin and
-vmax are used for luminance scaling.</p></li>
+vmax are used for luminance scaling.
+Ignored for RGB plots.</p></li>
 <li><p><strong>cmap</strong> (<em>str or None</em>) – Matplotlib colormap name. None will use the default colormap for
-the field being plotted as specified by the Py-ART configuration.</p></li>
+the field being plotted as specified by the Py-ART configuration.
+Ignored for RGB plots.</p></li>
 <li><p><strong>mask_outside</strong> (<em>bool</em>) – True to mask data outside of vmin, vmax. False performs no
 masking.</p></li>
 <li><p><strong>title</strong> (<em>str</em>) – Title to label plot with, None to use default title generated from

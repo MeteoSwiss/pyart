@@ -558,6 +558,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_cfradial.html">pyart.io.read_cfradial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_cfradial2.html">pyart.io.read_cfradial2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_chl.html">pyart.io.read_chl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.io.read_files.html">pyart.io.read_files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_grid.html">pyart.io.read_grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_grid_mdv.html">pyart.io.read_grid_mdv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.io.read_mdv.html">pyart.io.read_mdv</a></li>
@@ -685,6 +686,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_field_name.html">pyart.config.get_field_name</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_fillvalue.html">pyart.config.get_fillvalue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.get_metadata.html">pyart.config.get_metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.config.get_rgba_bounds.html">pyart.config.get_rgba_bounds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.config.load_config.html">pyart.config.load_config</a></li>
 </ul>
 </details></li>
@@ -1974,46 +1976,49 @@ for the format in question should be used.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_chl.html#pyart.io.read_chl" title="pyart.io.read_chl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_chl</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a CSU-CHILL CHL file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_grid.html#pyart.io.read_grid" title="pyart.io.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(filename[, exclude_fields, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_files.html#pyart.io.read_files" title="pyart.io.read_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_files</span></code></a>(wildcard, reader, **kwargs)</p></td>
+<td><p>Read multiple radar files matching a wildcard and merge them into a single Py-ART Radar object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_grid.html#pyart.io.read_grid" title="pyart.io.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(filename[, exclude_fields, ...])</p></td>
 <td><p>Read a netCDF grid file produced by Py-ART.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_grid_mdv.html#pyart.io.read_grid_mdv" title="pyart.io.read_grid_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid_mdv</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_grid_mdv.html#pyart.io.read_grid_mdv" title="pyart.io.read_grid_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid_mdv</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a MDV file to a Grid Object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_mdv.html#pyart.io.read_mdv" title="pyart.io.read_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mdv</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_mdv.html#pyart.io.read_mdv" title="pyart.io.read_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mdv</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a MDV file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_nexrad_archive.html#pyart.io.read_nexrad_archive" title="pyart.io.read_nexrad_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_archive</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_nexrad_archive.html#pyart.io.read_nexrad_archive" title="pyart.io.read_nexrad_archive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_archive</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a NEXRAD Level 2 Archive file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_nexrad_cdm.html#pyart.io.read_nexrad_cdm" title="pyart.io.read_nexrad_cdm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_cdm</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_nexrad_cdm.html#pyart.io.read_nexrad_cdm" title="pyart.io.read_nexrad_cdm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_cdm</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a Common Data Model (CDM) NEXRAD Level 2 file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_nexrad_level3.html#pyart.io.read_nexrad_level3" title="pyart.io.read_nexrad_level3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_level3</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_nexrad_level3.html#pyart.io.read_nexrad_level3" title="pyart.io.read_nexrad_level3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nexrad_level3</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a NEXRAD Level 3 product.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_rsl.html#pyart.io.read_rsl" title="pyart.io.read_rsl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rsl</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_rsl.html#pyart.io.read_rsl" title="pyart.io.read_rsl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rsl</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a file supported by RSL.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_sigmet.html#pyart.io.read_sigmet" title="pyart.io.read_sigmet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sigmet</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_sigmet.html#pyart.io.read_sigmet" title="pyart.io.read_sigmet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sigmet</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a Sigmet (IRIS) product file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.read_uf.html#pyart.io.read_uf" title="pyart.io.read_uf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_uf</span></code></a>(filename[, field_names, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.read_uf.html#pyart.io.read_uf" title="pyart.io.read_uf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_uf</span></code></a>(filename[, field_names, ...])</p></td>
 <td><p>Read a UF File.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.write_cfradial.html#pyart.io.write_cfradial" title="pyart.io.write_cfradial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_cfradial</span></code></a>(filename, radar[, format, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_cfradial.html#pyart.io.write_cfradial" title="pyart.io.write_cfradial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_cfradial</span></code></a>(filename, radar[, format, ...])</p></td>
 <td><p>Write a Radar object to a CF/Radial compliant netCDF file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_grid.html#pyart.io.write_grid" title="pyart.io.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(filename, grid[, format, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.write_grid.html#pyart.io.write_grid" title="pyart.io.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(filename, grid[, format, ...])</p></td>
 <td><p>Write a Grid object to a CF-1.5 and ARM standard netCDF file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.write_grid_geotiff.html#pyart.io.write_grid_geotiff" title="pyart.io.write_grid_geotiff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid_geotiff</span></code></a>(grid, filename, field[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_grid_geotiff.html#pyart.io.write_grid_geotiff" title="pyart.io.write_grid_geotiff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid_geotiff</span></code></a>(grid, filename, field[, ...])</p></td>
 <td><p>Write a Py-ART Grid object to a GeoTIFF file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_grid_mdv.html#pyart.io.write_grid_mdv" title="pyart.io.write_grid_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid_mdv</span></code></a>(filename, grid[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.write_grid_mdv.html#pyart.io.write_grid_mdv" title="pyart.io.write_grid_mdv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid_mdv</span></code></a>(filename, grid[, ...])</p></td>
 <td><p>Write grid object to MDV file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pyart.io.write_uf.html#pyart.io.write_uf" title="pyart.io.write_uf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_uf</span></code></a>(filename, radar[, uf_field_names, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.io.write_uf.html#pyart.io.write_uf" title="pyart.io.write_uf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_uf</span></code></a>(filename, radar[, uf_field_names, ...])</p></td>
 <td><p>Write a Radar object to a UF file.</p></td>
 </tr>
 </tbody>

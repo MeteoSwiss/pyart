@@ -1,0 +1,6 @@
+pyart.config.get\_rgba\_bounds
+==============================
+
+.. currentmodule:: pyart.config
+
+.. autofunction:: get_rgba_bounds

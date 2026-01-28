@@ -1,0 +1,663 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Generating RGB composites of radar data &#8212; pyart_mch 2.2.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/pyart-theme.css?v=64e953c6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=341fb650"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/rgb_composites_polar_data';</script>
+    <script src="../_static/doc_shared.js?v=6c7402a7"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.2.1" /> 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../blog/atom.xml"
+  title="PyART Blog"
+/>
+  
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyart_mch 2.2.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../API/index.html">
+    API Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../notebook-gallery.html">
+    Notebook Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwiss/pyart" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../userguide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../API/index.html">
+    API Manual
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Example Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../notebook-gallery.html">
+    Notebook Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/MeteoSwiss/pyart" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Generating RGB composites of radar data</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section class="tex2jax_ignore mathjax_ignore" id="generating-rgb-composites-of-radar-data">
+<h1>Generating RGB composites of radar data<a class="headerlink" href="#generating-rgb-composites-of-radar-data" title="Permalink to this heading">#</a></h1>
+<p>The MeteoSwiss version of Py-ART now allows to create RGB composites of radar moments. The approach is based on the poster</p>
+<p><em>Detecting severe storms using an RGB composite combining polarimetric radar parameters</em> by Bram van ´t Veen, Pieter Groenemeijer, Tomáš Púčik, European Severe Storms Laboratory, Vienna, 2025</p>
+<p>https://presentations.copernicus.org/ECSS2025/ECSS2025-289_supplement.pdf</p>
+<p>The idea is that 3 polarimetric variables are mapped to the R, G and B channels, which allows to highlight meteorological features in a single figure. The authors provide the following interpretation key</p>
+<a class="reference internal image-reference" href="../_images/rgb_interpretation.png"><img alt="rgb_interpretation" src="../_images/rgb_interpretation.png" style="width: 600px;" /></a>
+<p>Radar moments first need to normaized to a [0-1] RGB space. The authors suggest this conversion table.</p>
+<a class="reference internal image-reference" href="../_images/conversion_table.png"><img alt="conversion_table" src="../_images/conversion_table.png" style="width: 400px;" /></a>
+<p>The alpha channel is used to decrease the visual impact of regions of low reflectivity. Without this additional transparency the composite image tends to be too green.</p>
+<section id="conversion-table-in-py-art">
+<h2>Conversion table in Py-ART<a class="headerlink" href="#conversion-table-in-py-art" title="Permalink to this heading">#</a></h2>
+<p>The conversion table is implemented in the configuration file of Py-ART. By default it is the same as in the poster, namely.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">DEFAULT_RGB_BOUNDS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">reflectivity</span><span class="p">:</span> <span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="n">differential_reflectivity</span><span class="p">:</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="n">cross_correlation_ratio</span><span class="p">:</span>  <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+    <span class="p">}</span>
+
+    <span class="n">DEFAULT_RGB_ALPHA</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">reflectivity</span><span class="p">:</span> <span class="p">((</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">28</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">34</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">40</span><span class="p">),(</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.12</span><span class="p">,</span><span class="mf">0.22</span><span class="p">,</span><span class="mf">0.29</span><span class="p">,</span><span class="mf">0.39</span><span class="p">,</span><span class="mf">0.48</span><span class="p">,</span><span class="mf">0.58</span><span class="p">,</span><span class="mf">0.67</span><span class="p">,</span><span class="mf">0.77</span><span class="p">,</span><span class="mf">0.88</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>The best way to change the defaults it to make your own copy of the file https://github.com/MeteoSwiss/pyart/blob/master/pyart/default_config.py or https://github.com/MeteoSwiss/pyrad/blob/master/config/pyart/mch_config.py, edit the values there and then run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export PYART_CONFIG=&lt;path_to_your_file&gt;
+</pre></div>
+</div>
+<p>Which will make Py-ART use it</p>
+</section>
+<section id="how-to-make-rgb-plots-in-py-art">
+<h2>How to make RGB plots in Py-ART<a class="headerlink" href="#how-to-make-rgb-plots-in-py-art" title="Permalink to this heading">#</a></h2>
+<p>It is very easy to make RGB plots in Py-ART, you only need to use the classical Py-ART plotting functions with three field names instead of a single one.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyart</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+
+<span class="n">DATA_PATTERN</span><span class="o">=</span><span class="s2">&quot;/store_new/mch/msrad/radar/rad4alp/rawdata/18162/MLD18162/MLD1816220550U.*&quot;</span>
+<span class="c1"># This function allows to read a pattern of files into a single radar object</span>
+<span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_files</span><span class="p">(</span><span class="n">DATA_PATTERN</span><span class="p">,</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>## You are using the Python ARM Radar Toolkit (Py-ART), an open source
+## library for working with weather radar data. Py-ART is partly
+## supported by the U.S. Department of Energy as part of the Atmospheric
+## Radiation Measurement (ARM) Climate Research Facility, an Office of
+## Science user facility.
+##
+## If you use this software to prepare a publication, please cite:
+##
+##     JJ Helmus and SM Collis, JORS 2016, doi: 10.5334/jors.119
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RGB_FIELDS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;reflectivity&quot;</span><span class="p">,</span> <span class="s2">&quot;uncorrected_cross_correlation_ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;differential_reflectivity&quot;</span><span class="p">)</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_ppi</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(-50.0, 50.0)
+</pre></div>
+</div>
+<img alt="../_images/bf14442f65bd3357e47f50d058d5ad2c62783c984e6942c092c6ccd7783bf9d0.png" src="../_images/bf14442f65bd3357e47f50d058d5ad2c62783c984e6942c092c6ccd7783bf9d0.png" />
+</div>
+</div>
+<p>Note that you need make sure that the variables used in the plot are keys of the DEFAULT_RGB_BOUNDS and that the first variable is a key of the DEFAULT_RGB_ALPHA dictionaries (you can always extend them in the config files). The assumptions made by Py-ART are the following:</p>
+<ol class="arabic simple">
+<li><p>The red color is associated to the first variable, green to the second and blue to the third.</p></li>
+<li><p>The alpha channel is parameterized by the first variable</p></li>
+</ol>
+<p>Feel free to test and find out new possibilites of RGB composites!</p>
+</section>
+<section id="suported-plots">
+<h2>Suported plots<a class="headerlink" href="#suported-plots" title="Permalink to this heading">#</a></h2>
+<p>Currently, the following Py-ART plotting functions support RGB plots:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.graph.RadarDisplay.plot_ppi.html#pyart.graph.RadarDisplay.plot_ppi">pyart.graph.RadarDisplay.plot_ppi</a></p></li>
+<li><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.graph.RadarDisplay.plot_rhi.html#pyart.graph.RadarDisplay.plot_rhi">pyart.graph.RadarDisplay.plot_rhi</a></p></li>
+<li><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.graph.RadarDisplay.plot_xsection.html">pyart.graph.RadarDisplay.plot_xsection</a></p></li>
+<li><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.graph.RadarMapDisplay.plot_ppi_map.html">pyart.graph.RadarMapDisplay.plot_ppi_map</a></p></li>
+<li><p><a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/pyart.graph.GridMapDisplay.plot_grid.html#pyart.graph.GridMapDisplay.plot_grid">pyart.graph.GridMapDisplay.plot_grid</a></p></li>
+</ul>
+</section>
+<section id="some-examples">
+<h2>Some examples<a class="headerlink" href="#some-examples" title="Permalink to this heading">#</a></h2>
+<section id="cross-section-plot">
+<h3>Cross-section plot<a class="headerlink" href="#cross-section-plot" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">COORDS</span><span class="o">=</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">46</span><span class="p">),(</span><span class="mi">7</span><span class="p">,</span><span class="mi">47</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_xsection</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">,</span> <span class="n">ref_points</span><span class="o">=</span><span class="n">COORDS</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a4ba183b35497c39071115cab8232a721505ae708f4eb0d9f0d39ab9bd17f520.png" src="../_images/a4ba183b35497c39071115cab8232a721505ae708f4eb0d9f0d39ab9bd17f520.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="ppi-on-a-spatial-map">
+<h2>PPI on a spatial map<a class="headerlink" href="#ppi-on-a-spatial-map" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">display</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">RadarMapDisplay</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
+<span class="n">min_lon</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">max_lon</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">min_lat</span> <span class="o">=</span> <span class="mi">46</span>
+<span class="n">max_lat</span> <span class="o">=</span> <span class="mi">47</span>
+<span class="n">lonstep</span><span class="o">=</span><span class="n">latstep</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">lon_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_lon</span><span class="p">,</span> <span class="n">max_lon</span> <span class="o">+</span> <span class="n">lonstep</span><span class="p">,</span> <span class="n">lonstep</span><span class="p">)</span>
+<span class="n">lat_lines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_lat</span><span class="p">,</span> <span class="n">max_lat</span> <span class="o">+</span> <span class="n">latstep</span><span class="p">,</span> <span class="n">latstep</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_ppi_map</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">,</span> <span class="n">sweep</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lon_lines</span><span class="o">=</span><span class="n">lon_lines</span><span class="p">,</span> 
+                     <span class="n">lat_lines</span><span class="o">=</span><span class="n">lat_lines</span><span class="p">,</span>
+                     <span class="n">min_lat</span><span class="o">=</span><span class="n">min_lat</span><span class="p">,</span>
+                     <span class="n">max_lat</span><span class="o">=</span><span class="n">max_lat</span><span class="p">,</span>
+                     <span class="n">min_lon</span><span class="o">=</span><span class="n">min_lon</span><span class="p">,</span>
+                     <span class="n">max_lon</span><span class="o">=</span><span class="n">max_lon</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/28a612fed946d7381f7425e8d83a4ac61bd9b7267665705f141b59ef055bbee2.png" src="../_images/28a612fed946d7381f7425e8d83a4ac61bd9b7267665705f141b59ef055bbee2.png" />
+</div>
+</div>
+</section>
+<section id="grid-map">
+<h2>Grid map<a class="headerlink" href="#grid-map" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">grid_from_radars</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">radar</span><span class="p">,),</span>
+    <span class="n">grid_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">241</span><span class="p">,</span> <span class="mi">241</span><span class="p">),</span>
+    <span class="n">grid_limits</span><span class="o">=</span><span class="p">((</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">80000.0</span><span class="p">,</span> <span class="mf">80000.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">80000.0</span><span class="p">,</span> <span class="mf">80000.0</span><span class="p">)),</span>
+    <span class="n">fields</span><span class="o">=</span><span class="n">RGB_FIELDS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">GridMapDisplay</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_grid</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>45.70098978113134
+</pre></div>
+</div>
+<img alt="../_images/1e874946d48066994c7015e75526b05d88aa4241ad1139aa474326597ddfb72e.png" src="../_images/1e874946d48066994c7015e75526b05d88aa4241ad1139aa474326597ddfb72e.png" />
+</div>
+</div>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+   
+</div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conversion-table-in-py-art">Conversion table in Py-ART</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-make-rgb-plots-in-py-art">How to make RGB plots in Py-ART</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suported-plots">Suported plots</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-examples">Some examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-section-plot">Cross-section plot</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppi-on-a-spatial-map">PPI on a spatial map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-map">Grid map</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/notebooks/rgb_composites_polar_data.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

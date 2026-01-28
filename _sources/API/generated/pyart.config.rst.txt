@@ -38,6 +38,8 @@
     
     get_metadata
     
+    get_rgba_bounds
+    
     load_config
     
 
