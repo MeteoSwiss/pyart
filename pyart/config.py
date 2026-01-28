@@ -75,6 +75,8 @@ def load_config(filename=None):
     global _DEFAULT_FIELD_NAMES
     global _DEFAULT_FIELD_COLORMAP
     global _DEFAULT_FIELD_LIMITS
+    global _DEFAULT_RGB_BOUNDS
+    global _DEFAULT_RGB_ALPHA
     global _KE
 
     try:
@@ -97,6 +99,8 @@ def load_config(filename=None):
     _DEFAULT_FIELD_NAMES = cfile.DEFAULT_FIELD_NAMES
     _DEFAULT_FIELD_COLORMAP = cfile.DEFAULT_FIELD_COLORMAP
     _DEFAULT_FIELD_LIMITS = cfile.DEFAULT_FIELD_LIMITS
+    _DEFAULT_RGB_BOUNDS = cfile.DEFAULT_RGB_BOUNDS
+    _DEFAULT_RGB_ALPHA = cfile.DEFAULT_RGB_ALPHA
     return
 
 
@@ -216,6 +220,25 @@ def get_field_mapping(filetype):
 
     """
     return _FIELD_MAPPINGS[filetype].copy()
+
+
+def get_rgba_bounds(filetypes):
+    """
+    Return a copy of the default RGBA bounds for given file types.
+
+    Parameters
+    ----------
+    filetypes : tuple of 3 str
+        Filetypes to use to calculate the RGB bounds.
+
+    Returns
+    -------
+    rgba_bounds : tuple
+        Tuple of length 4 containing RGB bounds followed by alpha bounds.
+    """
+    rgba_bounds = [_DEFAULT_RGB_BOUNDS[ft] for ft in filetypes]
+    rgba_bounds.append(_DEFAULT_RGB_ALPHA[filetypes[0]])
+    return tuple(rgba_bounds)
 
 
 class FileMetadata:

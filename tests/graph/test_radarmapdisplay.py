@@ -45,6 +45,33 @@ def test_radarmapdisplay_cartopy_ppi(outfile=None):
     not pyart.graph.radarmapdisplay._CARTOPY_AVAILABLE,
     reason="Cartopy is not installed.",
 )
+def test_radarmapdisplay_cartopy_ppi_rgb(outfile=None):
+    radar = pyart.aux_io.read_metranet(pyart.testing.METRANET_FILE)
+    display = pyart.graph.RadarMapDisplay(radar, shift=(0.1, 0.0))
+    display.plot_ppi_map(
+        (
+            "reflectivity",
+            "uncorrected_cross_correlation_ratio",
+            "differential_reflectivity",
+        ),
+        0,
+        title="RGB PPI Map",
+        min_lon=8.3,
+        max_lon=9.3,
+        min_lat=45.6,
+        max_lat=46.6,
+        mask_outside=True,
+    )
+    display.plot_range_rings([15, 30])
+    if outfile:
+        plt.savefig(outfile)
+    plt.close()
+
+
+@pytest.mark.skipif(
+    not pyart.graph.radarmapdisplay._CARTOPY_AVAILABLE,
+    reason="Cartopy is not installed.",
+)
 def test_radarmapdisplay_cartopy_preexisting_ax(outfile=None):
     import cartopy
     from cartopy.io.img_tiles import GoogleTiles

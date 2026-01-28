@@ -58,6 +58,25 @@ def test_radardisplay_ppi(outfile=None):
     plt.close()
 
 
+def test_radardisplay_ppi_rgb(outfile=None):
+    radar = pyart.aux_io.read_metranet(pyart.testing.METRANET_FILE)
+    display = pyart.graph.RadarDisplay(radar, shift=(0.1, 0.0))
+    display.plot_ppi(
+        (
+            "reflectivity",
+            "uncorrected_cross_correlation_ratio",
+            "differential_reflectivity",
+        ),
+        0,
+        title="RGB PPI",
+        mask_outside=True,
+    )
+    display.plot_range_rings([15, 30])
+    if outfile:
+        plt.savefig(outfile)
+    plt.close()
+
+
 def test_radardisplay_ray(outfile=None):
     radar = pyart.io.read_cfradial(pyart.testing.CFRADIAL_RHI_FILE)
     display = pyart.graph.RadarDisplay(radar)

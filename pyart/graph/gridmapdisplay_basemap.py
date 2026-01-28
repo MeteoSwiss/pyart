@@ -3,6 +3,8 @@ pyart.graph.gridmapdisplay_basemap
 ==================================
 
 A class for plotting grid objects with a basemap.
+This code is deprecated and the functions from gridmapdisplay should be used instead
+RGB is not supported in these functions.
 
 .. autosummary::
     :toctree: generated/

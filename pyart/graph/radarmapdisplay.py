@@ -35,7 +35,7 @@ except ImportError:
     _LAMBERT_GRIDLINES = False
 
 from ..exceptions import MissingOptionalDependency
-from .common import parse_cmap, parse_vmin_vmax
+from .common import get_rgba_data, parse_cmap, parse_vmin_vmax
 from .radardisplay import RadarDisplay
 
 
@@ -176,17 +176,19 @@ class RadarMapDisplay(RadarDisplay):
             NCP < 0.5 set mask_tuple to ['NCP', 0.5]. None performs no masking.
         vmin : float
             Luminance minimum value, None for default value.
-            Parameter is ignored is norm is not None.
+            Parameter is ignored is norm is not None and for RGB plots.
         vmax : float
             Luminance maximum value, None for default value.
-            Parameter is ignored is norm is not None.
+            Parameter is ignored is norm is not None and for RGB plots.
         norm : Normalize or None, optional
             matplotlib Normalize instance used to scale luminance data. If not
             None the vmax and vmin parameters are ignored. If None, vmin and
             vmax are used for luminance scaling.
+            Ignored for RGB plots.
         cmap : str or None
             Matplotlib colormap name. None will use the default colormap for
             the field being plotted as specified by the Py-ART configuration.
+            Ignored for RGB plots.
         mask_outside : bool
             True to mask data outside of vmin, vmax. False performs no
             masking.
@@ -275,19 +277,45 @@ class RadarMapDisplay(RadarDisplay):
             it will color them the same as the pixels (faces).
         **kwargs : additional keyword arguments to pass to pcolormesh.
         """
-        # parse parameters
-        vmin, vmax = parse_vmin_vmax(self._radar, field, vmin, vmax)
-        cmap = parse_cmap(cmap, field)
+        # --- Auto-detect RGB mode ---
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+
         lat_0 = self.loc[0]
         lon_0 = self.loc[1]
-
-        # get data for the plot
-        data = self._get_data(field, sweep, mask_tuple, filter_transitions, gatefilter)
         x, y = self._get_x_y(sweep, edges, filter_transitions)
 
-        # mask the data where outside the limits
-        if mask_outside:
-            data = np.ma.masked_outside(data, vmin, vmax)
+        if rgb_mode:
+            data = get_rgba_data(
+                field,
+                self,
+                sweep,
+                mask_tuple,
+                filter_transitions,
+                gatefilter,
+                mask_outside,
+            )
+            norm = None
+            vmax = None
+            vmin = None
+            cmap = None
+            alpha = None
+            colorbar_flag = False
+        else:
+            # parse parameters
+            vmin, vmax = parse_vmin_vmax(self._radar, field, vmin, vmax)
+            cmap = parse_cmap(cmap, field)
+
+            # get data for the plot
+            data = self._get_data(
+                field, sweep, mask_tuple, filter_transitions, gatefilter
+            )
+            # mask the data where outside the limits
+            if mask_outside:
+                data = np.ma.masked_outside(data, vmin, vmax)
 
         # Define a figure if None is provided.
         if fig is None:

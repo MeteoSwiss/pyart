@@ -7,6 +7,10 @@
  *
  * See the LICENSE file in the root of this project for the full license text.
  */
+<<<<<<< HEAD
+=======
+
+>>>>>>> f70b7b3aec807bf662026b8511428deb8018010e
 
 /*==INCLUDE FILE ===============================================================*/
 

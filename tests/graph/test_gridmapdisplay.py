@@ -29,6 +29,23 @@ def test_gridmapdisplay_simple(outfile=None):
 @pytest.mark.skipif(
     not pyart.graph.gridmapdisplay._CARTOPY_AVAILABLE, reason="Cartopy is not installed"
 )
+def test_gridmapdisplay_rgb(outfile=None):
+    grid = pyart.testing.make_target_grid(rgb=True)
+    display = pyart.graph.GridMapDisplay(grid)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    display.plot_grid(
+        ("reflectivity", "cross_correlation_ratio", "differential_reflectivity"),
+        level=0,
+        ax=ax,
+    )
+    if outfile:
+        fig.savefig(outfile)
+
+
+@pytest.mark.skipif(
+    not pyart.graph.gridmapdisplay._CARTOPY_AVAILABLE, reason="Cartopy is not installed"
+)
 def test_gridmapdisplay_fancy(outfile=None):
     import cartopy.crs as ccrs
 

@@ -3,6 +3,8 @@ pyart.graph.radarmapdisplay_basemap
 ===================================
 
 Class for creating plots on a geographic map using a Radar object and Basemap.
+This code is deprecated and the functions from radarmapdisplay should be used instead
+RGB is not supported in these functions.
 
 .. autosummary::
     :toctree: generated/

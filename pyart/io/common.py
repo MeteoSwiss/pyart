@@ -7,6 +7,7 @@ Input/output routines common to many file formats.
 .. autosummary::
     :toctree: generated/
 
+    read_files
     prepare_for_read
     stringarray_to_chararray
     _test_arguments
@@ -15,11 +16,62 @@ Input/output routines common to many file formats.
 """
 
 import bz2
+import glob
 import gzip
 
 import fsspec
 import netCDF4
 import numpy as np
+
+import pyart
+
+
+def read_files(wildcard, reader, **kwargs):
+    """
+    Read multiple radar files matching a wildcard and merge them into a single
+    Py-ART Radar object.
+
+    The files are read in sorted order. The first file initializes the radar
+    object, and subsequent files are merged into it using
+    ``pyart.util.radar_utils.join_radar``.
+
+    Parameters
+    ----------
+    wildcard : str
+        File path pattern (including wildcards) used to locate radar files,
+        e.g. ``"/path/to/data/MLD1816221000U.*"``.
+    reader : callable
+        Py-ART radar reader function used to read a single file, for example
+        ``pyart.aux_io.read_metranet`` or ``pyart.io.read``.
+
+    Returns
+    -------
+    radar : pyart.core.Radar
+        A Py-ART Radar object containing the merged data from all files
+        matching the wildcard.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no files match the provided wildcard pattern.
+
+    Notes
+    -----
+    This function assumes that all radar files are compatible for merging,
+    i.e. they represent consecutive sweeps or volumes that can be combined
+    using ``pyart.util.radar_utils.join_radar``.
+    """
+    files = sorted(glob.glob(wildcard))
+
+    if not files:
+        raise FileNotFoundError(f"No files found matching wildcard: {wildcard}")
+
+    radar = reader(files[0], **kwargs)
+
+    for fi in files[1:]:
+        radar = pyart.util.radar_utils.join_radar(radar, reader(fi, **kwargs))
+
+    return radar
 
 
 def prepare_for_read(filename, storage_options={"anon": True}):

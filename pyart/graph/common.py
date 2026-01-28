@@ -34,13 +34,22 @@ Common graphing routines.
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
 from netCDF4 import num2date
 
-from ..config import get_field_colormap, get_field_limits
+from ..config import get_field_colormap, get_field_limits, get_rgba_bounds
 
 ########################
 # Common radar methods #
 ########################
+
+
+def mask_data_outside(flag, data, v1, v2):
+    """Return the data masked outside of v1 and v2 when flag is True."""
+    if flag:
+        data = np.ma.masked_invalid(data)
+        data = np.ma.masked_outside(data, v1, v2)
+    return data
 
 
 def parse_ax(ax):
@@ -64,6 +73,12 @@ def parse_cmap(cmap, field=None):
     if cmap is None:
         cmap = get_field_colormap(field)
     return cmap
+
+
+def parse_rgba_bounds(fields):
+    """Parse and return the rgba bounds."""
+    rgba_bounds = get_rgba_bounds(fields)
+    return rgba_bounds
 
 
 def parse_vmin_vmax(container, field, vmin, vmax):
@@ -98,16 +113,34 @@ def generate_colorbar_label(standard_name, units):
 
 
 def generate_field_name(container, field):
-    """Return a nice field name for a particular field."""
-    if "standard_name" in container.fields[field]:
-        field_name = container.fields[field]["standard_name"]
-    elif "long_name" in container.fields[field]:
-        field_name = container.fields[field]["long_name"]
-    else:
-        field_name = str(field)
-    field_name = field_name.replace("_", " ")
-    field_name = field_name[0].upper() + field_name[1:]
-    return field_name
+    """
+    Return a nice field name for a particular field.
+
+    If field is a tuple/list of 3 strings, generate an RGB composite label.
+    """
+
+    def _single_field_name(f):
+        if "standard_name" in container.fields.get(f, {}):
+            name = container.fields[f]["standard_name"]
+        elif "long_name" in container.fields.get(f, {}):
+            name = container.fields[f]["long_name"]
+        else:
+            name = str(f)
+        name = name.replace("_", " ")
+        return name[0].upper() + name[1:]
+
+    # --- RGB composite ---
+    if isinstance(field, (list, tuple)) and len(field) == 3:
+        fr, fg, fb = field
+        name_r = _single_field_name(fr)
+        name_g = _single_field_name(fg)
+        name_b = _single_field_name(fb)
+
+        # Compact, clear RGB label
+        return f"RGB composite\nR: {name_r} | G: {name_g} | B: {name_b}"
+
+    # --- Legacy single-field behavior ---
+    return _single_field_name(field)
 
 
 def generate_radar_name(radar):
@@ -235,8 +268,8 @@ def generate_title(radar, field, sweep, datetime_format=None, use_sweep_time=Tru
     ----------
     radar : Radar
         Radar structure.
-    field : str
-        Field plotted.
+    field : str or tuple of str
+        Field(s) plotted. Either a single str or a tuple of 3 str (for RGB plots)
     sweep : int
         Sweep plotted.
     datetime_format : str
@@ -507,3 +540,238 @@ def set_limits(xlim=None, ylim=None, ax=None):
         ax.set_ylim(ylim)
     if xlim is not None:
         ax.set_xlim(xlim)
+
+
+def normalize_rgba(fields_rgb, rgba_bounds):
+    """
+    Normalize 3 radar fields into (r,g,b,a) in [0,1] using piecewise-linear
+    mappings described by rgba_bounds.
+
+    Parameters
+    ----------
+    fields_rgb : tuple
+        (field_r, field_g, field_b) as numpy arrays or numpy masked arrays.
+        All must be broadcastable to the same shape.
+    rgba_bounds : tuple
+        Length-4 tuple/list: (rb, gb, bb, ab) where each element is:
+          ((x0, x1, ...), (y0, y1, ...))  OR  ((x0, x1), (y0, y1))
+
+        - The first three bounds map their corresponding field to rn/gn/bn.
+        - The 4th bounds maps *field_r* to alpha (an). based on values of the
+          FIRST field (rn)
+
+        Example:
+          rgba_bounds[0] = ((30, 60), (0, 1))
+          rgba_bounds[1] = ((100, 70), (0, 1))  # decreasing x is allowed
+          rgba_bounds[2] = ((0, 4), (0, 1))
+          rgba_bounds[3] = ((-10,0,10,...,40), (0.05,0.12,...,1.0))
+
+    Returns
+    -------
+    rn, gn, bn, an : numpy.ma.MaskedArray
+        Normalized channels in [0,1], preserving a combined mask:
+        if a gate is masked in the source field(s), the output is masked there.
+        Alpha is additionally clipped to [0,1].
+    """
+    field_r, field_g, field_b = fields_rgb
+
+    def _as_ma(x):
+        return x if np.ma.isMaskedArray(x) else np.ma.array(x)
+
+    field_r = _as_ma(field_r)
+    field_g = _as_ma(field_g)
+    field_b = _as_ma(field_b)
+
+    # Broadcast to a common shape (preserving masks)
+    r, g, b = np.broadcast_arrays(field_r, field_g, field_b)
+    combined_mask = (
+        np.ma.getmaskarray(r) | np.ma.getmaskarray(g) | np.ma.getmaskarray(b)
+    )
+
+    r = np.ma.array(r, mask=combined_mask)
+    g = np.ma.array(g, mask=combined_mask)
+    b = np.ma.array(b, mask=combined_mask)
+
+    def _piecewise_map(data_ma, bounds):
+        """
+        Piecewise-linear map from x->y with clipping.
+        bounds: ((x...), (y...))
+        x can be increasing or decreasing; mapping is defined by the given points.
+        """
+        (x_pts, y_pts) = bounds
+        x = np.asarray(x_pts, dtype=float)
+        y = np.asarray(y_pts, dtype=float)
+
+        if x.ndim != 1 or y.ndim != 1 or x.size != y.size:
+            raise ValueError(
+                "Each rgba_bounds[i] must be ((x0,x1,...),(y0,y1,...)) with same length."
+            )
+        if x.size < 2:
+            raise ValueError("Each rgba_bounds[i] must have at least 2 control points.")
+
+        # Work on filled array, then reapply mask
+        mask = np.ma.getmaskarray(data_ma)
+        data = np.asarray(data_ma.filled(np.nan), dtype=float)
+
+        # np.interp requires xp increasing. If provided decreasing, reverse.
+        if x[0] > x[-1]:
+            x = x[::-1]
+            y = y[::-1]
+
+        # Map with clipping to endpoints
+        out = np.interp(data, x, y, left=y[0], right=y[-1])
+
+        # Re-mask NaNs and original mask
+        out_mask = mask | ~np.isfinite(data)
+        return np.ma.array(out, mask=out_mask)
+
+    # Apply mappings
+    rn = _piecewise_map(r, rgba_bounds[0])
+    gn = _piecewise_map(g, rgba_bounds[1])
+    bn = _piecewise_map(b, rgba_bounds[2])
+
+    # Alpha uses FIRST field (r)
+    an = _piecewise_map(r, rgba_bounds[3])
+
+    # Clip all channels to [0,1] (y-values should already be in range, but be safe)
+    rn = np.ma.clip(rn, 0.0, 1.0)
+    gn = np.ma.clip(gn, 0.0, 1.0)
+    bn = np.ma.clip(bn, 0.0, 1.0)
+    an = np.ma.clip(an, 0.0, 1.0)
+
+    # Optionally: enforce a combined mask across RGB so they disappear together
+    combined_mask = (
+        np.ma.getmaskarray(rn) | np.ma.getmaskarray(gn) | np.ma.getmaskarray(bn)
+    )
+    rn.mask = combined_mask
+    gn.mask = combined_mask
+    bn.mask = combined_mask
+    # alpha should also be masked where RGB is masked
+    an.mask = combined_mask | np.ma.getmaskarray(an)
+    # Combine masks: if any channel masked, hide that pixel
+    m = np.ma.getmaskarray(rn) | np.ma.getmaskarray(gn) | np.ma.getmaskarray(bn)
+
+    # Set alpha=1 where valid, nan where masked
+    an[m] = np.nan
+    rgba = np.stack(
+        [
+            np.ma.array(rn, mask=m).filled(0.0),
+            np.ma.array(gn, mask=m).filled(0.0),
+            np.ma.array(bn, mask=m).filled(0.0),
+            an,
+        ],
+        axis=-1,
+    ).astype(float)
+
+    rgba_pm = rgba.copy()
+    # Premultiply RGB by alpha
+    rgba_pm[..., :3] *= rgba_pm[..., 3:4]
+    # Make everything opaque
+    rgba_pm[..., 3] = 1.0
+    return rgba_pm
+
+
+def get_rgba_data(
+    fields, display, sweep, mask_tuple, filter_transitions, gatefilter, mask_outside
+):
+    """
+    Build an (M, N, 4) RGBA array from three radar fields.
+
+    Parameters
+    ----------
+    field : (str, str, str)
+        Tuple/list of three field names (R, G, B).
+    display : pyart Display object
+        Display object to use to retrieve data
+    sweep : int, optional
+        Sweep number to plot.
+    mask_tuple : (str, float)
+        Tuple containing the field name and value below which to mask
+        field prior to plotting, for example to mask all data where
+        NCP < 0.5 set mask_tuple to ['NCP', 0.5]. None performs no masking.
+    filter_transitions : bool
+        True to remove rays where the antenna was in transition between
+        sweeps from the plot. False will include these rays in the plot.
+        No rays are filtered when the antenna_transition attribute of the
+        underlying radar is not present.
+    gatefilter : GateFilter
+        GateFilter instance. None will result in no gatefilter mask being
+        applied to data.
+    mask_outside : bool
+        True to mask data outside of vmin, vmax. False performs no
+        masking.
+
+    Returns
+    -------
+    rgba : numpy.ma.MaskedArray
+        Masked array of shape (ny, nx, 4), float in [0, 1].
+    """
+    fr, fg, fb = fields
+
+    rgba_bounds = parse_rgba_bounds(fields)
+
+    # Get per-channel data
+    field_r = display._get_data(fr, sweep, mask_tuple, filter_transitions, gatefilter)
+    field_g = display._get_data(fg, sweep, mask_tuple, filter_transitions, gatefilter)
+    field_b = display._get_data(fb, sweep, mask_tuple, filter_transitions, gatefilter)
+
+    # Optional: mask outside per-channel limits
+    if mask_outside:
+        field_r = mask_data_outside(
+            True, field_r, rgba_bounds[0][0][0], rgba_bounds[0][0][-1]
+        )
+        field_g = mask_data_outside(
+            True, field_g, rgba_bounds[1][0][0], rgba_bounds[1][1][-1]
+        )
+        field_b = mask_data_outside(
+            True, field_b, rgba_bounds[2][0][0], rgba_bounds[2][1][-1]
+        )
+
+    rgba_pm = normalize_rgba((field_r, field_g, field_b), rgba_bounds)
+    return rgba_pm
+
+
+def get_rgba_data_grid(fields, ds, level=0, mask_outside=True):
+    """
+    Build an (M, N, 4) RGBA array from three grid fields.
+
+    Parameters
+    ----------
+    field : (str, str, str)
+        Tuple/list of three field names (R, G, B).
+    ds : xarray.Dataset
+        Dataset from ``grid.grid.to_xarray()``.
+    level : int, default 0
+        Vertical level index.
+    mask_outside : bool
+        True to mask data outside of vmin, vmax. False performs no
+        masking.
+
+    Returns
+    -------
+    rgba : numpy.ma.MaskedArray
+        Masked array of shape (ny, nx, 4), float in [0, 1].
+    """
+    fr, fg, fb = fields
+
+    rgba_bounds = parse_rgba_bounds(fields)
+
+    # Get per-channel data
+    field_r = np.ma.masked_invalid(ds[fr].data)
+    field_g = np.ma.masked_invalid(ds[fg].data)
+    field_b = np.ma.masked_invalid(ds[fb].data)
+
+    # Optional: mask outside per-channel limits
+    if mask_outside:
+        field_r = np.ma.masked_outside(
+            field_r, rgba_bounds[0][0][0], rgba_bounds[0][0][-1]
+        )
+        field_g = np.ma.masked_outside(
+            field_g, rgba_bounds[1][0][0], rgba_bounds[1][1][-1]
+        )
+        field_b = np.ma.masked_outside(
+            field_b, rgba_bounds[2][0][0], rgba_bounds[2][1][-1]
+        )
+
+    rgba_pm = normalize_rgba((field_r, field_g, field_b), rgba_bounds)
+    return rgba_pm

@@ -237,7 +237,7 @@ class RadarDisplay:
         data = self._get_ray_data(field, ray, mask_tuple, gatefilter)
 
         # mask the data where outside the limits
-        data = _mask_outside(mask_outside, data, ray_min, ray_max)
+        data = common.mask_data_outside(mask_outside, data, ray_min, ray_max)
 
         # plot the data
         (line,) = ax.plot(self.ranges / 1000.0, data, format_str)
@@ -288,10 +288,15 @@ class RadarDisplay:
 
         Parameters
         ----------
-        field : str
+        field : str or tuple
             Field to plot.
         sweep : int, optional
             Sweep number to plot.
+
+        If field is an iterable of length 3 it is treated as (R_field, G_field, B_field)
+        and rendered as an RGB composite. It uses the dictionnaries DEFAULT_RGB_BOUNDS
+        and DEFAULT_RGB_ALPHA from the config file to normalize radar moments to R,G,B and
+        alpha channels.
 
         Other Parameters
         ----------------
@@ -301,17 +306,19 @@ class RadarDisplay:
             NCP < 0.5 set mask_tuple to ['NCP', 0.5]. None performs no masking.
         vmin : float
             Luminance minimum value, None for default value.
-            Parameter is ignored is norm is not None.
+            Parameter is ignored is norm is not None and for RGB plots.
         vmax : float
             Luminance maximum value, None for default value.
-            Parameter is ignored is norm is not None.
+            Parameter is ignored is norm is not None and for RGB plots.
         norm : Normalize or None, optional
             matplotlib Normalize instance used to scale luminance data. If not
             None the vmax and vmin parameters are ignored. If None, vmin and
             vmax are used for luminance scaling.
+            Ignored for RGB plots.
         cmap : str or None
             Matplotlib colormap name. None will use the default colormap for
             the field being plotted as specified by the Py-ART configuration.
+            Ignored for RGB plots.
         mask_outside : bool
             True to mask data outside of vmin, vmax. False performs no
             masking.
@@ -364,8 +371,8 @@ class RadarDisplay:
         fig : Figure
             Figure to add the colorbar to. None will use the current figure.
         raster : bool
-            False by default. Set to true to render the display as a raster
-            rather than a vector in call to pcolormesh. Saves time in plotting
+            False by default. Set to true to render the display
+            as a raster rather than a vector in call to pcolormesh. Saves time in plotting
             high resolution data over large areas. Be sure to set the dpi
             of the plot for your application if you save it as a vector format
             (i.e., pdf, eps, svg).
@@ -373,19 +380,41 @@ class RadarDisplay:
         """
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
-
-        # get data for the plot
-        data = self._get_data(field, sweep, mask_tuple, filter_transitions, gatefilter)
+        # --- Auto-detect RGB mode ---
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+        # get coordinates for plot
         x, y = self._get_x_y(sweep, edges, filter_transitions)
+        if rgb_mode:
+            data = common.get_rgba_data(
+                field,
+                self,
+                sweep,
+                mask_tuple,
+                filter_transitions,
+                gatefilter,
+                mask_outside,
+            )[..., 0:3]
+            norm = None
+            vmax = None
+            vmin = None
+            cmap = None
+            colorbar_flag = False
+        else:
+            vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
 
-        # mask the data where outside the limits
-        data = _mask_outside(mask_outside, data, vmin, vmax)
+            data = self._get_data(
+                field, sweep, mask_tuple, filter_transitions, gatefilter
+            )
+            data = common.mask_data_outside(mask_outside, data, vmin, vmax)
 
-        # plot the data
-        if norm is not None:  # if norm is set do not override with vmin/vmax
-            vmin = vmax = None
+            if norm is not None:  # if norm is set do not override with vmin/vmax
+                vmin = vmax = None
+
         pm = ax.pcolormesh(
             x, y, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
         )
@@ -406,7 +435,6 @@ class RadarDisplay:
         if axislabels_flag:
             self._label_axes_ppi(axislabels, ax)
 
-        # add plot and field to lists
         self.plots.append(pm)
         self.plot_vars.append(field)
 
@@ -421,6 +449,9 @@ class RadarDisplay:
                 ticks=ticks,
                 ticklabs=ticklabs,
             )
+
+        # colorbar disabled in RGB mode
+        return pm
 
     def plot_rhi(
         self,
@@ -464,6 +495,11 @@ class RadarDisplay:
         sweep : int,
             Sweep number to plot.
 
+        If field is an iterable of length 3 it is treated as (R_field, G_field, B_field)
+        and rendered as an RGB composite. It uses the dictionnaries DEFAULT_RGB_BOUNDS
+        and DEFAULT_RGB_ALPHA from the config file to normalize radar moments to R,G,B and
+        alpha channels.
+
         Other Parameters
         ----------------
         mask_tuple : (str, float)
@@ -472,17 +508,19 @@ class RadarDisplay:
             NCP < 0.5 set mask to ['NCP', 0.5]. None performs no masking.
         vmin : float
             Luminance minimum value, None for default value.
-            Parameter is ignored is norm is not None.
+            Parameter is ignored is norm is not None and for RGB plots.
         vmax : float
             Luminance maximum value, None for default value.
-            Parameter is ignored is norm is not None.
+            Parameter is ignored is norm is not None and for RGB plots.
         norm : Normalize or None, optional
             matplotlib Normalize instance used to scale luminance data. If not
             None the vmax and vmin parameters are ignored. If None, vmin and
             vmax are used for luminance scaling.
+            Ignored for RGB plots.
         cmap : str or None
             Matplotlib colormap name. None will use the default colormap for
             the field being plotted as specified by the Py-ART configuration.
+            Ignored for RGB plots.
         title : str
             Title to label plot with, None to use default title generated from
             the field and sweep parameters. Parameter is ignored if title_flag
@@ -546,17 +584,16 @@ class RadarDisplay:
         """
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
 
-        # get data for the plot
-        data = self._get_data(field, sweep, mask_tuple, filter_transitions, gatefilter)
+        # --- Auto-detect RGB mode ---
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+
+        # get plot coordinates
         x, y, z = self._get_x_y_z(sweep, edges, filter_transitions)
-
-        # mask the data where outside the limits
-        data = _mask_outside(mask_outside, data, vmin, vmax)
-
-        # plot the data
         # use horizontal coordinate to define sign of distance to radar
         R = np.sqrt(x**2 + y**2) * np.sign(x)
         if reverse_xaxis is None:
@@ -564,8 +601,38 @@ class RadarDisplay:
             reverse_xaxis = np.all(R < 1.0)
         if reverse_xaxis:
             R = -R
-        if norm is not None:  # if norm is set do not override with vmin/vmax
-            vmin = vmax = None
+
+        if rgb_mode:
+            data = common.get_rgba_data(
+                field,
+                self,
+                sweep,
+                mask_tuple,
+                filter_transitions,
+                gatefilter,
+                mask_outside,
+            )
+            norm = None
+            vmax = None
+            vmin = None
+            cmap = None
+            colorbar_flag = False
+        else:
+            vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
+
+            # get data for the plot
+            data = self._get_data(
+                field, sweep, mask_tuple, filter_transitions, gatefilter
+            )
+
+            # mask the data where outside the limits
+            data = common.mask_data_outside(mask_outside, data, vmin, vmax)
+
+            # plot the data
+            if norm is not None:  # if norm is set do not override with vmin/vmax
+                vmin = vmax = None
+
         pm = ax.pcolormesh(
             R, z, data, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
         )
@@ -601,6 +668,7 @@ class RadarDisplay:
                 ticks=ticks,
                 ticklabs=ticklabs,
             )
+        return pm
 
     def plot_vpt(
         self,
@@ -749,7 +817,7 @@ class RadarDisplay:
             x = times.astype("datetime64[ns]")
 
         # mask the data where outside the limits
-        data = _mask_outside(mask_outside, data, vmin, vmax)
+        data = common.mask_data_outside(mask_outside, data, vmin, vmax)
 
         # plot the data
         if norm is not None:  # if norm is set do not override with vmin/vmax
@@ -908,7 +976,7 @@ class RadarDisplay:
         )
 
         # mask the data where outside the limits
-        data = _mask_outside(mask_outside, data, vmin, vmax)
+        data = common.mask_data_outside(mask_outside, data, vmin, vmax)
 
         # plot the data
         R = np.sqrt(x**2 + y**2) * np.sign(y)
@@ -964,7 +1032,6 @@ class RadarDisplay:
         vmax=None,
         norm=None,
         cmap=None,
-        mask_outside=False,
         title=None,
         title_flag=True,
         axislabels=(None, None),
@@ -990,7 +1057,7 @@ class RadarDisplay:
         ----------
         field : str
             Field to plot.
-        ref_points :  ndarray
+        ref_points :  ndarray or list of lists
             N x 2 array containing the lon, lat coordinates of N reference points
             along the trajectory in WGS84 coordinates,
             for example [[11, 46], [10, 45], [9, 47]]
@@ -1072,10 +1139,15 @@ class RadarDisplay:
             (i.e., pdf, eps, svg).
 
         """
+        # --- Auto-detect RGB mode ---
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
 
         # vert coordinates
         vert_bins = np.arange(0, alt_max, vert_res)
@@ -1095,13 +1167,28 @@ class RadarDisplay:
             field, pts_rad_coords, vert_bins, mask_tuple, filter_transitions, gatefilter
         )
 
-        xsection[offset_el > beamwidth] = np.ma.masked
+        for xs in xsection:
+            xs[offset_el > beamwidth] = np.ma.masked
 
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
         x = pts_dist / 1000.0
         z = (vert_bins + self._radar.altitude["data"]) / 1000.0
+
+        if rgb_mode:
+            rgba_bounds = common.parse_rgba_bounds(field)
+            xsection = common.normalize_rgba(xsection, rgba_bounds)
+            norm = None
+            vmax = None
+            vmin = None
+            cmap = None
+            colorbar_flag = False
+        else:
+            vmin, vmax = common.parse_vmin_vmax(self._radar, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
+            xsection = xsection[0]
+
         pm = ax.pcolormesh(
             x, z, xsection, vmin=vmin, vmax=vmax, cmap=cmap, norm=norm, **kwargs
         )
@@ -2029,22 +2116,26 @@ class RadarDisplay:
     def _get_xsection_data(
         self, field, points, vert_bins, mask_tuple, filter_transitions, gatefilter
     ):
-        data = self.fields[field]["data"]
+        if isinstance(field, (list, tuple)):
+            data = [self.fields[fi]["data"] for fi in field]
+        else:
+            # single field
+            data = [self.fields[field]["data"]]
 
         if mask_tuple is not None:
             mask_field, mask_value = mask_tuple
             mdata = self.fields[mask_field]["data"]
-            data = np.ma.masked_where(mdata < mask_value, data)
+            data = [np.ma.masked_where(mdata < mask_value, dt) for dt in data]
 
         # mask data if gatefilter provided
         if gatefilter is not None:
             mask_filter = gatefilter.gate_excluded
-            data = np.ma.masked_array(data, mask_filter)
+            data = [np.ma.masked_array(dt, mask_filter) for dt in data]
 
         # filter out antenna transitions
         if filter_transitions and self.antenna_transition is not None:
             in_trans = self.antenna_transition
-            data = data[in_trans == 0]
+            data = [dt[in_trans == 0] for dt in data]
 
         # tile along vert dimension for x,y, hor. dimension for z
         Npts = len(points[0])
@@ -2079,7 +2170,8 @@ class RadarDisplay:
         idx_ang = np.reshape(idx_ang, az.shape).astype(int)
         offset_el = np.reshape(offset_el, el.shape)
 
-        xsection = data[idx_ang, idx_range]
+        xsection = [dt[idx_ang, idx_range] for dt in data]
+
         return xsection, offset_el
 
     def _get_colorbar_label(self, field):
@@ -2097,14 +2189,6 @@ class RadarDisplay:
         else:
             units = "?"
         return common.generate_colorbar_label(standard_name, units)
-
-
-def _mask_outside(flag, data, v1, v2):
-    """Return the data masked outside of v1 and v2 when flag is True."""
-    if flag:
-        data = np.ma.masked_invalid(data)
-        data = np.ma.masked_outside(data, v1, v2)
-    return data
 
 
 def _edge_time(times):

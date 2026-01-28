@@ -311,21 +311,52 @@ def make_empty_grid(grid_shape, grid_limits):
     )
 
 
-def make_target_grid():
+def make_target_grid(rgb: bool = False):
     """
     Make a sample Grid with a rectangular target.
+
+    Parameters
+    ----------
+    rgb : bool, default False
+        If True, also add fields needed for RGB-style composites:
+        - cross_correlation_ratio (0.7..1.0)
+        - differential_reflectivity (0..4)
     """
     grid_shape = (2, 400, 320)
     grid_limits = ((0, 500), (-400000, 400000), (-300000, 300000))
     grid = make_empty_grid(grid_shape, grid_limits)
 
-    fdata = np.zeros((2, 400, 320), dtype="float32")
+    # Base reflectivity field
+    fdata = np.zeros(grid_shape, dtype="float32")
     fdata[:, 50:-50, 40:-40] = 10.0
     fdata[:, 100:-100, 80:-80] = 20.0
     fdata[:, 150:-150, 120:-120] = 30.0
     fdata[1] += 5
-    rdic = {"data": fdata, "long_name": "reflectivity", "units": "dBz"}
-    grid.fields = {"reflectivity": rdic}
+
+    grid.fields = {
+        "reflectivity": {
+            "data": fdata,
+            "long_name": "reflectivity",
+            "units": "dBz",
+        }
+    }
+    if rgb:
+        # Deterministic random values (optional but nice for reproducibility)
+        rng = np.random.default_rng(0)
+        # cross_correlation_ratio: 0.7..1.0
+        rhohv = rng.uniform(0.7, 1.0, size=grid_shape).astype("float32")
+        # differential_reflectivity: 0..4
+        zdr = rng.uniform(0.0, 4.0, size=grid_shape).astype("float32")
+        grid.fields["cross_correlation_ratio"] = {
+            "data": rhohv,
+            "long_name": "cross_correlation_ratio",
+            "units": "unitless",
+        }
+        grid.fields["differential_reflectivity"] = {
+            "data": zdr,
+            "long_name": "differential_reflectivity",
+            "units": "dB",
+        }
     return grid
 
 

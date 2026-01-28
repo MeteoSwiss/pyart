@@ -208,17 +208,41 @@ class GridMapDisplay:
         """
         ds = self.grid.to_xarray()
 
-        # parse parameters
-        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
 
-        # mask the data where outside the limits
-        if mask_outside:
-            data = ds[field].data
-            masked_data = np.ma.masked_invalid(data)
-            masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
-            ds[field].data = masked_data
+        if rgb_mode:
+            # build RGBA and disable scalar-mapping related args
+            data = common.get_rgba_data_grid(
+                field, ds, level=level, mask_outside=mask_outside
+            )
+            norm = None
+            vmin = None
+            vmax = None
+            cmap = None
+            colorbar_flag = False
+            # RGB must be plotted as an image; pcolormesh+RGBA is possible but is
+            # more complicated (facecolors). Keep it robust.
+            imshow = True
 
+        else:
+            # parse parameters (as in your original implementation)
+            vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
+
+            # mask the data where outside the limits
+            if mask_outside:
+                data = ds[field].data
+                masked_data = np.ma.masked_invalid(data)
+                masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
+                ds[field].data = masked_data
+            data = ds[field]
+
+        # Get level
+        data = data[0, level]
         # Define a figure if None is provided.
         if fig is None:
             fig = plt.gcf()
@@ -262,27 +286,45 @@ class GridMapDisplay:
         if norm is not None:  # if norm is set do not override with vmin/vmax
             vmin = vmax = None
 
-        if imshow:
-            pm = ds[field][0, level].plot.imshow(
-                x="lon",
-                y="lat",
-                cmap=cmap,
-                vmin=vmin,
-                vmax=vmax,
-                add_colorbar=False,
+        if rgb_mode:
+            # xarray coords: use lon/lat ranges for extent
+            lon = ds["lon"].values
+            lat = ds["lat"].values
+
+            # Works for 1D or 2D lon/lat
+            lon_min = float(np.nanmin(lon))
+            lon_max = float(np.nanmax(lon))
+            lat_min = float(np.nanmin(lat))
+            lat_max = float(np.nanmax(lat))
+            pm = ax.imshow(
+                data,
+                origin="lower",
+                extent=[lon_min, lon_max, lat_min, lat_max],
+                transform=ax.projection,
                 **kwargs,
             )
         else:
-            pm = ds[field][0, level].plot.pcolormesh(
-                x="lon",
-                y="lat",
-                cmap=cmap,
-                vmin=vmin,
-                vmax=vmax,
-                norm=norm,
-                add_colorbar=False,
-                **kwargs,
-            )
+            if imshow:
+                pm = data.plot.imshow(
+                    x="lon",
+                    y="lat",
+                    cmap=cmap,
+                    vmin=vmin,
+                    vmax=vmax,
+                    add_colorbar=False,
+                    **kwargs,
+                )
+            else:
+                pm = data.plot.pcolormesh(
+                    x="lon",
+                    y="lat",
+                    cmap=cmap,
+                    vmin=vmin,
+                    vmax=vmax,
+                    norm=norm,
+                    add_colorbar=False,
+                    **kwargs,
+                )
 
         self.mappables.append(pm)
         self.fields.append(field)
