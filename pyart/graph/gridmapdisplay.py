@@ -1050,7 +1050,7 @@ class GridMapDisplay:
                 masked_data = np.ma.masked_invalid(data)
                 masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
                 ds[field].data = masked_data
-            data = ds[field]
+            data = ds[field].data
 
         data = data[0, :, y_index, :]
 
@@ -1232,7 +1232,7 @@ class GridMapDisplay:
                 masked_data = np.ma.masked_invalid(data)
                 masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
                 ds[field].data = masked_data
-            data = ds[field]
+            data = ds[field].data
 
         data = data[0, :, :, x_index]
 
@@ -1414,7 +1414,7 @@ class GridMapDisplay:
                 masked_data = np.ma.masked_invalid(data)
                 masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
                 ds[field].data = masked_data
-            data = ds[field]
+            data = ds[field].data
 
         data = data[0]  # get the 3D data array, remove time dimension
 
@@ -1482,7 +1482,6 @@ class GridMapDisplay:
         )
 
         data = data[ind_z, ind_y, ind_x]
-
         if rgb_mode:
             data = data.reshape((nv_prof, nh_prof, 4))
         else:
