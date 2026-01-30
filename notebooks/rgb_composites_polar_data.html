@@ -567,8 +567,8 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">grid_from_radars</span><span class="p">(</span>
     <span class="p">(</span><span class="n">radar</span><span class="p">,),</span>
-    <span class="n">grid_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">241</span><span class="p">,</span> <span class="mi">241</span><span class="p">),</span>
-    <span class="n">grid_limits</span><span class="o">=</span><span class="p">((</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">80000.0</span><span class="p">,</span> <span class="mf">80000.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">80000.0</span><span class="p">,</span> <span class="mf">80000.0</span><span class="p">)),</span>
+    <span class="n">grid_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">241</span><span class="p">,</span> <span class="mi">241</span><span class="p">),</span>
+    <span class="n">grid_limits</span><span class="o">=</span><span class="p">((</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">80000.0</span><span class="p">,</span> <span class="mf">80000.0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">80000.0</span><span class="p">,</span> <span class="mf">80000.0</span><span class="p">)),</span>
     <span class="n">fields</span><span class="o">=</span><span class="n">RGB_FIELDS</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">GridMapDisplay</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
@@ -577,12 +577,41 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>45.70098978113134
+<img alt="../_images/578eb39488155adef224d88116cba4cf48aec51ed0adbfa5547baa6f37794545.png" src="../_images/578eb39488155adef224d88116cba4cf48aec51ed0adbfa5547baa6f37794545.png" />
+</div>
+</div>
+<section id="longitude-or-latitude-slices">
+<h3>Longitude or Latitude slices<a class="headerlink" href="#longitude-or-latitude-slices" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_longitude_slice</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_latitude_slice</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/1e874946d48066994c7015e75526b05d88aa4241ad1139aa474326597ddfb72e.png" src="../_images/1e874946d48066994c7015e75526b05d88aa4241ad1139aa474326597ddfb72e.png" />
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a648e72579211c6f27b29c26ea830760cd431e3a5811099275c99b5111aa4d63.png" src="../_images/a648e72579211c6f27b29c26ea830760cd431e3a5811099275c99b5111aa4d63.png" />
+<img alt="../_images/2982f3cabcb88e97a3e22414263350e93ebcf409a1775e35714e3aff4db36709.png" src="../_images/2982f3cabcb88e97a3e22414263350e93ebcf409a1775e35714e3aff4db36709.png" />
 </div>
 </div>
+</section>
+<section id="cross-section">
+<h3>Cross-section<a class="headerlink" href="#cross-section" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">display</span><span class="o">.</span><span class="n">plot_cross_section</span><span class="p">(</span><span class="n">RGB_FIELDS</span><span class="p">,</span> <span class="p">(</span><span class="mf">46.45</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mf">47.0</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/0a9f1881eb3b9bf2524f952499c35c6807cf2b551dd9cc78a2ec04ada56f33b3.png" src="../_images/0a9f1881eb3b9bf2524f952499c35c6807cf2b551dd9cc78a2ec04ada56f33b3.png" />
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -644,7 +673,11 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppi-on-a-spatial-map">PPI on a spatial map</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-map">Grid map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-map">Grid map</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longitude-or-latitude-slices">Longitude or Latitude slices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-section">Cross-section</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
