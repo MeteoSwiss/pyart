@@ -216,9 +216,7 @@ class GridMapDisplay:
 
         if rgb_mode:
             # build RGBA and disable scalar-mapping related args
-            data = common.get_rgba_data_grid(
-                field, ds, level=level, mask_outside=mask_outside
-            )
+            data = common.get_rgba_data_grid(field, ds, mask_outside=mask_outside)
             norm = None
             vmin = None
             vmax = None
@@ -491,32 +489,59 @@ class GridMapDisplay:
 
         """
         ds = self.grid.to_xarray()
-
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
-        if norm is not None:  # if norm is set do not override with vmin/vmax
-            vmin = vmax = None
 
-        # mask the data where outside the limits
-        if mask_outside:
-            data = ds[field].data
-            masked_data = np.ma.masked_invalid(data)
-            masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
-            ds[field].data = masked_data
-
-        pm = ds[field][0, level].plot.pcolormesh(
-            x="x",
-            y="y",
-            cmap=cmap,
-            vmin=vmin,
-            vmax=vmax,
-            norm=norm,
-            alpha=alpha,
-            add_colorbar=False,
-            **kwargs,
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
         )
+        if rgb_mode:
+            # build RGBA and disable scalar-mapping related args
+            data = common.get_rgba_data_grid(field, ds, mask_outside=mask_outside)
+            norm = None
+            vmin = None
+            vmax = None
+            cmap = None
+            colorbar_flag = False
+
+            # Works for 1D or 2D lon/lat
+            x_min = float(np.nanmin(ds.x.values))
+            x_max = float(np.nanmax(ds.x.values))
+            y_min = float(np.nanmin(ds.y.values))
+            y_max = float(np.nanmax(ds.y.values))
+            pm = ax.imshow(
+                data[0, level],
+                origin="lower",
+                extent=[x_min, x_max, y_min, y_max],
+                **kwargs,
+            )
+
+        else:
+            # parse parameters (as in your original implementation)
+            vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
+
+            # mask the data where outside the limits
+            if mask_outside:
+                data = ds[field].data
+                masked_data = np.ma.masked_invalid(data)
+                masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
+                ds[field].data = masked_data
+            data = ds[field]
+
+            pm = data[0, level].plot.pcolormesh(
+                x="x",
+                y="y",
+                cmap=cmap,
+                vmin=vmin,
+                vmax=vmax,
+                norm=norm,
+                alpha=alpha,
+                add_colorbar=False,
+                **kwargs,
+            )
 
         if title_flag:
             if title is None:
@@ -996,17 +1021,38 @@ class GridMapDisplay:
             Colorbar custom tick labels.
 
         """
+        ds = self.grid.to_xarray()
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
 
-        data = self.grid.fields[field]["data"][:, y_index, :]
+        if rgb_mode:
+            # build RGBA and disable scalar-mapping related args
+            data = common.get_rgba_data_grid(field, ds, mask_outside=mask_outside)
+            norm = None
+            vmin = None
+            vmax = None
+            cmap = None
+            colorbar_flag = False
+        else:
+            # parse parameters (as in your original implementation)
+            vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
 
-        # mask the data where outside the limits
-        if mask_outside:
-            data = np.ma.masked_invalid(data)
-            data = np.ma.masked_outside(data, vmin, vmax)
+            # mask the data where outside the limits
+            if mask_outside:
+                data = ds[field].data
+                masked_data = np.ma.masked_invalid(data)
+                masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
+                ds[field].data = masked_data
+            data = ds[field]
+
+        data = data[0, :, y_index, :]
 
         # plot the grid
         x_1d = self.grid.x["data"] / 1000
@@ -1157,17 +1203,38 @@ class GridMapDisplay:
             Colorbar custom tick labels.
 
         """
+        ds = self.grid.to_xarray()
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
 
-        data = self.grid.fields[field]["data"][:, :, x_index]
+        if rgb_mode:
+            # build RGBA and disable scalar-mapping related args
+            data = common.get_rgba_data_grid(field, ds, mask_outside=mask_outside)
+            norm = None
+            vmin = None
+            vmax = None
+            cmap = None
+            colorbar_flag = False
+        else:
+            # parse parameters (as in your original implementation)
+            vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
 
-        # mask the data where outside the limits
-        if mask_outside:
-            data = np.ma.masked_invalid(data)
-            data = np.ma.masked_outside(data, vmin, vmax)
+            # mask the data where outside the limits
+            if mask_outside:
+                data = ds[field].data
+                masked_data = np.ma.masked_invalid(data)
+                masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
+                ds[field].data = masked_data
+            data = ds[field]
+
+        data = data[0, :, :, x_index]
 
         # plot the grid
         y_1d = self.grid.y["data"] / 1000
@@ -1317,10 +1384,39 @@ class GridMapDisplay:
         fig : Figure
             Figure to add the colorbar to. None will use the current figure.
         """
+
+        ds = self.grid.to_xarray()
+        rgb_mode = (
+            not isinstance(field, str)
+            and isinstance(field, (list, tuple))
+            and len(field) == 3
+        )
+
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
-        vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
-        cmap = common.parse_cmap(cmap, field)
+
+        if rgb_mode:
+            # build RGBA and disable scalar-mapping related args
+            data = common.get_rgba_data_grid(field, ds, mask_outside=mask_outside)
+            norm = None
+            vmin = None
+            vmax = None
+            cmap = None
+            colorbar_flag = False
+        else:
+            # parse parameters (as in your original implementation)
+            vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
+            cmap = common.parse_cmap(cmap, field)
+
+            # mask the data where outside the limits
+            if mask_outside:
+                data = ds[field].data
+                masked_data = np.ma.masked_invalid(data)
+                masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
+                ds[field].data = masked_data
+            data = ds[field]
+
+        data = data[0]  # get the 3D data array, remove time dimension
 
         # resolution
         x_res = self.grid.point_x["data"][0, 0, 1] - self.grid.point_x["data"][0, 0, 0]
@@ -1385,13 +1481,12 @@ class GridMapDisplay:
             ind_vec, (self.grid.nz, self.grid.ny, self.grid.nx)
         )
 
-        data = self.grid.fields[field]["data"][ind_z, ind_y, ind_x]
-        data = np.reshape(data, (nv_prof, nh_prof))
+        data = data[ind_z, ind_y, ind_x]
 
-        # mask the data where outside the limits
-        if mask_outside:
-            data = np.ma.masked_invalid(data)
-            data = np.ma.masked_outside(data, vmin, vmax)
+        if rgb_mode:
+            data = data.reshape((nv_prof, nh_prof, 4))
+        else:
+            data = np.reshape(data, (nv_prof, nh_prof))
 
         # plot the grid
         xy_1d = np.arange(nh_prof) * xy_res / 1000.0

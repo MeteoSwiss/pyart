@@ -731,7 +731,7 @@ def get_rgba_data(
     return rgba_pm
 
 
-def get_rgba_data_grid(fields, ds, level=0, mask_outside=True):
+def get_rgba_data_grid(fields, ds, mask_outside=True):
     """
     Build an (M, N, 4) RGBA array from three grid fields.
 
