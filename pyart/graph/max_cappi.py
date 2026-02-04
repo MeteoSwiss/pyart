@@ -11,7 +11,6 @@ Author: Syed Hamid Ali (@syedhamidali)
 __all__ = ["plot_maxcappi"]
 
 import os
-import warnings
 
 import cartopy.crs as ccrs
 import cartopy.feature as feat
@@ -19,8 +18,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
 from matplotlib.ticker import NullFormatter
-
-warnings.filterwarnings("ignore")
 
 
 def plot_maxcappi(
