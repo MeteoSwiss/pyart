@@ -181,8 +181,6 @@
     
     kdp_maesaka
     
-    kdp_operational_mch
-    
     kdp_schneebeli
     
     kdp_vulpiani
