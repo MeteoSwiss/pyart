@@ -10,6 +10,7 @@ import logging
 import warnings
 
 import numpy as np
+from pyproj import CRS, Transformer
 from scipy.special import erfc
 
 from ._gecsx_functions_cython import vis_weighting
@@ -1127,3 +1128,90 @@ def visibility_angle(
         idx_az = np.searchsorted(azpol_unique, az)
         vispol_remapped.extend(vispol[nazim * i + idx_az, :])
     return vispol_remapped
+
+
+def nearest_resample_dem_to_aeqd(
+    Z,
+    x_dem,
+    y_dem,
+    dem_crs,
+    aeqd_crs,
+    grid_x,
+    grid_y,
+    fill_value=np.nan,
+    chunk_rows=512,
+):
+    """
+    Z: (ny, nx) DEM array
+    x_dem: (nx,) DEM x coordinates (monotonic)
+    y_dem: (ny,) DEM y coordinates (monotonic)
+    dem_crs: CRS of the dem
+    aeqd_crs: AEQD CRS
+    grid_x/grid_y: target AEQD meshgrids (same shape)
+    """
+
+    # Transformers
+    aeqd_to_ll = Transformer.from_crs(aeqd_crs, CRS.from_epsg(4326), always_xy=True)
+    ll_to_dem = Transformer.from_crs(CRS.from_epsg(4326), dem_crs, always_xy=True)
+
+    # Output
+    out = np.full(grid_x.shape, fill_value, dtype=float)
+
+    # Ensure monotonic increasing vectors for searchsorted
+    x_inc = x_dem[0] < x_dem[-1]
+    y_inc = y_dem[0] < y_dem[-1]
+
+    if not x_inc:
+        x_dem_r = x_dem[::-1]
+        Z = Z[:, ::-1]
+    else:
+        x_dem_r = x_dem
+
+    if not y_inc:
+        y_dem_r = y_dem[::-1]
+        Z = Z[::-1, :]
+    else:
+        y_dem_r = y_dem
+
+    ny, nx = Z.shape
+
+    # Chunk by rows to keep memory sane (critical for 10k x 10k)
+    for i0 in range(0, grid_x.shape[0], chunk_rows):
+        print(i0)
+        i1 = min(i0 + chunk_rows, grid_x.shape[0])
+
+        gx = grid_x[i0:i1, :]
+        gy = grid_y[i0:i1, :]
+
+        # AEQD -> lon/lat
+        lon, lat = aeqd_to_ll.transform(gx, gy)
+        # lon/lat -> DEM CRS
+        xd, yd = ll_to_dem.transform(lon, lat)
+
+        # nearest x index
+        ix = np.searchsorted(x_dem_r, xd)
+        ix = np.clip(ix, 1, nx - 1)
+        left = x_dem_r[ix - 1]
+        right = x_dem_r[ix]
+        ix = np.where((xd - left) <= (right - xd), ix - 1, ix)
+
+        # nearest y index
+        iy = np.searchsorted(y_dem_r, yd)
+        iy = np.clip(iy, 1, ny - 1)
+        bot = y_dem_r[iy - 1]
+        top = y_dem_r[iy]
+        iy = np.where((yd - bot) <= (top - yd), iy - 1, iy)
+
+        # mask out-of-bounds (optional but recommended)
+        inb = (
+            (xd >= x_dem_r[0])
+            & (xd <= x_dem_r[-1])
+            & (yd >= y_dem_r[0])
+            & (yd <= y_dem_r[-1])
+        )
+
+        block = np.full(gx.shape, fill_value, dtype=float)
+        block[inb] = Z[iy[inb], ix[inb]]
+        out[i0:i1, :] = block
+
+    return out
