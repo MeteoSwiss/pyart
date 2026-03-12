@@ -449,7 +449,8 @@ def read_polar(
     filename, moments=None, physic_value=True, masked_array=True, reorder_angles=True
 ):
     """
-    Reads a METRANET polar data file
+    Reads a METRANET polar radar data file from the operational C-band network of MeteoSwiss
+    The files are called ML{radar}YYJJJHHMM00U.00{sweep}, e.g. MLL2605300100U.010
 
     Parameters
     ----------
@@ -544,7 +545,9 @@ def read_polar(
 
 def read_product(radar_file, physic_value=False, masked_array=False, verbose=False):
     """
-    Reads a METRANET cartesian data file
+    Reads a METRANET polar product data file, from MeteoSwiss post-processing
+    products that are stored in polar coordinates, e.g. YM (hydrometeor class)
+    and DV (dealiased velocity), e.g. YMA2605300107L.803 or DVA2605300107L.810
 
     Parameters
     ----------
