@@ -238,7 +238,6 @@ class GridMapDisplay:
                 masked_data = np.ma.masked_outside(masked_data, vmin, vmax)
                 ds[field].data = masked_data
             data = ds[field]
-
         # Get level
         data = data[0, level]
         # Define a figure if None is provided.

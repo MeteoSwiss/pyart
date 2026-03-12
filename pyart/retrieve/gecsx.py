@@ -10,14 +10,12 @@ import logging
 from copy import deepcopy
 
 import numpy as np
-from scipy.interpolate import griddata
+from pyproj import CRS, Transformer
 from scipy.ndimage import sobel
 
 from ..config import get_field_name, get_fillvalue, get_metadata
 from ..core import (
     antenna_to_cartesian,
-    cartesian_vectors_to_geographic,
-    geographic_to_cartesian_aeqd,
 )
 from . import _gecsx_functions as gf
 
@@ -299,35 +297,54 @@ def gecsx(
     azimuths_pol = [radar.get_azimuth(i) for i in range(radar.nsweeps)]
     range_pol = radar.range["data"]
 
-    # Coordinates transforms
-    # 1. from grid Cartesian to lat/lon (except for WGS84)
-    if dem_grid.projection["proj"] == "longlat":
-        lon_grid, lat_grid = np.meshgrid(dem_grid.x["data"], dem_grid.y["data"])
-    else:  # project
-        lon_grid, lat_grid = cartesian_vectors_to_geographic(
-            dem_grid.x["data"], dem_grid.y["data"], dem_grid.projection
-        )
-    # 2. from lon/lat to aeqd
-    grid_x, grid_y = geographic_to_cartesian_aeqd(
-        lon_grid, lat_grid, radar.longitude["data"], radar.latitude["data"]
+    # Interpolate DEM to AEQD coordinates
+    Z = dem_grid.fields["terrain_altitude"]["data"][0]
+    x_dem = dem_grid.x["data"]  # 1D
+    y_dem = dem_grid.y["data"]  # 1D
+
+    dem_crs = dem_grid.projection  # EPSG / proj string
+    # Build transformers
+    aeqd_crs = CRS.from_proj4(
+        f"+proj=aeqd +lat_0={float(radar.latitude['data'][0])} "
+        f"+lon_0={float(radar.longitude['data'][0])} "
+        "+datum=WGS84 +units=m +no_defs"
     )
-    # 3. project to regular grid
-    xmin_dem = np.min(grid_x)
-    xmax_dem = np.max(grid_x)
-    ymin_dem = np.min(grid_y)
-    ymax_dem = np.max(grid_y)
-    res_dem_x = round(np.nanmean(np.diff(grid_x[0])))
-    res_dem_y = round(np.nanmean(np.diff(grid_y[:, 0])))
+
+    dem_crs_obj = CRS.from_user_input(dem_crs)
+    dem_to_aeqd = Transformer.from_crs(dem_crs_obj, aeqd_crs, always_xy=True)
+
+    # Transform only DEM corner points (NOT full grid!)
+    corners_x = np.array([x_dem[0], x_dem[-1], x_dem[0], x_dem[-1]])
+    corners_y = np.array([y_dem[0], y_dem[0], y_dem[-1], y_dem[-1]])
+
+    cx, cy = dem_to_aeqd.transform(corners_x, corners_y)
+
+    xmin_dem = np.min(cx)
+    xmax_dem = np.max(cx)
+    ymin_dem = np.min(cy)
+    ymax_dem = np.max(cy)
+
+    # Resolution (use DEM native resolution)
+    res_dem_x = abs(x_dem[1] - x_dem[0])
+    res_dem_y = abs(y_dem[1] - y_dem[0])
+
     vec_x = np.arange(xmin_dem, xmax_dem + res_dem_x, res_dem_x)
     vec_y = np.arange(ymin_dem, ymax_dem + res_dem_y, res_dem_y)
+
     grid_x_interp, grid_y_interp = np.meshgrid(vec_x, vec_y)
 
-    dem_interp = griddata(
-        np.vstack((grid_x.ravel(), grid_y.ravel())).T,
-        values=dem_grid.fields["terrain_altitude"]["data"].ravel(),
-        xi=(grid_x_interp, grid_y_interp),
-        method="nearest",
+    dem_interp = gf.nearest_resample_dem_to_aeqd(
+        Z=Z,
+        x_dem=x_dem,
+        y_dem=y_dem,
+        dem_crs=dem_crs,
+        aeqd_crs=aeqd_crs,
+        grid_x=grid_x_interp,
+        grid_y=grid_y_interp,
+        fill_value=np.nan,
+        chunk_rows=512,
     )
+
     # 4. redefine dem_grid
     dem_grid.fields["terrain_altitude"]["data"] = dem_interp[None, :]
     dem_grid.nx = dem_interp.shape[1]
