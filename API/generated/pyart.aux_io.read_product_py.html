@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
@@ -1831,7 +1831,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pyart.aux_io.read_product_py">
 <span class="sig-prename descclassname"><span class="pre">pyart.aux_io.</span></span><span class="sig-name descname"><span class="pre">read_product_py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radar_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physic_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masked_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyart.aux_io.read_product_py" title="Permalink to this definition">#</a></dt>
-<dd><p>Reads a METRANET cartesian data file</p>
+<dd><p>Reads a METRANET polar product data file, from MeteoSwiss post-processing
+products that are stored in polar coordinates, e.g. YM (hydrometeor class)
+and DV (dealiased velocity), e.g. YMA2605300107L.803 or DVA2605300107L.810</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
