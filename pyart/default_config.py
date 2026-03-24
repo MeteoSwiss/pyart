@@ -1175,16 +1175,12 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
     },
     avg_reflectivity: {
         "units": "dBZ",
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant05_reflectivity: {
@@ -1192,8 +1188,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant10_reflectivity: {
@@ -1201,8 +1195,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant20_reflectivity: {
@@ -1210,8 +1202,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant50_reflectivity: {
@@ -1219,8 +1209,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant80_reflectivity: {
@@ -1228,8 +1216,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant90_reflectivity: {
@@ -1237,8 +1223,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     quant95_reflectivity: {
@@ -1246,8 +1230,6 @@ DEFAULT_METADATA = {
         "standard_name": "horizontal_reflectivity",
         "long_name": "Horizontal Reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.5,
-        "add_offset": -32.0,
         "_Write_as_dtype": "uint8",
     },
     bird_reflectivity: {
@@ -1714,8 +1696,6 @@ DEFAULT_METADATA = {
         "standard_name": "differential_reflectivity",
         "long_name": "Differential reflectivity",
         "coordinates": "elevation azimuth range",
-        "scale_factor": 0.062254902,
-        "add_offset": -7.9375,
     },
     corrected_differential_reflectivity: {
         "units": "dB",
