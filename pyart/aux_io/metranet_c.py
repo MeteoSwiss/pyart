@@ -585,7 +585,8 @@ def read_polar(
     verbose=False,
 ):
     """
-    Reads a METRANET polar data file
+    Reads a METRANET polar radar data file for the operation C-band network of MeteoSwiss
+    The files are called ML{radar}YYJJJHHMM00U.00{sweep}, e.g. MLL2605300100U.010
 
     Parameters
     ----------
@@ -844,7 +845,9 @@ def read_polar(
 
 def read_product(file, physic_value=False, masked_array=False, verbose=False):
     """
-    Reads a METRANET polar data file
+    Reads a METRANET polar product data file, from MeteoSwiss post-processing
+    products that are stored in polar coordinates, e.g. YM (hydrometeor class)
+    and DV (dealiased velocity), e.g. YMA2605300107L.803 or DVA2605300107L.810
 
     Parameters
     ----------
@@ -981,9 +984,9 @@ def read_product(file, physic_value=False, masked_array=False, verbose=False):
             if "usr_rank1_color" in prd_header:
                 prd_data_level = np.zeros(256)
                 prd_data_level[np.arange(41)] = np.arange(41)
-                prd_data_level[np.arange(41) + int(prd_header["usr_rank1_color"])] = (
-                    np.arange(41)
-                )
+                prd_data_level[
+                    np.arange(41) + int(prd_header["usr_rank1_color"])
+                ] = np.arange(41)
             else:
                 prd_data_level = np.arange(256)
 
