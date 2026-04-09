@@ -326,7 +326,6 @@ def compute_spectral_reflectivity(
     else:
         if pwr_field is None:
             pwr_field = get_field_name("spectral_power_hh_ADU")
-
     if spectra.radar_calibration is None:
         raise ValueError(
             "Unable to compute spectral reflectivity. "
@@ -338,7 +337,6 @@ def compute_spectral_reflectivity(
         pwr_field is not None and "vv" in pwr_field
     ):
         pol = "vv"
-
     if pol == "hh":
         if (
             "dBADU_to_dBm_hh" not in spectra.radar_calibration
@@ -412,7 +410,6 @@ def compute_spectral_reflectivity(
 
     sdBZ_dict = get_metadata(sdBZ_field)
     sdBZ_dict["data"] = sdBZ
-
     return sdBZ_dict
 
 
@@ -1466,7 +1463,6 @@ def dealias_spectra(
                 np.isnan(old_spectra_fields[pwr_field][j, i, 0])
                 or np.isnan(old_spectra_fields[pwr_field][j, i, -1])
             ):
-
                 if not any(np.isnan(old_spectra_fields[pwr_field][j, i])):
                     mmin = np.min(old_spectra_fields[pwr_field][j, i])
                     myspec = old_spectra_fields[pwr_field][j, i]
@@ -1532,9 +1528,9 @@ def dealias_spectra(
                         ] = old_spectra_fields[field][j, i, left_tail_len:]
             else:
                 for field in new_spectra_fields:
-                    new_spectra_fields[field][j, i, npulses : 2 * npulses] = (
-                        old_spectra_fields[field][j, i]
-                    )
+                    new_spectra_fields[field][
+                        j, i, npulses : 2 * npulses
+                    ] = old_spectra_fields[field][j, i]
 
             current_vel = np.nansum(
                 10 ** (0.1 * new_spectra_fields[pwr_field][:, i]) * new_bins, axis=-1

@@ -210,7 +210,6 @@ class RadarSpectra(Radar):
         pitch=None,
         georefs_applied=None,
     ):
-
         if "calendar" not in time:
             time["calendar"] = "gregorian"
         self.time = time
@@ -251,7 +250,6 @@ class RadarSpectra(Radar):
 
         self.instrument_parameters = instrument_parameters  # optional
         self.radar_calibration = radar_calibration  # optional
-
         self.ngates = len(_range["data"])
         self.nrays = len(time["data"])
         self.npulses = npulses

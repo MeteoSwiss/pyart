@@ -370,28 +370,42 @@ def read_rainbow_wrl(
     rad_cal_v["data"] = None
     tx_pwr_h["data"] = None
     tx_pwr_v["data"] = None
-    if "pw_index" in common_slice_info:
-        pw_index = int(common_slice_info["pw_index"])
+    pw_index = common_slice_info.get("pw_index", None)
+
+    # --- Pulse width ---
+    if pw_index is not None:
+        pw_index = int(pw_index)
         pulse_width["data"] = PULSE_WIDTH_VEC[pw_index] * np.ones(
             total_rays, dtype=dtype
         )
+    else:
+        # fallback: assume direct scalar
+        pulse_width["data"] = np.ones(total_rays, dtype=dtype)
 
-        # calibration constant
-        if "rspdphradconst" in common_slice_info:
-            cal_vec = common_slice_info["rspdphradconst"].split()
+    # --- Calibration constants ---
+    if "rspdphradconst" in common_slice_info:
+        val = common_slice_info["rspdphradconst"]
+        if pw_index is not None:
+            cal_vec = val.split()
             rad_cal_h["data"] = np.array([float(cal_vec[pw_index])], dtype=dtype)
+        else:
+            rad_cal_h["data"] = np.array([float(val)], dtype=dtype)
 
-        if "rspdpvradconst" in common_slice_info:
-            cal_vec = common_slice_info["rspdpvradconst"].split()
+    if "rspdpvradconst" in common_slice_info:
+        val = common_slice_info["rspdpvradconst"]
+        if pw_index is not None:
+            cal_vec = val.split()
             rad_cal_v["data"] = np.array([float(cal_vec[pw_index])], dtype=dtype)
+        else:
+            rad_cal_v["data"] = np.array([float(val)], dtype=dtype)
 
-        # magnetron transmit power
-        if "gdrxmaxpowkw" in common_slice_info:
-            tx_pwr_dBm = (
-                10.0 * np.log10(float(common_slice_info["gdrxmaxpowkw"]) * 1e3) + 30.0
-            )
-            tx_pwr_h["data"] = np.array([tx_pwr_dBm], dtype=dtype)
-            tx_pwr_v["data"] = np.array([tx_pwr_dBm], dtype=dtype)
+    # --- Magnetron transmit power ---
+    if "gdrxmaxpowkw" in common_slice_info:
+        tx_pwr_dBm = (
+            10.0 * np.log10(float(common_slice_info["gdrxmaxpowkw"]) * 1e3) + 30.0
+        )
+        tx_pwr_h["data"] = np.array([tx_pwr_dBm], dtype=dtype)
+        tx_pwr_v["data"] = np.array([tx_pwr_dBm], dtype=dtype)
 
     # range
     r_res = float(common_slice_info["rangestep"]) * 1000.0

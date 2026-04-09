@@ -47,12 +47,14 @@ else:
     _WRADLIB_AVAILABLE = False
 
 PSR_FIELD_NAMES = {
-    "TXh": "transmitted_power_h",
-    "TXv": "transmitted_power_v",
+    "TXh": "transmitted_signal_power_h",
+    "TXv": "transmitted_signal_power_v",
     "NADUhh": "spectral_noise_power_hh_ADU",
     "NADUvv": "spectral_noise_power_vv_ADU",
-    "NADUhv": "spectral_noise_power_hv_ADU",
-    "NADUvh": "spectral_noise_power_vh_ADU",
+}
+PSR_FIELD_NAMES_SPECTA = {
+    "NADUhh": "spectral_noise_power_hh_ADU",
+    "NADUvv": "spectral_noise_power_vv_ADU",
     "ShhADU": "complex_spectra_hh_ADU",
     "SvvADU": "complex_spectra_vv_ADU",
 }
@@ -78,7 +80,8 @@ def read_rainbow_psr(
     **kwargs
 ):
     """
-    Read a PSR file.
+    Read transmitted power and noise levels from a PSR file
+    (to read the complex spectrum use read_rainbow_psr_spectra)
 
     Parameters
     ----------
@@ -231,16 +234,22 @@ def read_rainbow_psr(
     if not hasattr(radar, "radar_calibration") or radar.radar_calibration is None:
         radar.radar_calibration = dict()
 
-    dBADU_to_dBm_hh["data"] = np.array([header["states.spbdbmtologoffset"][pw_ind]])
+    dBADU_to_dBm_hh["data"] = np.array(
+        [np.atleast_1d(header["states.spbdbmtologoffset"])[pw_ind]]
+    )
     radar.radar_calibration.update({"dBADU_to_dBm_hh": dBADU_to_dBm_hh})
 
-    dBADU_to_dBm_vv["data"] = np.array([header["states.spbdpvdbmtologoffset"][pw_ind]])
+    dBADU_to_dBm_vv["data"] = np.array(
+        [np.atleast_1d(header["states.spbdbmtologoffset"])[pw_ind]]
+    )
     radar.radar_calibration.update({"dBADU_to_dBm_vv": dBADU_to_dBm_vv})
 
-    mfloss_h["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
-    mfloss_v["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
-    radar.radar_calibration.update({"matched_filter_loss_h": mfloss_h})
-    radar.radar_calibration.update({"matched_filter_loss_v": mfloss_v})
+    if "states.gdrxmfloss" in header:
+        mfloss_h["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
+        mfloss_v["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
+    elif "states.spbdphmflossforbatch" in header:
+        mfloss_h["data"] = np.array([header["states.spbdphmflossforbatch"]])
+        mfloss_v["data"] = np.array([header["states.spbdpvmflossforbatch"]])
 
     pathatt["data"] = np.array([header["states.rspathatt"]])
     radar.radar_calibration.update({"path_attenuation": pathatt})
@@ -356,7 +365,9 @@ def read_rainbow_psr_spectra(
             return None
         ind_rng_start = np.where(rng_orig == radar.range["data"][0])[0]
         ind_rng_end = np.where(rng_orig == radar.range["data"][-1])[0]
-        ind_rng = np.arange(ind_rng_start, ind_rng_end + 1, dtype=int)
+        start = np.asarray(ind_rng_start).item()
+        end = np.asarray(ind_rng_end).item()
+        ind_rng = np.arange(start, end + 1, dtype=int)
     except OSError as ee:
         warn(str(ee))
         warn("Unable to read file " + filename)
@@ -364,7 +375,7 @@ def read_rainbow_psr_spectra(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES.values()
+        field_names = PSR_FIELD_NAMES_SPECTA.values()
     filemetadata = FileMetadata(
         "PSR",
         field_names,
@@ -380,7 +391,6 @@ def read_rainbow_psr_spectra(
     pathatt = filemetadata("path_attenuation")
 
     cpi_header, header = read_psr_cpi_headers(filenames_psr)
-
     if cpi_header is None:
         return None
 
@@ -446,21 +456,31 @@ def read_rainbow_psr_spectra(
 
     # get further metadata
     pw_ind = header["states.spbpwidth"]
+    if not hasattr(radar, "radar_calibration") or radar.radar_calibration is None:
+        radar.radar_calibration = dict()
 
-    dBADU_to_dBm_hh["data"] = np.array([header["states.spbdbmtologoffset"][pw_ind]])
+    dBADU_to_dBm_hh["data"] = np.array(
+        [np.atleast_1d(header["states.spbdbmtologoffset"])[pw_ind]]
+    )
     radar.radar_calibration.update({"dBADU_to_dBm_hh": dBADU_to_dBm_hh})
 
-    dBADU_to_dBm_vv["data"] = np.array([header["states.spbdpvdbmtologoffset"][pw_ind]])
+    dBADU_to_dBm_vv["data"] = np.array(
+        [np.atleast_1d(header["states.spbdbmtologoffset"])[pw_ind]]
+    )
     radar.radar_calibration.update({"dBADU_to_dBm_vv": dBADU_to_dBm_vv})
 
-    mfloss_h["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
-    mfloss_v["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
+    if "states.gdrxmfloss" in header:
+        mfloss_h["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
+        mfloss_v["data"] = np.array([header["states.gdrxmfloss"][pw_ind]])
+    elif "states.spbdphmflossforbatch" in header:
+        mfloss_h["data"] = np.array([header["states.spbdphmflossforbatch"]])
+        mfloss_v["data"] = np.array([header["states.spbdpvmflossforbatch"]])
+
     radar.radar_calibration.update({"matched_filter_loss_h": mfloss_h})
     radar.radar_calibration.update({"matched_filter_loss_v": mfloss_v})
 
     pathatt["data"] = np.array([header["states.rspathatt"]])
     radar.radar_calibration.update({"path_attenuation": pathatt})
-
     return RadarSpectra(
         radar.time,
         radar.range,
@@ -537,12 +557,20 @@ def read_psr_cpi_headers(filenames):
         cpi_header["ngates"].extend(cpi_header_aux["ngates"])
         cpi_header["tx_pwr"].extend(cpi_header_aux["tx_pwr"])
 
-        if "noise" not in cpi_header_aux:
-            cpi_header["noise"] = None
-
+        noise_aux = cpi_header_aux.get("noise")
         if cpi_header["noise"] is not None:
-            cpi_header["noise"].extend(cpi_header_aux["noise"])
+            if isinstance(noise_aux, np.ma.MaskedArray):
+                value = noise_aux.item() if noise_aux.shape == () else noise_aux
 
+                if value is None:
+                    pass
+                elif isinstance(value, np.ma.MaskedArray):
+                    cpi_header["noise"].extend(value.compressed().tolist())
+                else:
+                    cpi_header["noise"].extend(np.atleast_1d(value).tolist())
+
+            elif noise_aux is not None:
+                cpi_header["noise"].extend(np.atleast_1d(noise_aux).tolist())
     cpi_header["azi_start"] = np.array(cpi_header["azi_start"])
     cpi_header["azi_stop"] = np.array(cpi_header["azi_stop"])
     cpi_header["ele_start"] = np.array(cpi_header["ele_start"])
@@ -551,7 +579,11 @@ def read_psr_cpi_headers(filenames):
     cpi_header["prfs"] = np.array(cpi_header["prfs"])
     cpi_header["ngates"] = np.array(cpi_header["ngates"])
     cpi_header["tx_pwr"] = np.ma.array(cpi_header["tx_pwr"])
-    cpi_header["noise"] = np.ma.array(cpi_header["noise"])
+    cpi_header["noise"] = (
+        np.ma.array(cpi_header["noise"])
+        if len(cpi_header["noise"])
+        else cpi_header["tx_pwr"] + np.nan
+    )
     header["items_per_file"] = np.array(header["items_per_file"])
 
     return cpi_header, header
@@ -953,19 +985,24 @@ def get_field(
         The PSR data in the format of the reference radar fields
 
     """
+
     if field_name in (
-        "noisedBZ_hh",
-        "noisedBZ_vv",
-        "noisedBm_hh",
-        "noisedBm_vv",
-        "noisedBADU_hh",
-        "noisedBADU_vv",
+        "spectral_noise_power_hh_ADU",
+        "spectral_noise_power_vv_ADU",
+        "spectral_noise_power_hv_ADU",
+        "spectral_noise_power_vh_ADU",
     ):
         field = cpi_header["noise"]
         if undo_txcorr:
+            if "states.gdrxmaxpowerkwpw" in header:  # old systems
+                maxpow = header.get("states.gdrxmaxpowerkwpw")[
+                    header["states.spbpwidth"]
+                ]
+            else:
+                maxpow = header.get("states.gdrx5caltxpowkwpwh")
+
             field[cpi_header["tx_pwr"] > 0.0] *= (
-                cpi_header["tx_pwr"][cpi_header["tx_pwr"] > 0.0]
-                / header["states.gdrxmaxpowerkwpw"][header["states.spbpwidth"]]
+                cpi_header["tx_pwr"][cpi_header["tx_pwr"] > 0.0] / maxpow
             )
 
     elif field_name in ("transmitted_signal_power_h", "transmitted_signal_power_v"):
@@ -1007,8 +1044,6 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
         dictionaries containing the PSR file header and CPI headers data
     items : int array
         array containing the items to select
-    field_name : str
-        The name of the field to filter
     undo_txcorr : bool
         If True and field is a noise field the correction of the received
         signal by the transmitted power is undone
@@ -1021,9 +1056,13 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
     """
     field = cpi_header["noise"] / cpi_header["npulses"]
     if undo_txcorr:
+        if "states.gdrxmaxpowerkwpw" in header:  # old systems
+            maxpow = header.get("states.gdrxmaxpowerkwpw")[header["states.spbpwidth"]]
+        else:
+            maxpow = header.get("states.gdrx5caltxpowkwpwh")
+
         field[cpi_header["tx_pwr"] > 0.0] *= (
-            cpi_header["tx_pwr"][cpi_header["tx_pwr"] > 0.0]
-            / header["states.gdrxmaxpowerkwpw"][header["states.spbpwidth"]]
+            cpi_header["tx_pwr"][cpi_header["tx_pwr"] > 0.0] / maxpow
         )
 
     field_filt = np.ma.masked_all((radar.nrays, 1, 1))
