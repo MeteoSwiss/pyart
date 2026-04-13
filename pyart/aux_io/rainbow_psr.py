@@ -986,12 +986,7 @@ def get_field(
 
     """
 
-    if field_name in (
-        "spectral_noise_power_hh_ADU",
-        "spectral_noise_power_vv_ADU",
-        "spectral_noise_power_hv_ADU",
-        "spectral_noise_power_vh_ADU",
-    ):
+    if "noise" in field_name:
         field = cpi_header["noise"]
         if undo_txcorr:
             if "states.gdrxmaxpowerkwpw" in header:  # old systems
@@ -1004,7 +999,6 @@ def get_field(
             field[cpi_header["tx_pwr"] > 0.0] *= (
                 cpi_header["tx_pwr"][cpi_header["tx_pwr"] > 0.0] / maxpow
             )
-
     elif field_name in ("transmitted_signal_power_h", "transmitted_signal_power_v"):
         field = cpi_header["tx_pwr"]
 
