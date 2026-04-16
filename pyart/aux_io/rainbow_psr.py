@@ -46,18 +46,23 @@ if importlib.util.find_spec("wradlib"):
 else:
     _WRADLIB_AVAILABLE = False
 
-PSR_FIELD_NAMES = {
-    "TXh": "transmitted_signal_power_h",
-    "TXv": "transmitted_signal_power_v",
-    "NADUhh": "spectral_noise_power_hh_ADU",
-    "NADUvv": "spectral_noise_power_vv_ADU",
-}
-PSR_FIELD_NAMES_SPECTA = {
-    "NADUhh": "spectral_noise_power_hh_ADU",
-    "NADUvv": "spectral_noise_power_vv_ADU",
-    "ShhADU": "complex_spectra_hh_ADU",
-    "SvvADU": "complex_spectra_vv_ADU",
-}
+PSR_FIELD_NAMES = [
+    "transmitted_signal_power_h",
+    "transmitted_signal_power_v",
+    "noisedBADU_hh",
+    "noisedBADU_vv",
+    "noisedBm_hh",
+    "noisedBm_vv",
+    "noisedBZ_hh",
+    "noisedBZ_vv",
+]
+
+PSR_FIELD_NAMES_SPECTRA = [
+    "spectral_noise_power_hh_ADU",
+    "spectral_noise_power_vv_ADU",
+    "complex_spectra_hh_ADU",
+    "complex_spectra_vv_ADU",
+]
 
 
 def read_rainbow_psr(
@@ -77,7 +82,8 @@ def read_rainbow_psr(
     ele_max=None,
     rng_min=None,
     rng_max=None,
-    **kwargs
+    transition_weighting="linear",
+    **kwargs,
 ):
     """
     Read transmitted power and noise levels from a PSR file
@@ -127,12 +133,26 @@ def read_rainbow_psr(
         The minimum and maximum angles to keep (deg)
     rng_min, rng_max : float or None
         The minimum and maximum ranges to keep (m)
-
+    transition_weighting : str
+        For pulse-compressed radars only.
+        Defines how the spectrum from the uncompressed and compressed spectra
+        should be combined in the transition region.
+        Available options are: "mean", "linear", "sigmoid",
+        "only_compressed", "only_uncompressed"
+        "mean": both spectra are averaged with weight of 0.5 each
+        "linear": the weight of the uncompressed spectra is 1 at the beg. of
+        the transition region, 0 at the end.
+        "sigmoid": Similar to linear but a sigmoid (derivable) function is
+        used instead.
+        "only_compressed": only uses compressed spectrum in the transition
+        (for testing purposes)
+        "only_uncompressed": only uses uncompressed spectrum in the transition
+        (for testing purposes)
+        Default is "linear".
     Returns
     -------
     radar : Radar
         Radar object containing data from PSR file.
-
     """
     # check that wradlib is available
     if not _WRADLIB_AVAILABLE:
@@ -157,6 +177,9 @@ def read_rainbow_psr(
             azi_min=azi_min,
             azi_max=azi_max,
         )
+        if radar is None:
+            warn("No data within specified azimuth, elevation and range limits")
+            return None
     except OSError as ee:
         warn(str(ee))
         warn("Unable to read file " + filename)
@@ -164,7 +187,8 @@ def read_rainbow_psr(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES.values()
+        field_names = PSR_FIELD_NAMES
+
     filemetadata = FileMetadata(
         "PSR",
         field_names,
@@ -180,9 +204,11 @@ def read_rainbow_psr(
     pathatt = filemetadata("path_attenuation")
 
     cpi_header, header = read_psr_cpi_headers(filenames_psr)
-
     if cpi_header is None:
         return None
+
+    # Check whether radar uses pulse compression
+    pulse_compression = "states.spbpctfmchanneltransitionranges" in header
 
     # keep only valid items
     prfs = np.sort(np.unique(cpi_header["prfs"]))
@@ -194,25 +220,95 @@ def read_rainbow_psr(
         cpi_header["ele_stop"],
         cpi_header["prfs"],
         prfs,
+        pulse_compression=pulse_compression,
+        ngates=cpi_header["ngates"],
         cpi=cpi,
         ang_tol=ang_tol,
     )
 
-    if items.size == 0:
+    has_items = items[0].size if pulse_compression else items.size
+    if not has_items:
         warn("No items matching radar object")
         return None
 
-    for field_name in field_names:
-        field_data = get_field(
-            radar,
-            cpi_header,
-            header,
-            items,
-            prfs.size,
-            field_name,
-            undo_txcorr=undo_txcorr,
-            cpi=cpi,
+    if pulse_compression:
+        ng0 = cpi_header["ngates"][0]
+        ng1 = cpi_header["ngates"][1]
+
+        w0_1d, w1_1d = _get_transition_weights(
+            ng0,
+            ng1,
+            radar.ngates,
+            mode=transition_weighting,
+            sigmoid_steepness=8.0,
         )
+
+    for field_name in field_names:
+        if not pulse_compression:
+            field_data = get_field(
+                radar,
+                cpi_header,
+                header,
+                items,
+                prfs.size,
+                field_name,
+                undo_txcorr=undo_txcorr,
+                cpi=cpi,
+            )
+        else:
+            weighted_sum = None
+            weight_sum = None
+
+            # first item group starts at gate 0
+            # second item group is mapped from the end, like in spectra reader
+            ind_rng_groups = [
+                np.arange(0, ng0, dtype=int),
+                np.arange(0, ng1, dtype=int),
+            ]
+
+            for i, (item_group, ind_rng_aux) in enumerate(zip(items, ind_rng_groups)):
+                field_part = get_field(
+                    radar,
+                    cpi_header,
+                    header,
+                    item_group,
+                    prfs.size,
+                    field_name,
+                    undo_txcorr=undo_txcorr,
+                    cpi=cpi,
+                )
+
+                field_part = np.ma.asarray(field_part)
+                valid = ~np.ma.getmaskarray(field_part)
+                filled = field_part.filled(field_part.dtype.type(0))
+
+                if weighted_sum is None:
+                    out_shape = list(field_part.shape)
+                    out_shape[1] = radar.ngates
+                    weighted_sum = np.zeros(out_shape, dtype=np.float64)
+                    weight_sum = np.zeros(out_shape, dtype=np.float64)
+
+                if i == 0:
+                    # first field occupies the beginning of the radial
+                    out_idx = ind_rng_aux
+                    weights_1d = w0_1d[out_idx]
+                else:
+                    # second field is flipped to the end of the radial
+                    out_idx = (radar.ngates - ind_rng_aux)[::-1] - 1
+                    weights_1d = w1_1d[out_idx]
+
+                weights = weights_1d[None, :]
+
+                weighted_sum[:, out_idx] += (
+                    filled[:, ind_rng_aux] * weights * valid[:, ind_rng_aux]
+                )
+                weight_sum[:, out_idx] += weights * valid[:, ind_rng_aux]
+
+            valid_out = weight_sum > 0
+            field_data = np.ma.masked_all(weighted_sum.shape, dtype=field_part.dtype)
+            field_data[valid_out] = (
+                weighted_sum[valid_out] / weight_sum[valid_out]
+            ).astype(field_part.dtype)
 
         if field_name in (
             "noisedBADU_hh",
@@ -227,6 +323,10 @@ def read_rainbow_psr(
         field_dict = filemetadata(field_name)
         field_dict["data"] = field_data
         radar.add_field(field_name, field_dict)
+
+    # if pulse compression used, flatten items for any later per-item metadata
+    if pulse_compression:
+        items = np.sort(np.concatenate([np.asarray(item) for item in items]))
 
     # get further metadata
     pw_ind = header["states.spbpwidth"]
@@ -250,6 +350,9 @@ def read_rainbow_psr(
     elif "states.spbdphmflossforbatch" in header:
         mfloss_h["data"] = np.array([header["states.spbdphmflossforbatch"]])
         mfloss_v["data"] = np.array([header["states.spbdpvmflossforbatch"]])
+
+    radar.radar_calibration.update({"matched_filter_loss_h": mfloss_h})
+    radar.radar_calibration.update({"matched_filter_loss_v": mfloss_v})
 
     pathatt["data"] = np.array([header["states.rspathatt"]])
     radar.radar_calibration.update({"path_attenuation": pathatt})
@@ -275,7 +378,8 @@ def read_rainbow_psr_spectra(
     ele_max=None,
     rng_min=None,
     rng_max=None,
-    **kwargs
+    transition_weighting="linear",
+    **kwargs,
 ):
     """
     Read a PSR file to get the complex spectra
@@ -329,7 +433,18 @@ def read_rainbow_psr_spectra(
         The minimum and maximum angles to keep (deg)
     rng_min, rng_max : float or None
         The minimum and maximum ranges to keep (m)
-
+    transition_weighting : str
+        For pulse-compressed radars only.
+        Defines how the spectrum from the uncompressed and compressed spectra
+        should be combined in the transition region.
+        Available options are: "mean", "linear" and "sigmoid", "only_compressed", "only_uncompressed"
+        "mean": both spectra are averaged with weight of 0.5 each
+        "linear": the weight of the uncompressed spectra is 1 at the beg. of
+        the transition region, 0 at the end.
+        "sigmoid": Similar to linear but a sigmoid (derivable) function is used instead.
+        "only_compressed": only uses compressed spectrum in the transition (for testing purposes)
+        "only_uncompressed": only uses uncompressed spectrum in the transition (for testing purposes)
+        Default is "linear".
     Returns
     -------
     radar : Radar
@@ -375,7 +490,8 @@ def read_rainbow_psr_spectra(
 
     # create metadata retrieval object
     if field_names is None:
-        field_names = PSR_FIELD_NAMES_SPECTA.values()
+        field_names = PSR_FIELD_NAMES_SPECTRA
+
     filemetadata = FileMetadata(
         "PSR",
         field_names,
@@ -394,6 +510,9 @@ def read_rainbow_psr_spectra(
     if cpi_header is None:
         return None
 
+    # Check whether radar uses pulse compression
+    pulse_compression = "states.spbpctfmchanneltransitionranges" in header
+
     # keep only valid items
     prfs = np.sort(np.unique(cpi_header["prfs"]))
     items, radar = get_item_numbers(
@@ -404,40 +523,124 @@ def read_rainbow_psr_spectra(
         cpi_header["ele_stop"],
         cpi_header["prfs"],
         prfs,
+        pulse_compression=pulse_compression,
+        ngates=cpi_header["ngates"],
         cpi=cpi,
         ang_tol=ang_tol,
     )
 
-    if items.size == 0:
+    has_items = items[0].size if pulse_compression else items.size
+    if not has_items:
         warn("No items matching radar object")
-        return None
+
+    if pulse_compression:
+        ng0 = cpi_header["ngates"][0]
+        ng1 = cpi_header["ngates"][1]
+
+        w0_1d, w1_1d = _get_transition_weights(
+            ng0,
+            ng1,
+            radar.ngates,
+            mode=transition_weighting,
+            sigmoid_steepness=8.0,
+        )
 
     fields = {}
     for field_name in field_names:
-        if field_name in (
-            "spectral_noise_power_hh_ADU",
-            "spectral_noise_power_vv_ADU",
-            "spectral_noise_power_hv_ADU",
-            "spectral_noise_power_vh_ADU",
-        ):
-            field_data = get_spectral_noise(
-                radar, cpi_header, header, items, undo_txcorr=undo_txcorr
-            )
+        if not pulse_compression:
+            if field_name in (
+                "spectral_noise_power_hh_ADU",
+                "spectral_noise_power_vv_ADU",
+                "spectral_noise_power_hv_ADU",
+                "spectral_noise_power_vh_ADU",
+            ):
+                field_data = get_spectral_noise(
+                    radar, cpi_header, header, items, undo_txcorr=undo_txcorr
+                )
+            else:
+                field_data = get_spectra_field(
+                    radar,
+                    filenames_psr,
+                    cpi_header["npulses"],
+                    header["items_per_file"],
+                    items,
+                    ind_rng,
+                    fold=fold,
+                    positive_away=positive_away,
+                )
         else:
-            field_data = get_spectra_field(
-                radar,
-                filenames_psr,
-                cpi_header["npulses"],
-                header["items_per_file"],
-                items,
-                ind_rng,
-                fold=fold,
-                positive_away=positive_away,
-            )
+            weighted_sum = None
+            weight_sum = None
+
+            ind_rng_groups = [
+                np.arange(0, ng0, dtype=int),
+                np.arange(0, ng1, dtype=int),
+            ]
+
+            for i, (item_group, ind_rng_aux) in enumerate(zip(items, ind_rng_groups)):
+                if field_name in (
+                    "spectral_noise_power_hh_ADU",
+                    "spectral_noise_power_vv_ADU",
+                    "spectral_noise_power_hv_ADU",
+                    "spectral_noise_power_vh_ADU",
+                ):
+                    field_part = get_spectral_noise(
+                        radar,
+                        cpi_header,
+                        header,
+                        item_group,
+                        undo_txcorr=undo_txcorr,
+                    )
+                else:
+                    field_part = get_spectra_field(
+                        radar,
+                        filenames_psr,
+                        cpi_header["npulses"],
+                        header["items_per_file"],
+                        item_group,
+                        ind_rng_aux,
+                        fold=fold,
+                        positive_away=positive_away,
+                    )
+                # ensure masked array
+                field_part = np.ma.asarray(field_part)
+                valid = ~np.ma.getmaskarray(field_part)
+                filled = field_part.filled(field_part.dtype.type(0))
+                if weighted_sum is None:
+                    out_shape = list(field_part.shape)
+                    out_shape[1] = radar.ngates
+                    weighted_sum = np.zeros(out_shape, dtype=filled.dtype)
+                    weight_sum = np.zeros(out_shape, dtype=np.float64)
+
+                if i == 0:
+                    # first spectrum goes directly to beginning of radial
+                    out_idx = ind_rng_aux
+                    weights_1d = w0_1d[out_idx]
+
+                else:
+                    # second spectrum is flipped to the end of the radial
+                    out_idx = (radar.ngates - ind_rng_aux)[::-1] - 1
+                    weights_1d = w1_1d[out_idx]
+
+                # expand weights to (1, range, 1) for broadcasting
+                weights = weights_1d[None, :, None]
+                weighted_sum[:, out_idx, :] += (
+                    filled[:, ind_rng_aux, :] * weights * valid[:, ind_rng_aux, :]
+                )
+                weight_sum[:, out_idx, :] += weights * valid[:, ind_rng_aux, :]
+
+            valid_out = weight_sum > 0
+            field_data = np.ma.masked_all(weighted_sum.shape, dtype=field_part.dtype)
+            field_data[valid_out] = (
+                weighted_sum[valid_out] / weight_sum[valid_out]
+            ).astype(field_part.dtype)
 
         field_dict = filemetadata(field_name)
         field_dict["data"] = field_data
         fields[field_name] = field_dict
+
+    if pulse_compression:
+        items = np.sort([ii for item in items for ii in item])  # flatten items
 
     Doppler_velocity = filemetadata("Doppler_velocity")
     Doppler_frequency = filemetadata("Doppler_frequency")
@@ -611,7 +814,6 @@ def read_psr_header(filename):
             line = txtfile.readline()
             while 0 == 0:
                 line = txtfile.readline()
-
                 if "ARCHIVE_HEADER_END" in line:
                     break
 
@@ -629,13 +831,14 @@ def read_psr_header(filename):
             noise = np.array([])
             while 0 == 0:
                 line = txtfile.readline()
-
-                if not line.startswith("i"):
-                    break
-
                 strings = line.split()
-                noise = np.append(noise, np.float32(strings[3].split("=")[1]))
-
+                try:
+                    if line.startswith("i"):  # old format
+                        noise = np.append(noise, np.float32(strings[3].split("=")[1]))
+                    else:
+                        noise = np.append(noise, np.float32(strings[2]))
+                except (IndexError, ValueError):
+                    break
             header.update({"noise": noise})
 
             return header
@@ -772,7 +975,7 @@ def read_psr_spectra(filename):
     return spectra
 
 
-def get_item_numbers(
+def _get_item_numbers_single_group(
     radar,
     azi_start,
     azi_stop,
@@ -784,32 +987,7 @@ def get_item_numbers(
     ang_tol=0.5,
 ):
     """
-    Gets the item numbers to be used and eventually modify the radar object
-    to accomodate more angles
-
-
-    Parameters
-    ----------
-    radar: radar object
-        the reference radar
-    azi_start, azi_stop, ele_start, ele_stop : float array
-        The start and stop angles of the CPI elements
-    prf_array: float array
-        The PRF of each CPI element
-    prfs : float array
-        The unique PRFs contained in the PSR file
-    cpi : str
-        The CPI to use. Can be 'low_prf', 'intermediate_prf', 'high_prf',
-        'mean', 'all'. If 'mean' the mean within the angle step is taken.
-        If 'all' the data is not filtered by PRF
-    ang_tol : float
-        Angle tolerance
-
-    Returns
-    -------
-    items : int array
-        the item number selected
-
+    Internal helper: original get_item_numbers logic for a single CPI subset.
     """
     if radar.scan_type == "ppi":
         cpi_ang_center = azi_start + (azi_stop - azi_start) / 2.0
@@ -825,6 +1003,9 @@ def get_item_numbers(
         ref_ang = radar.elevation["data"]
         fixed_ang = radar.azimuth["data"]
 
+    else:
+        raise ValueError(f"Unsupported scan type {radar.scan_type}")
+
     if prfs.size > 1 and cpi == "all":
         items = np.array([], dtype=int)
         sweep_start = radar.sweep_start_ray_index["data"]
@@ -833,14 +1014,12 @@ def get_item_numbers(
 
         items_aux = np.arange(cpi_ang_center.size)
         for i, (s_start, s_end) in enumerate(zip(sweep_start, sweep_end)):
-            # only angles within fixed angle tolerance
             fixed = radar.fixed_angle["data"][i]
             ind = np.where(np.abs(cpi_fixed_angle - fixed) < ang_tol)[0]
 
             cpi_ang_center_aux = cpi_ang_center[ind]
             items_aux2 = items_aux[ind]
 
-            # get angles within radar limits
             ind = np.where(
                 np.logical_and(
                     cpi_ang_center_aux >= ref_ang[s_start] - ang_tol,
@@ -859,47 +1038,53 @@ def get_item_numbers(
     items_aux = np.arange(cpi_ang_center.size)
     if prfs.size > 1:
         if cpi == "low_prf":
-            cpi_ang_center = cpi_ang_center[prf_array == prfs[0]]
-            cpi_fixed_angle = cpi_fixed_angle[prf_array == prfs[0]]
-            items_aux = items_aux[prf_array == prfs[0]]
+            mask = prf_array == prfs[0]
+            cpi_ang_center = cpi_ang_center[mask]
+            cpi_fixed_angle = cpi_fixed_angle[mask]
+            items_aux = items_aux[mask]
+
         elif cpi == "intermediate_prf":
             if prfs.size == 3:
-                cpi_ang_center = cpi_ang_center[prf_array == prfs[1]]
-                cpi_fixed_angle = cpi_fixed_angle[prf_array == prfs[1]]
-                items_aux = items_aux[prf_array == prfs[1]]
+                mask = prf_array == prfs[1]
+                cpi_ang_center = cpi_ang_center[mask]
+                cpi_fixed_angle = cpi_fixed_angle[mask]
+                items_aux = items_aux[mask]
             else:
-                warn("Less than 3 different prfs. " + "Low prf data will be used")
-                cpi_ang_center = cpi_ang_center[prf_array == prfs[0]]
-                cpi_fixed_angle = cpi_fixed_angle[prf_array == prfs[0]]
-                items_aux = items_aux[prf_array == prfs[0]]
+                warn("Less than 3 different prfs. Low prf data will be used")
+                mask = prf_array == prfs[0]
+                cpi_ang_center = cpi_ang_center[mask]
+                cpi_fixed_angle = cpi_fixed_angle[mask]
+                items_aux = items_aux[mask]
+
         elif cpi == "high_prf":
-            cpi_ang_center = cpi_ang_center[prf_array == prfs[-1]]
-            cpi_fixed_angle = cpi_fixed_angle[prf_array == prfs[-1]]
-            items_aux = items_aux[prf_array == prfs[-1]]
+            mask = prf_array == prfs[-1]
+            cpi_ang_center = cpi_ang_center[mask]
+            cpi_fixed_angle = cpi_fixed_angle[mask]
+            items_aux = items_aux[mask]
+
         elif cpi == "mean":
             cpi_ang_center_aux = []
             cpi_fixed_angle_aux = []
             items_aux2 = []
             for prf in prfs:
-                cpi_ang_center_aux.append(cpi_ang_center[prf_array == prf])
-                cpi_fixed_angle_aux.append(cpi_fixed_angle[prf_array == prf])
-                items_aux2.append(items_aux[prf_array == prf])
+                mask = prf_array == prf
+                cpi_ang_center_aux.append(cpi_ang_center[mask])
+                cpi_fixed_angle_aux.append(cpi_fixed_angle[mask])
+                items_aux2.append(items_aux[mask])
 
             cpi_ang_center = cpi_ang_center_aux
             cpi_fixed_angle = cpi_fixed_angle_aux
             items_aux = items_aux2
 
-    # get items to extract
     if prfs.size > 1 and cpi == "mean":
-        # fixed pointing scans
+        items = []
+
         if radar.scan_type == "other":
-            items = []
             for j, prf in enumerate(prfs):
                 cpi_fixed_angle_aux = cpi_fixed_angle[j]
                 cpi_ang_center_aux = cpi_ang_center[j]
                 items_aux2 = items_aux[j]
 
-                # only angles within fixed angle tolerance
                 ind = np.where(np.abs(cpi_fixed_angle_aux - fixed_ang[0]) < ang_tol)[0]
                 if ind.size < radar.nrays:
                     return np.array([], dtype=int), radar
@@ -912,23 +1097,24 @@ def get_item_numbers(
             cpi_ang_center_aux = cpi_ang_center[j]
             items_aux2 = items_aux[j]
             items_aux4 = np.array([], dtype=int)
+
             for i, ang in enumerate(ref_ang):
-                # only angles within fixed angle tolerance
                 fixed = fixed_ang[i]
-                ind = np.where(np.abs(cpi_fixed_angle_aux - fixed) < ang_tol)
+                ind = np.where(np.abs(cpi_fixed_angle_aux - fixed) < ang_tol)[0]
                 cpi_ang_center_aux2 = cpi_ang_center_aux[ind]
                 items_aux3 = items_aux2[ind]
 
-                # get angle closest to reference angle
-                ind = np.argmin(np.abs(cpi_ang_center_aux2 - ang))
-                items_aux4 = np.append(items_aux4, items_aux3[ind])
+                if cpi_ang_center_aux2.size == 0:
+                    continue
+
+                ind2 = np.argmin(np.abs(cpi_ang_center_aux2 - ang))
+                items_aux4 = np.append(items_aux4, items_aux3[ind2])
+
             items.append(items_aux4)
 
         return items, radar
 
-    # fixed pointing scans
     if radar.scan_type == "other":
-        # only angles within fixed angle tolerance
         ind = np.where(np.abs(cpi_fixed_angle - fixed_ang[0]) < ang_tol)[0]
         if ind.size < radar.nrays:
             return np.array([], dtype=int), radar
@@ -937,7 +1123,6 @@ def get_item_numbers(
 
     items = np.array([], dtype=int)
     for i, ang in enumerate(ref_ang):
-        # only angles within fixed angle tolerance
         fixed = fixed_ang[i]
         ind = np.where(np.abs(cpi_fixed_angle - fixed) < ang_tol)[0]
 
@@ -947,11 +1132,101 @@ def get_item_numbers(
         cpi_ang_center_aux = cpi_ang_center[ind]
         items_aux2 = items_aux[ind]
 
-        # get angle closest to reference angle
-        ind = np.argmin(np.abs(cpi_ang_center_aux - ang))
-        items = np.append(items, items_aux2[ind])
+        ind2 = np.argmin(np.abs(cpi_ang_center_aux - ang))
+        items = np.append(items, items_aux2[ind2])
 
     return items, radar
+
+
+def get_item_numbers(
+    radar,
+    azi_start,
+    azi_stop,
+    ele_start,
+    ele_stop,
+    prf_array,
+    prfs,
+    pulse_compression=False,
+    ngates=None,
+    cpi="low_prf",
+    ang_tol=0.5,
+):
+    """
+    Gets the item numbers to be used and eventually modify the radar object
+    to accomodate more angles.
+
+    If pulse_compression is True, the CPI entries are split by unique ngates and
+    the selection is run independently for each gate group.
+
+    Returns
+    -------
+    items : int array, list of int arrays, or list of lists
+        - normal case: same behavior as before
+        - pulse_compression=True:
+            one item selection per unique ngates group
+    radar : radar object
+        possibly modified radar object
+    """
+    if pulse_compression:
+        if ngates is None:
+            warn(
+                "Please provide number of gates for every CPI element when reading "
+                "pulse compressed data"
+            )
+            return None
+
+        ngates = np.asarray(ngates)
+        if ngates.size != prf_array.size:
+            raise ValueError(
+                "ngates and prf_array must have the same length when "
+                "pulse_compression=True"
+            )
+
+        unique_ngates = list(set(ngates))
+        all_items = []
+        radar_out = radar
+
+        for gates in unique_ngates:
+            mask = ngates == gates
+
+            items_group, radar_out = _get_item_numbers_single_group(
+                radar_out,
+                azi_start[mask],
+                azi_stop[mask],
+                ele_start[mask],
+                ele_stop[mask],
+                prf_array[mask],
+                np.unique(prf_array[mask]),
+                cpi=cpi,
+                ang_tol=ang_tol,
+            )
+
+            # map back to original CPI indices
+            original_idx = np.where(mask)[0]
+
+            if isinstance(items_group, list):
+                # cpi == "mean": list of arrays
+                items_group_global = [
+                    original_idx[np.asarray(it)] for it in items_group
+                ]
+            else:
+                items_group_global = original_idx[np.asarray(items_group)]
+
+            all_items.append(items_group_global)
+
+        return all_items, radar_out
+
+    return _get_item_numbers_single_group(
+        radar,
+        azi_start,
+        azi_stop,
+        ele_start,
+        ele_stop,
+        prf_array,
+        prfs,
+        cpi=cpi,
+        ang_tol=ang_tol,
+    )
 
 
 def get_field(
@@ -995,7 +1270,6 @@ def get_field(
                 ]
             else:
                 maxpow = header.get("states.gdrx5caltxpowkwpwh")
-
             field[cpi_header["tx_pwr"] > 0.0] *= (
                 cpi_header["tx_pwr"][cpi_header["tx_pwr"] > 0.0] / maxpow
             )
@@ -1064,7 +1338,6 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
         field_filt[i, 0, 0] = field[item]
 
     npulses_max = np.max(cpi_header["npulses"][items])
-
     field_data = ma_broadcast_to(field_filt, (radar.nrays, radar.ngates, npulses_max))
 
     return field_data
@@ -1119,7 +1392,6 @@ def get_spectra_field(
     spectra = np.ma.masked_all(
         (radar.nrays, radar.ngates, npulses_max), dtype=np.complex64
     )
-
     accu_items = np.cumsum(items_per_file)
     for ray, item in enumerate(items):
         # get file to read and item number within file
@@ -1142,7 +1414,6 @@ def get_spectra_field(
                     ctypes.c_int(gate),
                     spectrum.ctypes.data_as(c_complex_p),
                 )
-
                 if fold:
                     nfold = int(np.ceil(npulses_item / 2.0))
                     spectrum = np.append(spectrum[nfold:], spectrum[0:nfold])
@@ -1192,7 +1463,6 @@ def get_Doppler_info(prfs, npulses, wavelength, fold=True):
     npulses_max = np.max(npulses)
     freq_res = prfs / npulses
     vel_res = freq_res * wavelength / 2.0
-
     Doppler_frequency = np.ma.masked_all((nrays, npulses_max))
     Doppler_velocity = np.ma.masked_all((nrays, npulses_max))
     for ray in range(nrays):
@@ -1238,9 +1508,9 @@ def get_noise_field(radar, field_data, header, field_name):
 
     pw_ind = header["states.spbpwidth"]
     if field_name in ("noisedBZ_hh", "noisedBm_hh"):
-        dBadu2dBm = header["states.spbdbmtologoffset"][pw_ind]
+        dBadu2dBm = np.atleast_1d(header["states.spbdbmtologoffset"])[pw_ind]
     else:
-        dBadu2dBm = header["states.spbdpvdbmtologoffset"][pw_ind]
+        dBadu2dBm = np.atleast_1d(header["states.spbdpvdbmtologoffset"])[pw_ind]
 
     field_data = field_data + dBadu2dBm
 
@@ -1248,10 +1518,14 @@ def get_noise_field(radar, field_data, header, field_name):
         return field_data
 
     if field_name == "noisedBZ_hh":
-        radconst = header["states.rspdphradconst"][pw_ind]
+        radconst = np.atleast_1d(header["states.rspdphradconst"])[pw_ind]
     else:
-        radconst = header["states.rspdpvradconst"][pw_ind]
-    mfloss = header["states.gdrxmfloss"][pw_ind]
+        radconst = np.atleast_1d(header["states.rspdpvradconst"])[pw_ind]
+    if "states.gdrxmfloss" in header:
+        mfloss = np.array([header["states.gdrxmfloss"][pw_ind]])
+    elif "states.spbdphmflossforbatch" in header:
+        mfloss = np.array([header["states.spbdphmflossforbatch"]])
+
     pathatt = header["states.rspathatt"]
 
     rangeKm = ma_broadcast_to(
@@ -1404,3 +1678,90 @@ def change_rays(radar, moving_angle, fixed_angle, rays_per_sweep):
     new_radar.init_gate_altitude()
 
     return new_radar
+
+
+def _get_transition_weights(
+    ng0,
+    ng1,
+    radar_ngates,
+    mode="mean",
+    sigmoid_steepness=8.0,
+):
+    """
+    Compute 1D transition weights for two spectra combined along range.
+
+    Parameters
+    ----------
+    ng0 : int
+        Number of gates of first spectrum (placed at beginning of radial).
+    ng1 : int
+        Number of gates of second spectrum (placed at end of radial, flipped).
+    radar_ngates : int
+        Total number of gates in output radar.
+    mode : str
+        'mean', 'linear', 'sigmoid', 'only_compressed' or 'only_uncompressed'
+    sigmoid_steepness : float
+        Steepness of sigmoid if mode='sigmoid'
+
+    Returns
+    -------
+    w0 : ndarray of shape (radar_ngates,)
+        Weights for first spectrum
+    w1 : ndarray of shape (radar_ngates,)
+        Weights for second spectrum
+    """
+    w0 = np.zeros(radar_ngates, dtype=np.float64)
+    w1 = np.zeros(radar_ngates, dtype=np.float64)
+
+    # coverage in output coordinates
+    ind0 = np.arange(0, ng0, dtype=int)
+    ind1 = np.arange(radar_ngates - ng1, radar_ngates, dtype=int)
+
+    # outside overlap: full contribution where only one spectrum exists
+    w0[ind0] = 1.0
+    w1[ind1] = 1.0
+
+    overlap_start = max(0, radar_ngates - ng1)
+    overlap_stop = min(ng0, radar_ngates)
+
+    if overlap_stop <= overlap_start:
+        return w0, w1
+
+    overlap = np.arange(overlap_start, overlap_stop, dtype=int)
+    n_overlap = overlap.size
+
+    if mode == "mean":
+        trans0 = np.full(n_overlap, 0.5, dtype=np.float64)
+        trans1 = 1.0 - trans0
+
+    elif mode == "linear":
+        if n_overlap == 1:
+            trans0 = np.array([0.5], dtype=np.float64)
+        else:
+            trans0 = np.linspace(1.0, 0.0, n_overlap, dtype=np.float64)
+        trans1 = 1.0 - trans0
+
+    elif mode == "sigmoid":
+        if n_overlap == 1:
+            trans0 = np.array([0.5], dtype=np.float64)
+        else:
+            x = np.linspace(-1.0, 1.0, n_overlap, dtype=np.float64)
+            s = 1.0 / (1.0 + np.exp(sigmoid_steepness * x))
+            # normalize exactly to [0,1] endpoints as well as possible
+            trans0 = (s - s.min()) / (s.max() - s.min())
+        trans1 = 1.0 - trans0
+    elif mode == "only_uncompressed":
+        trans0 = np.full(n_overlap, 1, dtype=np.float64)
+        trans1 = trans1 = 1.0 - trans0
+    elif mode == "only_compressed":
+        trans0 = np.full(n_overlap, 0, dtype=np.float64)
+        trans1 = trans1 = 1.0 - trans0
+    else:
+        raise ValueError(
+            f"Unknown transition mode '{mode}'. Use 'mean', 'linear', or 'sigmoid'."
+        )
+
+    w0[overlap] = trans0
+    w1[overlap] = trans1
+
+    return w0, w1
