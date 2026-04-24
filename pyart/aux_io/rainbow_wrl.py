@@ -53,6 +53,8 @@ RAINBOW_FIELD_NAMES = {
     "KDP": "specific_differential_phase",
     "uKDP": "uncorrected_specific_differential_phase",  # non standard name
     "uKDPu": "uncorrected_unfiltered_specific_differential_phase",  # non standard name
+    "SNR": "signal_to_noise_ratio",
+    "SNRu": "unfiltered_signal_to_noise_ratio",  # non standard name
     "SQI": "signal_quality_index",  # non standard name
     "SQIv": "signal_quality_index_vv",  # non standard name
     "SQIu": "unfiltered_signal_quality_index",  # non standard name

@@ -189,33 +189,17 @@ def cross_section_rhi(radar, target_elevations, el_tol=None):
     return radar_ppi
 
 
-def colocated_gates(radar1, radar2, h_tol=0.0, latlon_tol=0.0, coloc_gates_field=None):
-    """
-    Flags radar gates of radar1 colocated with radar2
-    Parameters
-    ----------
-    radar1 : Radar
-        radar object that is going to be flagged
-    radar2 : Radar
-        radar object
-    h_tol : float
-        tolerance in altitude [m]
-    latlon_tol : float
-        tolerance in latitude/longitude [deg]
-    coloc_gates_field : string
-        Name of the field to retrieve the data
-    Returns
-    -------
-    coloc_dict : dict
-        a dictionary containing the colocated positions of radar 1
-        (ele, azi, rng) and radar 2
-    coloc_rad1 :
-        field with the colocated gates of radar1 flagged, i.e:
-        1: not colocated gates 2: colocated (0 is reserved)
-    """
+def colocated_gates(
+    radar1,
+    radar2,
+    h_tol=0.0,
+    latlon_tol=0.0,
+    coloc_gates_field=None,
+    chunk_size=10000,
+    k=8,
+):
     from ..core import geographic_to_cartesian_aeqd
 
-    # parse the field parameters
     if coloc_gates_field is None:
         coloc_gates_field = get_field_name("colocated_gates")
 
@@ -236,16 +220,11 @@ def colocated_gates(radar1, radar2, h_tol=0.0, latlon_tol=0.0, coloc_gates_field
     coloc_rad2 = radar2.fields[coloc_gates_field]
 
     ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1["data"] == 2)
-    ngates = len(ind_ray_rad1)
-    # debug output:
-    # print('looking whether '+str(ngates) +
-    #       ' gates of radar1 are colocated with radar2. ' +
-    #       'This may take a while...')
-
-    # Make region preselection for radar 2
     i_ray_psel, i_rng_psel = np.where(coloc_rad2["data"] == 2)
 
-    # compute Cartesian position of radar1 respect to radar 2
+    if ind_ray_rad1.size == 0 or i_ray_psel.size == 0:
+        return coloc_dict, coloc_rad1
+
     x0, y0 = geographic_to_cartesian_aeqd(
         radar1.longitude["data"],
         radar1.latitude["data"],
@@ -255,99 +234,100 @@ def colocated_gates(radar1, radar2, h_tol=0.0, latlon_tol=0.0, coloc_gates_field
     )
     z0 = radar1.altitude["data"][0] - radar2.altitude["data"][0]
 
-    for i in range(ngates):
-        rad1_alt = radar1.gate_altitude["data"][ind_ray_rad1[i], ind_rng_rad1[i]]
-        rad1_lat = radar1.gate_latitude["data"][ind_ray_rad1[i], ind_rng_rad1[i]]
-        rad1_lon = radar1.gate_longitude["data"][ind_ray_rad1[i], ind_rng_rad1[i]]
+    rad1_alt = radar1.gate_altitude["data"][ind_ray_rad1, ind_rng_rad1]
+    rad1_lat = radar1.gate_latitude["data"][ind_ray_rad1, ind_rng_rad1]
+    rad1_lon = radar1.gate_longitude["data"][ind_ray_rad1, ind_rng_rad1]
+    rad1_x = radar1.gate_x["data"][ind_ray_rad1, ind_rng_rad1] + x0
+    rad1_y = radar1.gate_y["data"][ind_ray_rad1, ind_rng_rad1] + y0
+    rad1_z = radar1.gate_z["data"][ind_ray_rad1, ind_rng_rad1] + z0
 
-        inds = np.where(
-            np.logical_and(
-                np.logical_and(
-                    radar2.gate_altitude["data"][i_ray_psel, i_rng_psel]
-                    < rad1_alt + h_tol,
-                    radar2.gate_altitude["data"][i_ray_psel, i_rng_psel]
-                    > rad1_alt - h_tol,
-                ),
-                np.logical_and(
-                    np.logical_and(
-                        radar2.gate_latitude["data"][i_ray_psel, i_rng_psel]
-                        < rad1_lat + latlon_tol,
-                        radar2.gate_latitude["data"][i_ray_psel, i_rng_psel]
-                        > rad1_lat - latlon_tol,
-                    ),
-                    np.logical_and(
-                        radar2.gate_longitude["data"][i_ray_psel, i_rng_psel]
-                        < rad1_lon + latlon_tol,
-                        radar2.gate_longitude["data"][i_ray_psel, i_rng_psel]
-                        > rad1_lon - latlon_tol,
-                    ),
-                ),
+    rad2_alt = radar2.gate_altitude["data"][i_ray_psel, i_rng_psel]
+    rad2_lat = radar2.gate_latitude["data"][i_ray_psel, i_rng_psel]
+    rad2_lon = radar2.gate_longitude["data"][i_ray_psel, i_rng_psel]
+    rad2_x = radar2.gate_x["data"][i_ray_psel, i_rng_psel]
+    rad2_y = radar2.gate_y["data"][i_ray_psel, i_rng_psel]
+    rad2_z = radar2.gate_z["data"][i_ray_psel, i_rng_psel]
+
+    rad2_xyz = np.column_stack((rad2_x, rad2_y, rad2_z))
+    tree = cKDTree(rad2_xyz)
+
+    mean_lat = np.deg2rad(
+        0.5 * (float(radar1.latitude["data"][0]) + float(radar2.latitude["data"][0]))
+    )
+    lat_tol_m = latlon_tol * 111320.0
+    lon_tol_m = latlon_tol * 111320.0 * np.cos(mean_lat)
+    horiz_tol_m = max(lat_tol_m, lon_tol_m)
+    search_radius = np.sqrt(2.0 * horiz_tol_m**2 + h_tol**2)
+
+    npts = ind_ray_rad1.size
+    for start in range(0, npts, chunk_size):
+        stop = min(start + chunk_size, npts)
+
+        rad1_xyz_batch = np.column_stack(
+            (
+                rad1_x[start:stop],
+                rad1_y[start:stop],
+                rad1_z[start:stop],
             )
         )
 
-        if inds[0].size == 0:
-            # not colocated: set co-located flag to 1
-            coloc_rad1["data"][ind_ray_rad1[i], ind_rng_rad1[i]] = 1
-            continue
+        dist_batch, idx_batch = tree.query(
+            rad1_xyz_batch,
+            k=k,
+            distance_upper_bound=search_radius,
+        )
 
-        ind_ray_rad2 = i_ray_psel[inds]
-        ind_rng_rad2 = i_rng_psel[inds]
+        if k == 1:
+            dist_batch = dist_batch[:, None]
+            idx_batch = idx_batch[:, None]
 
-        if len(ind_ray_rad2) == 1:
-            ind_ray_rad2 = ind_ray_rad2[0]
-            ind_rng_rad2 = ind_rng_rad2[0]
-        else:
-            # compute minimum distance
-            # position of radar 1 gate respect to radar 2
-            rad1_x = radar1.gate_x["data"][ind_ray_rad1[i], ind_rng_rad1[i]] + x0
-            rad1_y = radar1.gate_y["data"][ind_ray_rad1[i], ind_rng_rad1[i]] + y0
-            rad1_z = radar1.gate_z["data"][ind_ray_rad1[i], ind_rng_rad1[i]] + z0
+        for ib in range(stop - start):
+            i = start + ib
 
-            rad2_x = radar2.gate_x["data"][ind_ray_rad2, ind_rng_rad2]
-            rad2_y = radar2.gate_y["data"][ind_ray_rad2, ind_rng_rad2]
-            rad2_z = radar2.gate_z["data"][ind_ray_rad2, ind_rng_rad2]
+            cand = idx_batch[ib]
+            valid_idx = cand[cand < len(i_ray_psel)]  # remove "no match" sentinel
 
-            dist = np.sqrt(
-                (rad2_x - rad1_x) ** 2.0
-                + (rad2_y - rad1_y) ** 2.0
-                + (rad2_z - rad1_z) ** 2.0
+            if valid_idx.size == 0:
+                coloc_rad1["data"][ind_ray_rad1[i], ind_rng_rad1[i]] = 1
+                continue
+
+            # apply exact original tolerances
+            mask = (
+                (rad2_alt[valid_idx] < rad1_alt[i] + h_tol)
+                & (rad2_alt[valid_idx] > rad1_alt[i] - h_tol)
+                & (rad2_lat[valid_idx] < rad1_lat[i] + latlon_tol)
+                & (rad2_lat[valid_idx] > rad1_lat[i] - latlon_tol)
+                & (rad2_lon[valid_idx] < rad1_lon[i] + latlon_tol)
+                & (rad2_lon[valid_idx] > rad1_lon[i] - latlon_tol)
             )
-            ind_min = np.argmin(dist)
 
-            ind_ray_rad2 = ind_ray_rad2[ind_min]
-            ind_rng_rad2 = ind_rng_rad2[ind_min]
+            valid_idx = valid_idx[mask]
 
-        # colocated and valid gate
-        coloc_dict["rad1_ele"].append(radar1.elevation["data"][ind_ray_rad1[i]])
-        coloc_dict["rad1_azi"].append(radar1.azimuth["data"][ind_ray_rad1[i]])
-        coloc_dict["rad1_rng"].append(radar1.range["data"][ind_rng_rad1[i]])
-        coloc_dict["rad1_ray_ind"].append(ind_ray_rad1[i])
-        coloc_dict["rad1_rng_ind"].append(ind_rng_rad1[i])
-        coloc_dict["rad2_ele"].append(radar2.elevation["data"][ind_ray_rad2])
-        coloc_dict["rad2_azi"].append(radar2.azimuth["data"][ind_ray_rad2])
-        coloc_dict["rad2_rng"].append(radar2.range["data"][ind_rng_rad2])
-        coloc_dict["rad2_ray_ind"].append(ind_ray_rad2)
-        coloc_dict["rad2_rng_ind"].append(ind_rng_rad2)
+            if valid_idx.size == 0:
+                coloc_rad1["data"][ind_ray_rad1[i], ind_rng_rad1[i]] = 1
+                continue
 
-    #     # debug output:
-    #     print(
-    #         radar1.elevation['data'][ind_ray_rad1[i]],
-    #         radar1.azimuth['data'][ind_ray_rad1[i]],
-    #         radar1.range['data'][ind_rng_rad1[i]],
-    #         radar2.elevation['data'][ind_ray_rad2],
-    #         radar2.azimuth['data'][ind_ray_rad2],
-    #         radar2.range['data'][ind_rng_rad2])
-    #     print(
-    #         radar1.gate_longitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
-    #         radar1.gate_latitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
-    #         radar1.gate_altitude['data'][ind_ray_rad1[i], ind_rng_rad1[i]],
-    #         radar2.gate_longitude['data'][ind_ray_rad2, ind_rng_rad2],
-    #         radar2.gate_latitude['data'][ind_ray_rad2, ind_rng_rad2],
-    #         radar2.gate_altitude['data'][ind_ray_rad2, ind_rng_rad2])
-    #
-    # ind_ray_rad1, ind_rng_rad1 = np.where(coloc_rad1['data'])
-    # ngates = len(ind_ray_rad1)
-    # print(str(ngates)+' gates of radar1 are colocated with radar2.')
+            if valid_idx.size > 1:
+                dx = rad2_x[valid_idx] - rad1_x[i]
+                dy = rad2_y[valid_idx] - rad1_y[i]
+                dz = rad2_z[valid_idx] - rad1_z[i]
+                j = valid_idx[np.argmin(dx * dx + dy * dy + dz * dz)]
+            else:
+                j = valid_idx[0]
+
+            ind_ray_rad2 = i_ray_psel[j]
+            ind_rng_rad2 = i_rng_psel[j]
+
+            coloc_dict["rad1_ele"].append(radar1.elevation["data"][ind_ray_rad1[i]])
+            coloc_dict["rad1_azi"].append(radar1.azimuth["data"][ind_ray_rad1[i]])
+            coloc_dict["rad1_rng"].append(radar1.range["data"][ind_rng_rad1[i]])
+            coloc_dict["rad1_ray_ind"].append(ind_ray_rad1[i])
+            coloc_dict["rad1_rng_ind"].append(ind_rng_rad1[i])
+            coloc_dict["rad2_ele"].append(radar2.elevation["data"][ind_ray_rad2])
+            coloc_dict["rad2_azi"].append(radar2.azimuth["data"][ind_ray_rad2])
+            coloc_dict["rad2_rng"].append(radar2.range["data"][ind_rng_rad2])
+            coloc_dict["rad2_ray_ind"].append(ind_ray_rad2)
+            coloc_dict["rad2_rng_ind"].append(ind_rng_rad2)
 
     return coloc_dict, coloc_rad1
 

@@ -1419,7 +1419,6 @@ def est_rhohv_rain(
 
     rhohv_rain_dict = get_metadata("cross_correlation_ratio_in_rain")
     rhohv_rain_dict["data"] = rhohv_rain
-
     return rhohv_rain_dict
 
 

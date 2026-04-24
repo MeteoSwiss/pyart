@@ -72,6 +72,7 @@ signal_power_hh = "signal_power_hh"
 signal_power_vv = "signal_power_vv"
 
 signal_to_noise_ratio = "signal_to_noise_ratio"
+unfiltered_signal_to_noise_ratio = "unfiltered_signal_to_noise_ratio"
 signal_to_noise_ratio_hh = "signal_to_noise_ratio_hh"
 signal_to_noise_ratio_vv = "signal_to_noise_ratio_vv"
 
@@ -624,6 +625,7 @@ DEFAULT_FIELD_NAMES = {
     "unfiltered_signal_quality_index": unfiltered_signal_quality_index,
     "unfiltered_signal_quality_index_vv": unfiltered_signal_quality_index_vv,
     "signal_to_noise_ratio": signal_to_noise_ratio,
+    "unfiltered_signal_to_noise_ratio": signal_to_noise_ratio,
     "signal_to_noise_ratio_hh": signal_to_noise_ratio_hh,
     "signal_to_noise_ratio_vv": signal_to_noise_ratio_vv,
     "noisedBZ_hh": noisedBZ_hh,
@@ -1858,6 +1860,12 @@ DEFAULT_METADATA = {
         "units": "dB",
         "standard_name": "signal_to_noise_ratio",
         "long_name": "Signal to noise ratio",
+        "coordinates": "elevation azimuth range",
+    },
+    unfiltered_signal_to_noise_ratio: {
+        "units": "dB",
+        "standard_name": "unfiltered_ignal_to_noise_ratio",
+        "long_name": "Unfiltered signal to noise ratio",
         "coordinates": "elevation azimuth range",
     },
     signal_to_noise_ratio_hh: {
@@ -4211,6 +4219,7 @@ DEFAULT_FIELD_COLORMAP = {
     noise_pos_h: "LangRainbow12",
     noise_pos_v: "LangRainbow12",
     signal_to_noise_ratio: "Carbone17",
+    unfiltered_signal_to_noise_ratio: "Carbone17",
     signal_to_noise_ratio_hh: "Carbone17",
     signal_to_noise_ratio_vv: "Carbone17",
     clutter_correction_ratio_hh: "Carbone17",
@@ -4422,6 +4431,7 @@ DEFAULT_FIELD_LIMITS = {
     # unfiltered_reflectivity_vv: (-30., 75.),
     unfiltered_reflectivity_vv: (-30.0, 85.0),
     signal_to_noise_ratio: (-5.0, 30.0),
+    unfiltered_signal_to_noise_ratio: (-5.0, 30.0),
     signal_to_noise_ratio_hh: (-5.0, 30.0),
     signal_to_noise_ratio_vv: (-5.0, 30.0),
     noisedBZ_hh: (-40.0, 10.0),

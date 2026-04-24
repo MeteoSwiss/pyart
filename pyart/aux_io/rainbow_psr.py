@@ -1215,7 +1215,6 @@ def get_item_numbers(
             all_items.append(items_group_global)
 
         return all_items, radar_out
-
     return _get_item_numbers_single_group(
         radar,
         azi_start,
@@ -1336,7 +1335,6 @@ def get_spectral_noise(radar, cpi_header, header, items, undo_txcorr=True):
     field_filt = np.ma.masked_all((radar.nrays, 1, 1))
     for i, item in enumerate(items):
         field_filt[i, 0, 0] = field[item]
-
     npulses_max = np.max(cpi_header["npulses"][items])
     field_data = ma_broadcast_to(field_filt, (radar.nrays, radar.ngates, npulses_max))
 
