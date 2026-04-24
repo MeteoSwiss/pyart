@@ -27,14 +27,14 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,16 +42,17 @@
     <link rel="stylesheet" type="text/css" href="../_static/pyart-theme.css?v=64e953c6" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=45cafc09"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/index';</script>
@@ -88,7 +89,9 @@
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -457,10 +460,10 @@
                    <section id="example-gallery">
 <h1>Example Gallery<a class="headerlink" href="#example-gallery" title="Permalink to this heading">#</a></h1>
 <p>The files used in these examples are available for <a class="reference external" href="https://adc.arm.gov/pyart/example_data/">download</a>.</p>
-<div class="sphx-glr-thumbnails"></div><section id="moment-correction-examples">
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"></div><section id="moment-correction-examples">
 <h2>Moment correction examples<a class="headerlink" href="#moment-correction-examples" title="Permalink to this heading">#</a></h2>
 <p>Performing radar moment corrections in antenna (radial) coordinates.</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In this example the reflectivity attenuation is calculated and then corrected for a polarimetric radar using a Z-PHI method implemented in Py-ART."><img alt="" src="../_images/sphx_glr_plot_attenuation_thumb.png" />
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In this example the reflectivity attenuation is calculated and then corrected for a polarimetric radar using a Z-PHI method implemented in Py-ART."><img alt="" src="../_images/sphx_glr_plot_attenuation_thumb.png" />
 <p><a class="reference internal" href="correct/plot_attenuation.html"><span class="doc">Correct reflectivity attenuation</span></a></p>
   <div class="sphx-glr-thumbnail-title">Correct reflectivity attenuation</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="In this example doppler velocities are dealiased using the ial condition of the dealiasing, using the region-based dealiasing algorithm in Py-ART."><img alt="" src="../_images/sphx_glr_plot_dealias_thumb.png" />
@@ -470,7 +473,7 @@
 <section id="input-output-examples">
 <h2>Input/Output Examples<a class="headerlink" href="#input-output-examples" title="Permalink to this heading">#</a></h2>
 <p>Reading/writing a variety of radar data using Py-ART.</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In this example, we will show how to read in older NEXRAD files prior to 2008 that are missing some coordinate metadata."><img alt="" src="../_images/sphx_glr_plot_older_nexrad_data_aws_thumb.png" />
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In this example, we will show how to read in older NEXRAD files prior to 2008 that are missing some coordinate metadata."><img alt="" src="../_images/sphx_glr_plot_older_nexrad_data_aws_thumb.png" />
 <p><a class="reference internal" href="io/plot_older_nexrad_data_aws.html"><span class="doc">Reading Older NEXRAD Data and Fixing Latitude and Longitude Issues</span></a></p>
   <div class="sphx-glr-thumbnail-title">Reading Older NEXRAD Data and Fixing Latitude and Longitude Issues</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Within this example, we show how you can remotely access Next Generation Weather Radar (NEXRAD) Data from Amazon Web Services and plot quick looks of the datasets."><img alt="" src="../_images/sphx_glr_plot_nexrad_data_aws_thumb.png" />
@@ -480,7 +483,7 @@
 <section id="mapping-examples">
 <h2>Mapping examples<a class="headerlink" href="#mapping-examples" title="Permalink to this heading">#</a></h2>
 <p>Mapping one or multiple radars from antenna coordinates to a Cartesian grid.</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of a single radar from Antenna coordinates to a Cartesian grid."><img alt="" src="../_images/sphx_glr_plot_map_one_radar_to_grid_thumb.png" />
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of a single radar from Antenna coordinates to a Cartesian grid."><img alt="" src="../_images/sphx_glr_plot_map_one_radar_to_grid_thumb.png" />
 <p><a class="reference internal" href="mapping/plot_map_one_radar_to_grid.html"><span class="doc">Map a single radar to a Cartesian grid</span></a></p>
   <div class="sphx-glr-thumbnail-title">Map a single radar to a Cartesian grid</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Map the reflectivity field of two nearby ARM XSARP radars from antenna coordinates to a Cartesian grid."><img alt="" src="../_images/sphx_glr_plot_map_two_radars_to_grid_thumb.png" />
@@ -493,7 +496,7 @@
 <section id="plotting-examples">
 <h2>Plotting examples<a class="headerlink" href="#plotting-examples" title="Permalink to this heading">#</a></h2>
 <p>Plotting real world radar data with Py-ART.</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="An example which creates a RHI plot of a MDV file using a RadarDisplay object."><img alt="" src="../_images/sphx_glr_plot_rhi_mdv_thumb.png" />
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="An example which creates a RHI plot of a MDV file using a RadarDisplay object."><img alt="" src="../_images/sphx_glr_plot_rhi_mdv_thumb.png" />
 <p><a class="reference internal" href="plotting/plot_rhi_mdv.html"><span class="doc">Create a RHI plot from a MDV file</span></a></p>
   <div class="sphx-glr-thumbnail-title">Create a RHI plot from a MDV file</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="An example which creates a PPI plot of a MDV file using a RadarDisplay object."><img alt="" src="../_images/sphx_glr_plot_ppi_mdv_thumb.png" />
@@ -548,7 +551,7 @@
 <section id="retrieval-examples">
 <h2>Retrieval Examples<a class="headerlink" href="#retrieval-examples" title="Permalink to this heading">#</a></h2>
 <p>Retrievals from various radars, such as additional fields or subsets of the data.</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Given a radar and a point, extract the column of radar data values above a point"><img alt="" src="../_images/sphx_glr_plot_column_subset_thumb.png" />
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Given a radar and a point, extract the column of radar data values above a point"><img alt="" src="../_images/sphx_glr_plot_column_subset_thumb.png" />
 <p><a class="reference internal" href="retrieve/plot_column_subset.html"><span class="doc">Extract a radar column above a point</span></a></p>
   <div class="sphx-glr-thumbnail-title">Extract a radar column above a point</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Calculates and plots the composite reflectivity, or the maximum reflectivity across all of the elevations."><img alt="" src="../_images/sphx_glr_plot_composite_reflectivity_thumb.png" />
@@ -657,8 +660,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -682,7 +685,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
 </p></div>
       
     </div>
