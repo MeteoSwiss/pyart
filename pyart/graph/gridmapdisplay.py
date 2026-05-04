@@ -407,6 +407,7 @@ class GridMapDisplay:
                 ticks=ticks,
                 ticklabs=ticklabs,
             )
+        return fig, ax
 
     def plot_grid_raw(
         self,
@@ -649,7 +650,6 @@ class GridMapDisplay:
 
         """
         ds = self.grid.to_xarray()
-
         # parse parameters
         ax, fig = common.parse_ax_fig(ax, fig)
         vmin, vmax = common.parse_vmin_vmax(self.grid, field, vmin, vmax)
@@ -678,7 +678,6 @@ class GridMapDisplay:
                 np.around(ds.lat.max(), decimals=0),
                 5,
             )
-
         data = ds[field].data[0, level]
 
         # mask the data where outside the limits
@@ -715,7 +714,6 @@ class GridMapDisplay:
             [lon_lines.min(), lon_lines.max(), lat_lines.min(), lat_lines.max()],
             crs=cartopy.crs.PlateCarree(),
         )
-
         lons, lats = self.grid.get_point_longitude_latitude(edges=False)
         pm = ax.contour(
             lons,
