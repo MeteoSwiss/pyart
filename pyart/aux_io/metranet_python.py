@@ -78,6 +78,7 @@ MOM_NAME_MAPPING = {
     "UZ": "ZH",
     "UZ_V": "ZV",
     "APH": "MPH",
+    "SNR": "SNR",
 }
 
 # Other way round, f.ex CLT --> CLUT
