@@ -606,7 +606,7 @@ def _get_angle(ray_info, angle_step=None, scan_type="ppi", dtype=np.float32):
 
     def _extract_angles(data):
         angle = np.array(data * bin_to_deg, dtype=dtype)
-        if scan_type == "rhi":
+        if scan_type == "rhi" or scan_type == "other":
             ind = (angle > 225.0).nonzero()
             angle[ind] -= 360.0
         return angle
@@ -619,13 +619,13 @@ def _get_angle(ray_info, angle_step=None, scan_type="ppi", dtype=np.float32):
     except TypeError:
         angle_start = _extract_angles(ray_info[0]["data"])
         angle_stop = _extract_angles(ray_info[1]["data"])
-
     moving_angle = np.angle(
         (np.exp(1.0j * np.deg2rad(angle_start)) + np.exp(1.0j * np.deg2rad(angle_stop)))
         / 2.0,
         deg=True,
     )
-    moving_angle[moving_angle < 0.0] += 360.0  # [0, 360]
+    if scan_type != "other":
+        moving_angle[moving_angle < 0.0] += 360.0  # [0, 360]
 
     return moving_angle, angle_start, angle_stop
 
