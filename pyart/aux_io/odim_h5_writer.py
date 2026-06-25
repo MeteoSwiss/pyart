@@ -1484,10 +1484,10 @@ def _get_data_from_field(
     data = np.squeeze(data)  # Remove axes of length one
     data_dict = {
         "data": data,
-        "gain": gain,
-        "offset": offset,
-        "nodata": nodata,
-        "undetect": undetect,
+        "gain": float(gain),
+        "offset": float(offset),
+        "nodata": float(nodata),
+        "undetect": float(undetect),
     }
     return data_dict
 
