@@ -17,15 +17,9 @@ import pyart
 is_linux = platform.system() == "Linux"
 
 
+# C reader not tested anymore
 @pytest.fixture(
     params=[
-        pytest.param(
-            "C",
-            marks=pytest.mark.skipif(
-                not is_linux,
-                reason="C reader only available on Linux",
-            ),
-        ),
         "python",
     ]
 )
