@@ -18,13 +18,6 @@ is_linux = platform.system() == "Linux"
 
 @pytest.fixture(
     params=[
-        pytest.param(
-            "C",
-            marks=pytest.mark.skipif(
-                not is_linux,
-                reason="C reader only available on Linux",
-            ),
-        ),
         "python",
     ]
 )

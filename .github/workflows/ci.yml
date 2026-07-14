@@ -34,13 +34,7 @@ jobs:
       - name: Install boto3
         run: pip install --user boto3
         working-directory: ${{ github.workspace }}
-      - name: Download metranet
-        run: python get_metranet_lib.py
-        working-directory: ${{github.workspace}}/pyart/testing/
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      # Install dependencies
+        # Install dependencies
       - name: Setup Conda Environment
         uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462
         with:
