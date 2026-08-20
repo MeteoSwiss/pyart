@@ -14,9 +14,7 @@ from pyproj import CRS, Transformer
 from scipy.ndimage import sobel
 
 from ..config import get_field_name, get_fillvalue, get_metadata
-from ..core import (
-    antenna_to_cartesian,
-)
+from ..core import Grid, antenna_to_cartesian
 from . import _gecsx_functions as gf
 
 MANDATORY_RADAR_SPECS = ["tau", "loss", "power", "frequency", "beamwidth", "gain"]
@@ -346,18 +344,61 @@ def gecsx(
     )
 
     # 4. redefine dem_grid
-    dem_grid.fields["terrain_altitude"]["data"] = dem_interp[None, :]
-    dem_grid.nx = dem_interp.shape[1]
-    dem_grid.ny = dem_interp.shape[0]
-    dem_grid.x["data"] = vec_x
-    dem_grid.y["data"] = vec_y
+    # Create a new radar-centered AEQD Grid.
+    # Keep the original dem_grid untouched in its native projection.
+
+    terrain_altitude_dic = get_metadata("terrain_altitude")
+    terrain_altitude_dic["data"] = dem_interp[None, :, :]
+    terrain_altitude_dic["units"] = dem_grid.fields["terrain_altitude"].get(
+        "units", "meters"
+    )
+
+    x_aeqd = get_metadata("x")
+    y_aeqd = get_metadata("y")
+    z_aeqd = get_metadata("z")
+
+    x_aeqd["data"] = vec_x
+    y_aeqd["data"] = vec_y
+    z_aeqd["data"] = np.array([0.0])
+
+    orig_lat = get_metadata("origin_latitude")
+    orig_lon = get_metadata("origin_longitude")
+    orig_alt = get_metadata("origin_altitude")
+
+    orig_lat["data"] = np.array([float(radar.latitude["data"][0])])
+    orig_lon["data"] = np.array([float(radar.longitude["data"][0])])
+    orig_alt["data"] = np.array([float(radar.altitude["data"][0])])
+
+    time = get_metadata("grid_time")
+    time["data"] = np.array([0.0])
+    time["units"] = "seconds since 2000-01-01T00:00:00Z"
+
+    projection_aeqd = {
+        "proj": "pyart_aeqd",
+        "_include_lon_0_lat_0": True,
+    }
+
+    dem_grid_aeqd = Grid(
+        time=time,
+        fields={
+            "terrain_altitude": terrain_altitude_dic,
+        },
+        metadata=dict(dem_grid.metadata),
+        origin_latitude=orig_lat,
+        origin_longitude=orig_lon,
+        origin_altitude=orig_alt,
+        x=x_aeqd,
+        y=y_aeqd,
+        z=z_aeqd,
+        projection=projection_aeqd,
+    )
 
     # Clip DEM outside radar domain
     if clip:
         gate_x = radar.gate_x["data"]
         gate_y = radar.gate_y["data"]
-        dem_grid, grid_x_interp, grid_y_interp = gf.clip_grid(
-            dem_grid, grid_x_interp, grid_y_interp, gate_x, gate_y
+        dem_grid_aeqd, grid_x_interp, grid_y_interp = gf.clip_grid(
+            dem_grid_aeqd, grid_x_interp, grid_y_interp, gate_x, gate_y
         )
 
     xmin_dem = np.min(grid_x_interp)
@@ -378,7 +419,7 @@ def gecsx(
     # 3) Compute bent DEM map
     logging.info("3) computing bent DEM...")
     # Index first level
-    dem = np.ma.filled(dem_grid.fields["terrain_altitude"]["data"][0], np.nan)
+    dem = np.ma.filled(dem_grid_aeqd.fields["terrain_altitude"]["data"][0], np.nan)
     _, _, zgrid = antenna_to_cartesian(range_map / 1000.0, az_map, 0, ke=ke)
     bent_map = dem - (zgrid + radar.altitude["data"])
 
@@ -642,23 +683,23 @@ def gecsx(
         )
 
     logging.info("Adding Cartesian output fields to input Grid (DEM) object...")
-    dem_grid.add_field(bent_terrain_altitude_field, bent_terrain_altitude_dic)
-    dem_grid.add_field(elevation_angle_field, elevation_dic)
-    dem_grid.add_field(terrain_slope_field, terrain_slope_dic)
-    dem_grid.add_field(terrain_aspect_field, terrain_aspect_dic)
-    dem_grid.add_field(visibility_field, visibility_dic)
-    dem_grid.add_field(min_vis_elevation_field, min_vis_elevation_dic)
-    dem_grid.add_field(min_vis_altitude_field, min_vis_altitude_dic)
-    dem_grid.add_field(
+    dem_grid_aeqd.add_field(bent_terrain_altitude_field, bent_terrain_altitude_dic)
+    dem_grid_aeqd.add_field(elevation_angle_field, elevation_dic)
+    dem_grid_aeqd.add_field(terrain_slope_field, terrain_slope_dic)
+    dem_grid_aeqd.add_field(terrain_aspect_field, terrain_aspect_dic)
+    dem_grid_aeqd.add_field(visibility_field, visibility_dic)
+    dem_grid_aeqd.add_field(min_vis_elevation_field, min_vis_elevation_dic)
+    dem_grid_aeqd.add_field(min_vis_altitude_field, min_vis_altitude_dic)
+    dem_grid_aeqd.add_field(
         min_vis_height_above_ground_field, min_vis_height_above_ground_dic
     )
     if min_radar_elevation:
         dem_grid.add_field(
             min_rad_vis_height_above_ground_field, min_rad_vis_height_above_ground_dic
         )
-    dem_grid.add_field(incident_angle_field, incident_angle_dic)
-    dem_grid.add_field(effective_area_field, effective_area_dic)
-    dem_grid.add_field(sigma_0_field, sigma_0_dic)
+    dem_grid_aeqd.add_field(incident_angle_field, incident_angle_dic)
+    dem_grid_aeqd.add_field(effective_area_field, effective_area_dic)
+    dem_grid_aeqd.add_field(sigma_0_field, sigma_0_dic)
 
     logging.info("Creating Radar (DEM) object...")
     new_radar = deepcopy(radar)
@@ -669,4 +710,4 @@ def gecsx(
     radar.add_field(dBZ_clutter_field, dBZ_clutter_dic)
     radar.add_field(visibility_polar_field, visibility_polar_dic)
 
-    return dem_grid, radar
+    return dem_grid_aeqd, radar
