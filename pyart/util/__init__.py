@@ -130,7 +130,6 @@ Weighted statistics
 
 """
 
-
 from .circular_stats import angular_mean, angular_std  # noqa
 from .circular_stats import angular_mean_deg, angular_std_deg  # noqa
 from .circular_stats import interval_mean, interval_std  # noqa

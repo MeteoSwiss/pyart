@@ -1,4 +1,4 @@
-""" Unit Tests for Py-ART's io/read_metranet.py module. (C reader) """
+"""Unit Tests for Py-ART's io/read_metranet.py module. (C reader)"""
 
 import platform
 

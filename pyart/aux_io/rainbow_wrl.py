@@ -60,6 +60,7 @@ RAINBOW_FIELD_NAMES = {
     "SQIu": "unfiltered_signal_quality_index",  # non standard name
     "SQIvu": "unfiltered_signal_quality_index_vv",  # non standard name
     "TEMP": "temperature",  # non standard name
+    "CCOR": "clutter_correction_ratio_hh",  # non standard name
     "ISO0": "iso0",  # non standard name
 }
 

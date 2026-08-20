@@ -28,7 +28,6 @@ srn_idl_py_lib.<ARCH>.so
 
 """
 
-
 import ctypes
 import glob
 import os

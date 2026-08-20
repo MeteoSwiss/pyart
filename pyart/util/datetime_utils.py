@@ -13,6 +13,7 @@ Functions for converting date and time between various forms.
     datetime_from_grid
 
 """
+
 from datetime import datetime, timezone
 
 import numpy as np
@@ -38,9 +39,11 @@ def num2date_to_dt(times, units, calendar="standard", **kwargs):
             [
                 datetime.strptime(
                     str(cf),
-                    "%Y-%m-%d %H:%M:%S"
-                    if len(str(cf)) == 19
-                    else "%Y-%m-%d %H:%M:%S.%f",
+                    (
+                        "%Y-%m-%d %H:%M:%S"
+                        if len(str(cf)) == 19
+                        else "%Y-%m-%d %H:%M:%S.%f"
+                    ),
                 ).replace(tzinfo=timezone.utc)
                 for cf in cftime_dt
             ]

@@ -1,4 +1,4 @@
-""" Unit tests for rainfall rate estimation module. """
+"""Unit tests for rainfall rate estimation module."""
 
 from numpy.testing import assert_allclose
 
@@ -30,6 +30,7 @@ def test_est_rain_rate_hydro():
     )
 
     del radar
+
 
 def test_est_rain_rate_zpoly():
     radar = pyart.io.read(pyart.testing.UF_FILE)

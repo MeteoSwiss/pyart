@@ -175,7 +175,7 @@ def get_field_location(radar, latitude, longitude):
     ray = get_column_rays(radar, azim)
 
     # Determine the center of each gate for the subsetted rays.
-    (rhi_x, rhi_y, rhi_z) = antenna_vectors_to_cartesian(
+    rhi_x, rhi_y, rhi_z = antenna_vectors_to_cartesian(
         radar.range["data"],
         radar.azimuth["data"][ray],
         radar.elevation["data"][ray],

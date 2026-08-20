@@ -1924,7 +1924,7 @@ def search_medoids(
         warn("Maximum number of iterations reached or not enough samples")
         return None, None, iteration
 
-    (hydro_labels, labeled_data, cluster_labels, nonlabeled_data) = compare_samples(
+    hydro_labels, labeled_data, cluster_labels, nonlabeled_data = compare_samples(
         var_names,
         hydro_names,
         weight,
@@ -1983,7 +1983,7 @@ def search_medoids(
             iteration1[icluster] = iteration_max
             hydro_labels1 = None
         else:
-            (hydro_labels1, labeled_data1, iteration1[icluster]) = search_medoids(
+            hydro_labels1, labeled_data1, iteration1[icluster] = search_medoids(
                 fm1,
                 clust_labels1,
                 synthetic_obs,
@@ -2009,7 +2009,7 @@ def search_medoids(
             iteration2[icluster] = iteration_max
             hydro_labels2 = None
         else:
-            (hydro_labels2, labeled_data2, iteration2[icluster]) = search_medoids(
+            hydro_labels2, labeled_data2, iteration2[icluster] = search_medoids(
                 fm2,
                 clust_labels2,
                 synthetic_obs,

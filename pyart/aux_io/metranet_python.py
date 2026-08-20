@@ -24,7 +24,6 @@ functions to read METRANET files in pure python, no other library required!
 
 """
 
-
 import copy
 import os
 import struct

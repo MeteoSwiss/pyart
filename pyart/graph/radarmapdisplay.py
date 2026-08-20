@@ -287,7 +287,6 @@ class RadarMapDisplay(RadarDisplay):
         lat_0 = self.loc[0]
         lon_0 = self.loc[1]
         x, y = self._get_x_y(sweep, edges, filter_transitions)
-
         if rgb_mode:
             data = get_rgba_data(
                 field,

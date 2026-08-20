@@ -1,4 +1,4 @@
-""" Module to give helpful messages to the user that did not
+"""Module to give helpful messages to the user that did not
 compile Py-ART properly.
 """
 
