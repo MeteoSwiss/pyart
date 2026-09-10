@@ -44,6 +44,8 @@ Reading radar data
     read_dat_mf
     read_grib
     read_rainbow_psr
+    read_rainbow_iq
+    read_rainbow_iq_scan
     read_rainbow_psr_spectra
     read_spectra
     read_cf1
@@ -90,6 +92,7 @@ from .rainbow_wrl import read_rainbow_wrl  # noqa
 from .rainbow_psr import read_rainbow_psr, read_rainbow_psr_spectra  # noqa
 from .rainbow_psr import read_psr_header, read_psr_cpi_header, read_psr_spectra  # noqa
 from .rainbow_psr import convert_data  # noqa
+from .rainbow_iq import read_rainbow_iq, read_rainbow_iq_scan  # noqa
 from .spectra import read_spectra, write_spectra  # noqa
 from .cf1 import read_cf1  # noqa
 from .cf1_cartesian import read_cf1_cartesian, read_cf1_cartesian_mf  # noqa
