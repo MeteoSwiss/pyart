@@ -9,7 +9,6 @@ s3fs
 open_radar_data
 xradar
 pandas
-pygrib
 mda-xdrlib
 xarray
 cmweather

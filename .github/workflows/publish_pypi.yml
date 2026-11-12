@@ -8,7 +8,8 @@ jobs:
   build:
     name: Build wheels for all supported Python versions
     runs-on: ubuntu-latest
-
+    env:
+      CFLAGS: "-std=gnu11"
     steps:
       - uses: actions/checkout@v4
 

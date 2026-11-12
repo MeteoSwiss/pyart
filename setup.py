@@ -11,7 +11,6 @@ atmospheric communities to examine, processes, and analyse data from many types
 of weather radars.
 """
 
-
 import glob
 import os
 import sys

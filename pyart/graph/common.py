@@ -598,7 +598,7 @@ def normalize_rgba(fields_rgb, rgba_bounds):
         bounds: ((x...), (y...))
         x can be increasing or decreasing; mapping is defined by the given points.
         """
-        (x_pts, y_pts) = bounds
+        x_pts, y_pts = bounds
         x = np.asarray(x_pts, dtype=float)
         y = np.asarray(y_pts, dtype=float)
 

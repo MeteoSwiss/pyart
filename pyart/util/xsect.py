@@ -500,7 +500,6 @@ def intersection(
     # check for visibility
     if visib_field in radar1.fields and vismin is not None:
         intersec_rad1[radar1.fields[visib_field]["data"] < vismin] = 1
-
     # check for altitude limits
     if hmin is not None:
         intersec_rad1[radar1.gate_altitude["data"] < hmin] = 1

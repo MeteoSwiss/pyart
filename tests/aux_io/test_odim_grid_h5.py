@@ -1,4 +1,4 @@
-""" Unit Tests for Py-ART's aux_io/odim_h5.py module. """
+"""Unit Tests for Py-ART's aux_io/odim_h5.py module."""
 
 import h5py
 import numpy as np

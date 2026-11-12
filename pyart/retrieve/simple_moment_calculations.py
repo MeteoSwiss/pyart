@@ -980,7 +980,7 @@ def compute_refl_from_zdr(radar, zdr_field=None, refl_field=None, ort_refl_field
     if zdr_field is None:
         zdr_field = get_field_name("differential_reflectivity")
     if ort_refl_field is None:
-        if refl_field.endswith('_vv'):
+        if refl_field.endswith("_vv"):
             ort_refl_field = get_field_name("reflectivity")
         else:
             ort_refl_field = get_field_name("reflectivity_vv")
@@ -992,7 +992,7 @@ def compute_refl_from_zdr(radar, zdr_field=None, refl_field=None, ort_refl_field
     refl = radar.fields[refl_field]["data"]
     zdrdB = radar.fields[zdr_field]["data"]
 
-    if refl_field.endswith('_vv'):
+    if refl_field.endswith("_vv"):
         ort_refl_data = refl + zdrdB
     else:
         ort_refl_data = refl - zdrdB
@@ -1001,6 +1001,7 @@ def compute_refl_from_zdr(radar, zdr_field=None, refl_field=None, ort_refl_field
     ort_refl["data"] = ort_refl_data
 
     return ort_refl
+
 
 def compute_bird_density(
     radar, sigma_bird=11, vol_refl_field=None, bird_density_field=None
