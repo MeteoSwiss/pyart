@@ -60,7 +60,7 @@ included in the two panels are reflectivity and doppler velocity.
     # Fields to plot and ranges
     fields_to_plot = ["reflectivity_horizontal", "mean_doppler_velocity"]
     ranges = [(-20, 20), (-17.0, 17.0)]
-    cmaps = ["pyart_HomeyerRainbow", "pyart_balance"]
+    cmaps = ["HomeyerRainbow", "balance"]
 
     # Plot the data
     nplots = len(fields_to_plot)
@@ -82,14 +82,14 @@ included in the two panels are reflectivity and doppler velocity.
 
     # Add the metadata to the title
     plt.suptitle(
-        f"Reflectivity and Velocity \n Azimuth: {np.around(fixed_angle, 3)}\u00B0 {time} UTC"
+        f"Reflectivity and Velocity \n Azimuth: {np.around(fixed_angle, 3)}\u00b0 {time} UTC"
     )
     plt.show()
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.205 seconds)
+   **Total running time of the script:** (0 minutes 0.704 seconds)
 
 
 .. _sphx_glr_download_examples_plotting_plot_rhi_two_panel.py:

@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -472,7 +472,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 
-<span class="n">DATA_PATTERN</span><span class="o">=</span><span class="s2">&quot;/store_new/mch/msrad/radar/rad4alp/rawdata/18162/MLD18162/MLD1816220550U.*&quot;</span>
+<span class="n">DATA_PATTERN</span><span class="o">=</span><span class="s2">"/store_new/mch/msrad/radar/rad4alp/rawdata/18162/MLD18162/MLD1816220550U.*"</span>
 <span class="c1"># This function allows to read a pattern of files into a single radar object</span>
 <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_files</span><span class="p">(</span><span class="n">DATA_PATTERN</span><span class="p">,</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">)</span>
 </pre></div>
@@ -494,7 +494,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RGB_FIELDS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;reflectivity&quot;</span><span class="p">,</span> <span class="s2">&quot;uncorrected_cross_correlation_ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;differential_reflectivity&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">RGB_FIELDS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"reflectivity"</span><span class="p">,</span> <span class="s2">"uncorrected_cross_correlation_ratio"</span><span class="p">,</span> <span class="s2">"differential_reflectivity"</span><span class="p">)</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>

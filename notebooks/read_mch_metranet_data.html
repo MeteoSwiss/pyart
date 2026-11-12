@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -445,8 +445,8 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyart</span>
 
-<span class="n">data_dir</span> <span class="o">=</span> <span class="s1">&#39;/scratch/wolfensb/pyrad_courses/mch_jan_2024/data/&#39;</span>
-<span class="n">file</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;MLL2217907250U.010&#39;</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="s1">'/scratch/wolfensb/pyrad_courses/mch_jan_2024/data/'</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'MLL2217907250U.010'</span>
 
 <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 </pre></div>
@@ -526,18 +526,18 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">));</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Reflectivity [dBZ]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'reflectivity'</span><span class="p">));</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="s1">'Reflectivity [dBZ]'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mf">31.5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dry gates&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'reflectivity'</span><span class="p">)</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="o">-</span><span class="mf">31.5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Dry gates'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Clutter-filtered gates&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'reflectivity'</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Clutter-filtered gates'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Clutter-filtered gates&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, 'Clutter-filtered gates')
 </pre></div>
 </div>
 <img alt="../_images/94c68b6549426221eb494d26579e395977aa48972930ff3c5648723019f68f17.png" src="../_images/94c68b6549426221eb494d26579e395977aa48972930ff3c5648723019f68f17.png" />
@@ -549,10 +549,10 @@
 <p>This command reads a single-moment at a time, either in DN or in physical units.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zh_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span> <span class="o">=</span> <span class="s1">&#39;ZH&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zh_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span> <span class="o">=</span> <span class="s1">'ZH'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">zh_DN</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-<span class="n">zh</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span> <span class="o">=</span> <span class="s1">&#39;ZH&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">zh</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">moment</span> <span class="o">=</span> <span class="s1">'ZH'</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">zh</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -583,7 +583,7 @@
 <p>High-resolution polar data (MHA, MHD, MHL, MHP, MHW files) can be read in the same fashion.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_HR</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;MHL2217907250U.010&#39;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file_HR</span> <span class="o">=</span> <span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'MHL2217907250U.010'</span>
 
 <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_metranet</span><span class="p">(</span><span class="n">file_HR</span><span class="p">)</span>
 </pre></div>
@@ -594,13 +594,13 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Dry gates&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">'reflectivity'</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Grays</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Dry gates'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Dry gates&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, 'Dry gates')
 </pre></div>
 </div>
 <img alt="../_images/7e97b77084d42fe8d4d120db1c8d6bdf831e2ce3482c48223b853fec1f2115f8.png" src="../_images/7e97b77084d42fe8d4d120db1c8d6bdf831e2ce3482c48223b853fec1f2115f8.png" />
@@ -612,8 +612,8 @@
 <p>Other derived polar products include hydrometeor classification files (YMx) and dealiased velocity files (DVx). They must be read with the <em>read_file_c</em> or <em>read_file_py</em> functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hydro</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;YML2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">dealV</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;DVL2217907257L.810&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hydro</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'YML2217907257L.810'</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dealV</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'DVL2217907257L.810'</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">hydro</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">dealV</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
@@ -652,14 +652,14 @@ Pyrad provides a mapping function <a class="reference external" href="https://me
 
 <span class="n">hydro_remapped</span> <span class="o">=</span> <span class="n">map_hydro</span><span class="p">(</span><span class="n">hydro</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NC&#39;</span><span class="p">,</span><span class="s1">&#39;AG&#39;</span><span class="p">,</span> <span class="s1">&#39;CR&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;RP&#39;</span><span class="p">,</span> <span class="s1">&#39;RN&#39;</span><span class="p">,</span> <span class="s1">&#39;VI&#39;</span><span class="p">,</span> <span class="s1">&#39;WS&#39;</span><span class="p">,</span> <span class="s1">&#39;MH&#39;</span><span class="p">,</span> <span class="s1">&#39;IH/HDG&#39;</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'NC'</span><span class="p">,</span><span class="s1">'AG'</span><span class="p">,</span> <span class="s1">'CR'</span><span class="p">,</span> <span class="s1">'LR'</span><span class="p">,</span> <span class="s1">'RP'</span><span class="p">,</span> <span class="s1">'RN'</span><span class="p">,</span> <span class="s1">'VI'</span><span class="p">,</span> <span class="s1">'WS'</span><span class="p">,</span> <span class="s1">'MH'</span><span class="p">,</span> <span class="s1">'IH/HDG'</span><span class="p">]</span>
 <span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
 <span class="n">boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="p">)</span>
 <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">BoundaryNorm</span><span class="p">(</span><span class="n">boundaries</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">hydro_remapped</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;pyart_LangRainbow12&#39;</span><span class="p">)</span>
-<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;HYDRO&#39;</span><span class="p">,</span> <span class="n">ticks</span> <span class="o">=</span> <span class="n">ticks</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">hydro_remapped</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">'pyart_LangRainbow12'</span><span class="p">)</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'HYDRO'</span><span class="p">,</span> <span class="n">ticks</span> <span class="o">=</span> <span class="n">ticks</span><span class="p">)</span>
 <span class="n">cmap</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -670,25 +670,25 @@ Detecting Jax...
 Jax is not installed on your system, unable to use Jax engine.
 Detecting TensorFlow...
 Unable to load both TensorFlow and tensorflow-probability. TensorFlow engine disabled.
-No module named &#39;tensorflow&#39;
+No module named 'tensorflow'
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/users/wolfensb/pyrad/src/pyrad_proc/pyrad/flow/flow_aux.py:52: UserWarning: Memory profiler not available
-  warn(&#39;Memory profiler not available&#39;)
+  warn('Memory profiler not available')
 /store/msrad/utils/anaconda3-wolfensb/envs/rainforest_tests/lib/python3.10/site-packages/bokeh/core/property/primitive.py:37: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
   bokeh_bool_types += (np.bool8,)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Text(1, 0, &#39;NC&#39;),
- Text(1, 1, &#39;AG&#39;),
- Text(1, 2, &#39;CR&#39;),
- Text(1, 3, &#39;LR&#39;),
- Text(1, 4, &#39;RP&#39;),
- Text(1, 5, &#39;RN&#39;),
- Text(1, 6, &#39;VI&#39;),
- Text(1, 7, &#39;WS&#39;),
- Text(1, 8, &#39;MH&#39;),
- Text(1, 9, &#39;IH/HDG&#39;)]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Text(1, 0, 'NC'),
+ Text(1, 1, 'AG'),
+ Text(1, 2, 'CR'),
+ Text(1, 3, 'LR'),
+ Text(1, 4, 'RP'),
+ Text(1, 5, 'RN'),
+ Text(1, 6, 'VI'),
+ Text(1, 7, 'WS'),
+ Text(1, 8, 'MH'),
+ Text(1, 9, 'IH/HDG')]
 </pre></div>
 </div>
 <img alt="../_images/d6c6d709cf3c6e2b72a4ac4c0523c61eecb66e5927c3f5980d62f620e2619894.png" src="../_images/d6c6d709cf3c6e2b72a4ac4c0523c61eecb66e5927c3f5980d62f620e2619894.png" />
@@ -701,7 +701,7 @@ No module named &#39;tensorflow&#39;
 <p>Cartesian products in Metranet format at MeteoSwiss include for example QPE files (RZC), POH files (BZC) as well as MESHS files (MZC). They can be read with the <a class="reference external" href="https://meteoswiss.github.io/pyart/API/generated/generated/pyart.aux_io.read_cartesian_metranet.html"><em>read_cartesian_metranet</em></a> function, which outputs a Py-ART grid object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_cartesian_metranet</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_cartesian_metranet</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'RZC221790725VL.801'</span><span class="p">)</span>
 
 <span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.63</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.3</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span> <span class="mf">25.</span><span class="p">,</span>
                   <span class="mf">40.</span><span class="p">,</span> <span class="mf">63.</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mf">160.</span><span class="p">,</span> <span class="mf">250.</span><span class="p">]</span>
@@ -710,7 +710,7 @@ No module named &#39;tensorflow&#39;
 <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">BoundaryNorm</span><span class="p">(</span><span class="n">boundaries</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;radar_estimated_rain_rate&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;pyart_RRate11&#39;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">'radar_estimated_rain_rate'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">'pyart_RRate11'</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -729,10 +729,10 @@ py_decoder DBG verbl=0
 <p><font color='red'>  <em>read_file</em> is actually a wrapper that will call the function <a class="reference external" href="https://github.com/MeteoSwiss/pyart/blob/master/pyart/aux_io/metranet_c.py#L819"><em>read_product</em></a> if the file contains Cartesian data or <a class="reference external" href="https://github.com/MeteoSwiss/pyart/blob/master/pyart/aux_io/metranet_c.py#L554"><em>read_polar</em></a> if the file contains polar data.</font></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qpe_data_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qpe_data_DN</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'RZC221790725VL.801'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">qpe_data_DN</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-<span class="n">qpe_data</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">&#39;RZC221790725VL.801&#39;</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">qpe_data</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">aux_io</span><span class="o">.</span><span class="n">read_file_c</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">+</span> <span class="s1">'RZC221790725VL.801'</span><span class="p">,</span> <span class="n">physic_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">qpe_data</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>

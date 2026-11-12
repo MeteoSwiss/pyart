@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1881,10 +1881,10 @@ accessed again.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pyart</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;radar_file.nc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">'radar_file.nc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gatefilter</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">correct</span><span class="o">.</span><span class="n">GateFilter</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">gatefilter</span><span class="o">.</span><span class="n">exclude_below</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">gatefilter</span><span class="o">.</span><span class="n">exclude_below</span><span class="p">(</span><span class="s1">&#39;normalized_coherent_power&#39;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gatefilter</span><span class="o">.</span><span class="n">exclude_below</span><span class="p">(</span><span class="s1">'reflectivity'</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gatefilter</span><span class="o">.</span><span class="n">exclude_below</span><span class="p">(</span><span class="s1">'normalized_coherent_power'</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>initialize</p>

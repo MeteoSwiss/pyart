@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1869,14 +1869,14 @@ initalization.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">LazyLoadDict</span><span class="p">({</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="s1">&#39;value1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">:</span> <span class="s1">&#39;value2&#39;</span><span class="p">})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">LazyLoadDict</span><span class="p">({</span><span class="s1">'key1'</span><span class="p">:</span> <span class="s1">'value1'</span><span class="p">,</span> <span class="s1">'key2'</span><span class="p">:</span> <span class="s1">'value2'</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="go">[&#39;key2&#39;, &#39;key1&#39;]</span>
+<span class="go">['key2', 'key1']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lazy_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="mi">999</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">set_lazy</span><span class="p">(</span><span class="s1">&#39;lazykey1&#39;</span><span class="p">,</span> <span class="n">lazy_func</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">set_lazy</span><span class="p">(</span><span class="s1">'lazykey1'</span><span class="p">,</span> <span class="n">lazy_func</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="go">[&#39;key2&#39;, &#39;key1&#39;, &#39;lazykey1&#39;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;lazykey1&#39;</span><span class="p">]</span>
+<span class="go">['key2', 'key1', 'lazykey1']</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s1">'lazykey1'</span><span class="p">]</span>
 <span class="go">999</span>
 </pre></div>
 </div>

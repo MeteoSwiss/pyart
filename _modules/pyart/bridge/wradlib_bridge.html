@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -398,7 +398,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for pyart.bridge.wradlib_bridge</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">pyart.bridge.wradlib</span>
 <span class="sd">====================</span>
 
@@ -409,7 +409,7 @@
 
 <span class="sd">     texture_of_complex_phase</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">wradlib</span>
@@ -424,7 +424,7 @@
 
 
 <div class="viewcode-block" id="texture_of_complex_phase"><a class="viewcode-back" href="../../../API/generated/pyart.retrieve.texture_of_complex_phase.html#pyart.bridge.texture_of_complex_phase">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">texture_of_complex_phase</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">phidp_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phidp_texture_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate the texture of the differential phase field.</span>
 
 <span class="sd">    Calculate the texture of the real part of the complex differential</span>
@@ -454,23 +454,23 @@
 <span class="sd">    nonprecipitating echoes using polarimetric radar observations,</span>
 <span class="sd">    Journal of Atmospheric and Oceanic Technology 24 (8), 1439-1451</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># check that wradlib is available</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_WRADLIB_AVAILABLE</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">MissingOptionalDependency</span><span class="p">(</span>
-            <span class="s2">&quot;wradlib is required to use texture_of_complex_phase but is &quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;not installed&quot;</span>
+            <span class="s2">"wradlib is required to use texture_of_complex_phase but is "</span>
+            <span class="o">+</span> <span class="s2">"not installed"</span>
         <span class="p">)</span>
 
     <span class="c1"># parse field names</span>
     <span class="k">if</span> <span class="n">phidp_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">phidp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;differential_phase&quot;</span><span class="p">)</span>
+        <span class="n">phidp_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">"differential_phase"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">phidp_texture_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">phidp_texture_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;differential_phase&quot;</span><span class="p">)</span>
+        <span class="n">phidp_texture_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">"differential_phase"</span><span class="p">)</span>
 
     <span class="c1"># Grab the phase data</span>
-    <span class="n">phidp</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">phidp_field</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">phidp</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">phidp_field</span><span class="p">][</span><span class="s2">"data"</span><span class="p">]</span>
 
     <span class="c1"># convert to complex number</span>
     <span class="n">complex_phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">phidp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">))</span>
@@ -479,9 +479,9 @@
     <span class="n">w_texture_complex</span> <span class="o">=</span> <span class="n">wradlib</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">texture</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">complex_phase</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span><span class="p">)</span>
 
     <span class="n">texture_field</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">phidp_texture_field</span><span class="p">)</span>
-    <span class="n">texture_field</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_texture_complex</span>
-    <span class="n">texture_field</span><span class="p">[</span><span class="s2">&quot;standard_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;texture_of_differential_phase_hv&quot;</span>
-    <span class="n">texture_field</span><span class="p">[</span><span class="s2">&quot;long_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Texture of differential phase&quot;</span>
+    <span class="n">texture_field</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_texture_complex</span>
+    <span class="n">texture_field</span><span class="p">[</span><span class="s2">"standard_name"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"texture_of_differential_phase_hv"</span>
+    <span class="n">texture_field</span><span class="p">[</span><span class="s2">"long_name"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Texture of differential phase"</span>
     <span class="k">return</span> <span class="n">texture_field</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">

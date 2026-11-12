@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -398,7 +398,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for pyart.correct.sunlib</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">pyrad.correct.sunlib</span>
 <span class="sd">====================</span>
 
@@ -421,7 +421,7 @@
 <span class="sd">    solar_flux_lookup</span>
 <span class="sd">    scanning_losses</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
@@ -441,7 +441,7 @@
 
 
 <div class="viewcode-block" id="sun_position_pysolar"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_pysolar.html#pyart.correct.sun_position_pysolar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sun_position_pysolar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    obtains the sun position in antenna coordinates using the pysolar</span>
 <span class="sd">    library.</span>
 
@@ -458,7 +458,7 @@
 <span class="sd">        elevation and azimuth angles of the sun respect to the sensor in</span>
 <span class="sd">        degrees</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Make the date time zone aware</span>
     <span class="n">dt_aux</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
     <span class="n">dt_aux</span> <span class="o">=</span> <span class="n">dt_aux</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
@@ -468,7 +468,7 @@
 
 
 <div class="viewcode-block" id="sun_position_mfr"><a class="viewcode-back" href="../../../API/generated/pyart.correct.sun_position_mfr.html#pyart.correct.sun_position_mfr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sun_position_mfr</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">lat_deg</span><span class="p">,</span> <span class="n">lon_deg</span><span class="p">,</span> <span class="n">refraction</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate the sun position for the given time (dt) at the given position</span>
 <span class="sd">    (lat, lon).</span>
 
@@ -487,7 +487,7 @@
 <span class="sd">        elevation and azimuth angles of the sun respect to the sensor in</span>
 <span class="sd">        degrees</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">lat_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">lon_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
 
@@ -527,7 +527,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">equation_of_time</span><span class="p">(</span><span class="n">dayjul</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the solar hour for a given julian day.</span>
 
 <span class="sd">    Parameters</span>
@@ -540,7 +540,7 @@
 <span class="sd">    eqt : float</span>
 <span class="sd">        hour</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">temp_cos</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.00720</span><span class="p">,</span> <span class="mf">0.0528</span><span class="p">,</span> <span class="mf">0.0012</span><span class="p">]</span>
     <span class="n">temp_sin</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.12290</span><span class="p">,</span> <span class="mf">0.1565</span><span class="p">,</span> <span class="mf">0.0041</span><span class="p">]</span>
     <span class="n">omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">365.2425</span>  <span class="c1"># earth mean angular orbital velocity [rad/day]</span>
@@ -554,7 +554,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">hour_angle</span><span class="p">(</span><span class="n">htime</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">eqt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the solar angle at a particular time.</span>
 
 <span class="sd">    Parameters</span>
@@ -571,12 +571,12 @@
 <span class="sd">    angle : float</span>
 <span class="sd">        the solar angle in radiants</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">htime</span> <span class="o">+</span> <span class="mf">12.0</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">eqt</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">12.0</span>  <span class="c1"># [rad]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">solar_declination</span><span class="p">(</span><span class="n">dayjul</span><span class="p">,</span> <span class="n">htime</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the solar declination.</span>
 
 <span class="sd">    Parameters</span>
@@ -591,7 +591,7 @@
 <span class="sd">    angle : float</span>
 <span class="sd">        the solar declination in radiants</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">365.2425</span>  <span class="c1"># earth mean angular orbital velocity [rad/day]</span>
     <span class="n">correction</span> <span class="o">=</span> <span class="p">[</span>
         <span class="mf">0.0</span><span class="p">,</span>
@@ -651,7 +651,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">refraction_correction</span><span class="p">(</span><span class="n">es_deg</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the correction that has to be applied to the sun elevation angle</span>
 <span class="sd">    to account for refraction</span>
 
@@ -670,7 +670,7 @@
 <span class="sd">    Holleman &amp; Huuskonen, 2013: analytical formulas for refraction of</span>
 <span class="sd">    radiowaves from exoatmospheric sources, radio science, vol. 48, 226-231</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">es_deg</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.77</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.0</span>
     <span class="n">es_rad</span> <span class="o">=</span> <span class="n">es_deg</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
@@ -695,7 +695,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">gas_att_sun</span><span class="p">(</span><span class="n">es_deg</span><span class="p">,</span> <span class="n">attg</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the attenuation suffered by the sun signal through the atmosphere</span>
 
 <span class="sd">    Parameters</span>
@@ -710,7 +710,7 @@
 <span class="sd">    gas_att_sun : float</span>
 <span class="sd">        the sun attenuation in dB</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">r43</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="mi">6371</span>  <span class="c1"># effective earth radius [km]</span>
     <span class="n">z0</span> <span class="o">=</span> <span class="mf">8.4</span>  <span class="c1"># equivalent height of the atmosphere [km]</span>
     <span class="k">return</span> <span class="n">attg</span> <span class="o">*</span> <span class="p">(</span>
@@ -722,7 +722,7 @@
 <div class="viewcode-block" id="gauss_fit"><a class="viewcode-back" href="../../../API/generated/pyart.correct.gauss_fit.html#pyart.correct.gauss_fit">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">gauss_fit</span><span class="p">(</span>
     <span class="n">az_data</span><span class="p">,</span> <span class="n">az_ref</span><span class="p">,</span> <span class="n">el_data</span><span class="p">,</span> <span class="n">el_ref</span><span class="p">,</span> <span class="n">sunhits</span><span class="p">,</span> <span class="n">npar</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">do_elcorr</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    estimates a gaussian fit of sun hits data</span>
 
 <span class="sd">    Parameters</span>
@@ -750,7 +750,7 @@
 <span class="sd">    beta: 1D float array</span>
 <span class="sd">        the vector used in the fit</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">nhits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">az_data</span><span class="p">)</span>
 
     <span class="n">el_corr</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -784,12 +784,12 @@
         <span class="k">return</span> <span class="n">par</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span>
 
     <span class="k">except</span> <span class="n">LinAlgError</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to perform Guassian fit of sun hits data&quot;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">"Unable to perform Guassian fit of sun hits data"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="retrieval_result"><a class="viewcode-back" href="../../../API/generated/pyart.correct.retrieval_result.html#pyart.correct.retrieval_result">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">retrieval_result</span><span class="p">(</span><span class="n">sunhits</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">npar</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    computes the physical parameters of the sun retrieval from the results of</span>
 <span class="sd">    a Gaussian fit.</span>
 
@@ -816,7 +816,7 @@
 <span class="sd">    az_width, el_width : float</span>
 <span class="sd">        retrieved azimuth and elevation antenna widths</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">nhits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sunhits</span><span class="p">)</span>
 
     <span class="n">val</span> <span class="o">=</span> <span class="p">(</span>
@@ -850,7 +850,7 @@
     <span class="n">beamwidth</span><span class="p">,</span>
     <span class="n">coeff_band</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    computes the theoretical sun power detected at the antenna [dBm] as it</span>
 <span class="sd">    would be without atmospheric attenuation (sun power at top of the</span>
 <span class="sd">    atmosphere) for a given solar flux and radar characteristics</span>
@@ -884,7 +884,7 @@
 <span class="sd">    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange</span>
 <span class="sd">    Weather Radar Observations at Low Elevation Angles</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">antenna_gain</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">coeff_band</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">pulse_width</span>  <span class="c1"># receiver bandwidth [Hz]</span>
 
@@ -903,7 +903,7 @@
 
 
 <div class="viewcode-block" id="ptoa_to_sf"><a class="viewcode-back" href="../../../API/generated/pyart.correct.ptoa_to_sf.html#pyart.correct.ptoa_to_sf">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ptoa_to_sf</span><span class="p">(</span><span class="n">ptoa</span><span class="p">,</span> <span class="n">pulse_width</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">,</span> <span class="n">antenna_gain</span><span class="p">,</span> <span class="n">coeff_band</span><span class="o">=</span><span class="mf">1.2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts the sun power at the top of the atmosphere (in dBm) into solar</span>
 <span class="sd">    flux.</span>
 
@@ -933,7 +933,7 @@
 <span class="sd">    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange</span>
 <span class="sd">    Weather Radar Observations at Low Elevation Angles</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">antenna_gain</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">coeff_band</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">pulse_width</span>  <span class="c1"># receiver bandwidth [Hz]</span>
 
@@ -946,7 +946,7 @@
 
 
 <div class="viewcode-block" id="solar_flux_lookup"><a class="viewcode-back" href="../../../API/generated/pyart.correct.solar_flux_lookup.html#pyart.correct.solar_flux_lookup">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">solar_flux_lookup</span><span class="p">(</span><span class="n">solar_flux</span><span class="p">,</span> <span class="n">wavelen</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given the observed solar flux at 10.7 cm wavelength, returns the solar</span>
 <span class="sd">    flux at the given radar wavelength</span>
 
@@ -968,7 +968,7 @@
 <span class="sd">    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange</span>
 <span class="sd">    Weather Radar Observations at Low Elevation Angles</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># minimum flux</span>
     <span class="n">mfu</span> <span class="o">=</span> <span class="p">[</span>
         <span class="mf">1980.0</span><span class="p">,</span>
@@ -1044,7 +1044,7 @@
 
 
 <div class="viewcode-block" id="scanning_losses"><a class="viewcode-back" href="../../../API/generated/pyart.correct.scanning_losses.html#pyart.correct.scanning_losses">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">scanning_losses</span><span class="p">(</span><span class="n">angle_step</span><span class="p">,</span> <span class="n">beamwidth</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given the antenna beam width and the integration angle, compute the</span>
 <span class="sd">    losses due to the fact that the sun is not a point target and the antenna</span>
 <span class="sd">    is scanning</span>
@@ -1068,7 +1068,7 @@
 <span class="sd">    Alignment and Receiver Calibration Using the Sun: Adaptation to Midrange</span>
 <span class="sd">    Weather Radar Observations at Low Elevation Angles</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">delta_s</span> <span class="o">=</span> <span class="mf">0.57</span>  <span class="c1"># apparent diameter of radio sun [deg]</span>
 
     <span class="c1"># sun convoluted antenna beamwidth look up table according to</span>
@@ -1082,9 +1082,9 @@
 
     <span class="k">if</span> <span class="n">beamwidth</span> <span class="o">&lt;</span> <span class="n">delta_b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">beamwidth</span> <span class="o">&gt;</span> <span class="n">delta_b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
         <span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;Antenna beam width outside of range of valid antenna values &quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;used to calculate sun convoluted beamwidth. The nominal &quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;antenna beamwidth will be used instead.&quot;</span>
+            <span class="s2">"Antenna beam width outside of range of valid antenna values "</span>
+            <span class="o">+</span> <span class="s2">"used to calculate sun convoluted beamwidth. The nominal "</span>
+            <span class="o">+</span> <span class="s2">"antenna beamwidth will be used instead."</span>
         <span class="p">)</span>
         <span class="n">delta_c</span> <span class="o">=</span> <span class="n">beamwidth</span>
     <span class="k">else</span><span class="p">:</span>

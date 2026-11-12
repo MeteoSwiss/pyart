@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -403,27 +403,27 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pooch</span>
 
 <span class="n">DATASETS</span> <span class="o">=</span> <span class="n">pooch</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">path</span><span class="o">=</span><span class="n">pooch</span><span class="o">.</span><span class="n">os_cache</span><span class="p">(</span><span class="s2">&quot;pyart-datasets&quot;</span><span class="p">),</span>
-    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://adc.arm.gov/pyart/example_data/&quot;</span><span class="p">,</span>
-    <span class="n">env</span><span class="o">=</span><span class="s2">&quot;PYART_DATASETS_DIR&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="n">pooch</span><span class="o">.</span><span class="n">os_cache</span><span class="p">(</span><span class="s2">"pyart-datasets"</span><span class="p">),</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">"https://adc.arm.gov/pyart/example_data/"</span><span class="p">,</span>
+    <span class="n">env</span><span class="o">=</span><span class="s2">"PYART_DATASETS_DIR"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>  <span class="c1"># Python 3.9 and later</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-        <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;pyart.testing&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;registry.txt&quot;</span>
+        <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"pyart.testing"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"registry.txt"</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">registry_file</span><span class="p">:</span>
         <span class="n">DATASETS</span><span class="o">.</span><span class="n">load_registry</span><span class="p">(</span><span class="n">registry_file</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pkg_resources</span>
 
     <span class="k">with</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
-        <span class="s2">&quot;pyart.testing&quot;</span><span class="p">,</span> <span class="s2">&quot;registry.txt&quot;</span>
+        <span class="s2">"pyart.testing"</span><span class="p">,</span> <span class="s2">"registry.txt"</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">registry_file</span><span class="p">:</span>
         <span class="n">DATASETS</span><span class="o">.</span><span class="n">load_registry</span><span class="p">(</span><span class="n">registry_file</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">locate</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The absolute path to the sample data storage location on disk.</span>
+<span class="w">    </span><span class="sd">"""The absolute path to the sample data storage location on disk.</span>
 <span class="sd">    This is where the data are saved on your computer. The location is</span>
 <span class="sd">    dependent on the operating system. The folder locations are defined by the</span>
 <span class="sd">    ``appdirs``  package (see the `appdirs documentation</span>
@@ -434,12 +434,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    path : str</span>
 <span class="sd">        The local data storage location.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">DATASETS</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="get_test_data"><a class="viewcode-back" href="../../../API/generated/pyart.testing.get_test_data.html#pyart.testing.get_test_data">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_test_data</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Accesses the desired test data storage</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -449,7 +449,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    path_to_file = str</span>
 <span class="sd">        Local path to the desired file</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">DATASETS</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">

@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -398,7 +398,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for pyart.util.stats_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">pyart.util.stats_utils</span>
 <span class="sd">=========================</span>
 
@@ -412,7 +412,7 @@
 <span class="sd">    weighted_kurtosis</span>
 <span class="sd">    get_statistic</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -421,64 +421,64 @@
 
 
 <div class="viewcode-block" id="weighted_mean"><a class="viewcode-back" href="../../../API/generated/pyart.util.weighted_mean.html#pyart.util.weighted_mean">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">weighted_mean</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the weighted mean&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Calculates the weighted mean"""</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">wts</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="weighted_variance"><a class="viewcode-back" href="../../../API/generated/pyart.util.weighted_variance.html#pyart.util.weighted_variance">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">weighted_variance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the weighted variance&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Calculates the weighted variance"""</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">((</span><span class="n">var</span> <span class="o">-</span> <span class="n">weighted_mean</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">wts</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="weighted_skew"><a class="viewcode-back" href="../../../API/generated/pyart.util.weighted_skew.html#pyart.util.weighted_skew">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">weighted_skew</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the weighted skewness&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Calculates the weighted skewness"""</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
         <span class="p">(</span><span class="n">var</span> <span class="o">-</span> <span class="n">weighted_mean</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">))</span> <span class="o">**</span> <span class="mi">3</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">wts</span>
     <span class="p">)</span> <span class="o">/</span> <span class="n">weighted_variance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="weighted_kurtosis"><a class="viewcode-back" href="../../../API/generated/pyart.util.weighted_kurtosis.html#pyart.util.weighted_kurtosis">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">weighted_kurtosis</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the weighted skewness&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Calculates the weighted skewness"""</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
         <span class="p">(</span><span class="n">var</span> <span class="o">-</span> <span class="n">weighted_mean</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">))</span> <span class="o">**</span> <span class="mi">4</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">wts</span>
     <span class="p">)</span> <span class="o">/</span> <span class="n">weighted_variance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_statistic"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_statistic.html#pyart.util.get_statistic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_statistic</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">weighted</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves the correct function given name of stats and</span>
-<span class="sd">    whether the stats should be weigted or not&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Retrieves the correct function given name of stats and</span>
+<span class="sd">    whether the stats should be weigted or not"""</span>
+    <span class="k">if</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">"mean"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">weighted_mean</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">weighted_mean</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)))</span>
-    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">"std"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weighted_variance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weighted_variance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">))))</span>
-    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">&quot;skewness&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">"skewness"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weighted_skew</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weighted_skew</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">))))</span>
-    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">&quot;kurtosis&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">"kurtosis"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weighted_kurtosis</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weighted_kurtosis</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">))))</span>
-    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">"max"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Sorry currently, max and min statistics cannot be weighted!&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Sorry currently, max and min statistics cannot be weighted!"</span><span class="p">)</span>
         <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">stats</span> <span class="o">==</span> <span class="s2">"min"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Sorry currently, max and min statistics cannot be weighted!&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Sorry currently, max and min statistics cannot be weighted!"</span><span class="p">)</span>
         <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">qval</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[Qq](\d</span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">stats</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="k">elif</span> <span class="n">qval</span> <span class="o">:=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[Qq](\d</span><span class="si">{2}</span><span class="s2">)"</span><span class="p">,</span> <span class="n">stats</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span>
-                <span class="n">var</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">qval</span><span class="p">),</span> <span class="n">weights</span><span class="o">=</span><span class="n">wts</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;inverted_cdf&quot;</span>
+                <span class="n">var</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">qval</span><span class="p">),</span> <span class="n">weights</span><span class="o">=</span><span class="n">wts</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"inverted_cdf"</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">myfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">wts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">qval</span><span class="p">))</span>

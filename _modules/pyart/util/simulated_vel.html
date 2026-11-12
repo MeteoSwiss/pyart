@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -398,7 +398,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for pyart.util.simulated_vel</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">pyart.util.simulated_vel</span>
 <span class="sd">========================</span>
 
@@ -409,7 +409,7 @@
 
 <span class="sd">    simulated_vel_from_profile</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
@@ -418,9 +418,9 @@
 
 
 <div class="viewcode-block" id="simulated_vel_from_profile"><a class="viewcode-back" href="../../../API/generated/pyart.util.simulated_vel_from_profile.html#pyart.util.simulated_vel_from_profile">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">simulated_vel_from_profile</span><span class="p">(</span>
-    <span class="n">radar</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">interp_kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">sim_vel_field</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">radar</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">interp_kind</span><span class="o">=</span><span class="s2">"linear"</span><span class="p">,</span> <span class="n">sim_vel_field</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create simulated radial velocities from a profile of horizontal winds.</span>
 
 <span class="sd">    Parameters</span>
@@ -432,8 +432,8 @@
 <span class="sd">        Profile of horizontal winds.</span>
 <span class="sd">    interp_kind : str, optional</span>
 <span class="sd">        Specifies the kind of interpolation used to determine the winds at a</span>
-<span class="sd">        given height. Must be one of &#39;linear&#39;, &#39;nearest&#39;, &#39;zero&#39;, &#39;slinear&#39;,</span>
-<span class="sd">        &#39;quadratic&#39;, or &#39;cubic&#39;. The the documentation for the SciPy</span>
+<span class="sd">        given height. Must be one of 'linear', 'nearest', 'zero', 'slinear',</span>
+<span class="sd">        'quadratic', or 'cubic'. The the documentation for the SciPy</span>
 <span class="sd">        scipy.interpolate.interp1d function for descriptions.</span>
 <span class="sd">    sim_vel_field : str, optional</span>
 <span class="sd">        Name to use for the simulated velocity field metadata. None will use</span>
@@ -444,15 +444,15 @@
 <span class="sd">    sim_vel : dict</span>
 <span class="sd">        Dictionary containing a radar field of simulated radial velocities.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># parse parameters</span>
     <span class="k">if</span> <span class="n">sim_vel_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sim_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">&quot;simulated_velocity&quot;</span><span class="p">)</span>
+        <span class="n">sim_vel_field</span> <span class="o">=</span> <span class="n">get_field_name</span><span class="p">(</span><span class="s2">"simulated_velocity"</span><span class="p">)</span>
 
     <span class="c1"># radar parameters</span>
-    <span class="n">azimuths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">elevations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+    <span class="n">azimuths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">azimuth</span><span class="p">[</span><span class="s2">"data"</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">elevations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">elevation</span><span class="p">[</span><span class="s2">"data"</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">radar</span><span class="o">.</span><span class="n">gate_altitude</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate_altitudes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">):</span>
         <span class="n">gate_altitudes</span> <span class="o">=</span> <span class="n">gate_altitudes</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
@@ -493,7 +493,7 @@
     <span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">elevations</span><span class="p">)</span>
 
     <span class="n">sim_vel</span> <span class="o">=</span> <span class="n">get_metadata</span><span class="p">(</span><span class="n">sim_vel_field</span><span class="p">)</span>
-    <span class="n">sim_vel</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">radial_vel</span>
+    <span class="n">sim_vel</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span> <span class="o">=</span> <span class="n">radial_vel</span>
     <span class="k">return</span> <span class="n">sim_vel</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">

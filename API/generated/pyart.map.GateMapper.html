@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1855,8 +1855,8 @@ radar objects with simple indexing. In addition, returning a mapped radar object
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>src_radar_y</strong> (<em>src_radar_x</em><em>,</em>) – The source radar’s x and y location in the the destination radar’s Cartesian coordinates.</p></li>
-<li><p><strong>distance_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The distance tolerance in meters for each gate in meters.</p></li>
-<li><p><strong>time_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The time tolerance in meters for each gate in seconds.</p></li>
+<li><p><strong>distance_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The distance tolerance in meters for each gate in meters.</p></li>
+<li><p><strong>time_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – The time tolerance in meters for each gate in seconds.</p></li>
 <li><p><strong>gatefilter_src</strong> (<a class="reference internal" href="pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="pyart.filters.GateFilter"><em>pyart.filters.GateFilter</em></a>) – The gatefilter to apply to the source radar data when mapping to the destination.</p></li>
 <li><p><strong>src_radar</strong> (<a class="reference internal" href="pyart.core.Radar.html#pyart.core.Radar" title="pyart.core.Radar"><em>pyart.core.Radar</em></a>) – The source radar data.</p></li>
 <li><p><strong>dest_radar</strong> (<a class="reference internal" href="pyart.core.Radar.html#pyart.core.Radar" title="pyart.core.Radar"><em>pyart.core.Radar</em></a>) – The destination radar to map the source radar data onto.</p></li>
@@ -1873,9 +1873,9 @@ radar objects with simple indexing. In addition, returning a mapped radar object
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gate_mapper</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">GateMapper</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the destination radar&#39;s equivalent of (2, 2) in the source radar&#39;s coordinates</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the destination radar's equivalent of (2, 2) in the source radar's coordinates</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dest_index</span> <span class="o">=</span> <span class="n">gate_mapper</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">radar_mapped</span> <span class="o">=</span> <span class="n">gate_mapper</span><span class="o">.</span><span class="n">mapped_radar</span><span class="p">([</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radar_mapped</span> <span class="o">=</span> <span class="n">gate_mapper</span><span class="o">.</span><span class="n">mapped_radar</span><span class="p">([</span><span class="s1">'reflectivity'</span><span class="p">])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

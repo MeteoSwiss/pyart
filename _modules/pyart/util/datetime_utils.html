@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -398,7 +398,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for pyart.util.datetime_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">pyart.util.datetime_utils</span>
 <span class="sd">=========================</span>
 
@@ -412,7 +412,8 @@
 <span class="sd">    datetimes_from_dataset</span>
 <span class="sd">    datetime_from_grid</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -422,25 +423,27 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">date2num</span><span class="p">,</span> <span class="n">num2date</span>
 
-<span class="n">EPOCH_UNITS</span> <span class="o">=</span> <span class="s2">&quot;seconds since 1970-01-01T00:00:00Z&quot;</span>
+<span class="n">EPOCH_UNITS</span> <span class="o">=</span> <span class="s2">"seconds since 1970-01-01T00:00:00Z"</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">num2date_to_dt</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">cftime_dt</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">num2date_to_dt</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="s2">"standard"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">cftime_dt</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="s2">"standard"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">,</span> <span class="s2">"__len__"</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">"</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cftime_dt</span><span class="p">),</span> <span class="n">fmt</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
                     <span class="nb">str</span><span class="p">(</span><span class="n">cf</span><span class="p">),</span>
-                    <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cf</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span>
-                    <span class="k">else</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">(</span>
+                        <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S"</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cf</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span>
+                        <span class="k">else</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">"</span>
+                    <span class="p">),</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">cftime_dt</span>
             <span class="p">]</span>
@@ -449,61 +452,61 @@
 
 
 <div class="viewcode-block" id="datetime_from_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetime_from_radar.html#pyart.util.datetime_from_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetime_from_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a datetime for the first ray in a Radar.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return a datetime for the first ray in a Radar."""</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
-        <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
+        <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"units"</span><span class="p">])</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtrad</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"units"</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="datetimes_from_radar"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetimes_from_radar.html#pyart.util.datetimes_from_radar">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetimes_from_radar</span><span class="p">(</span><span class="n">radar</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an array of datetimes for the rays in a Radar.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return an array of datetimes for the rays in a Radar."""</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
-        <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
+        <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"units"</span><span class="p">])</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtrad</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][:],</span> <span class="n">radar</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"units"</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="datetime_from_dataset"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetime_from_dataset.html#pyart.util.datetime_from_dataset">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetime_from_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a datetime for the first time in a netCDF Dataset.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return a datetime for the first time in a netCDF Dataset."""</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
         <span class="n">dtdata</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
         <span class="p">)</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtdata</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="datetimes_from_dataset"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetimes_from_dataset.html#pyart.util.datetimes_from_dataset">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetimes_from_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an array of datetimes for the times in a netCDF Dataset.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return an array of datetimes for the times in a netCDF Dataset."""</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
         <span class="n">dtdata</span> <span class="o">=</span> <span class="n">num2date_to_dt</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
         <span class="p">)</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtdata</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">num2date_to_dt</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">][:],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="datetime_from_grid"><a class="viewcode-back" href="../../../API/generated/pyart.util.datetime_from_grid.html#pyart.util.datetime_from_grid">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">datetime_from_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a datetime for the volume start in a Grid.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return a datetime for the volume start in a Grid."""</span>
     <span class="k">if</span> <span class="n">epoch</span><span class="p">:</span>
-        <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
+        <span class="n">dtrad</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"units"</span><span class="p">])</span>
         <span class="n">epnum</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dtrad</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">epnum</span><span class="p">,</span> <span class="n">EPOCH_UNITS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">num2date</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="s2">"units"</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 <div class="section ablog__blog_comments">
    

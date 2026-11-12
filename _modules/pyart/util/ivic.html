@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -398,7 +398,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                    <h1>Source code for pyart.util.ivic</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">pyart.util.ivic</span>
 <span class="sd">===============</span>
 
@@ -420,7 +420,7 @@
 <span class="sd">    ivic_snr_thr_table</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
@@ -447,7 +447,7 @@
     <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">get_noise_pos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Estimate noise parameters of a ray</span>
 
 <span class="sd">    Use the method of estimating the noise level in a ray outlined</span>
@@ -501,7 +501,7 @@
 <span class="sd">    for Weather Radars. Journal of Atmospheric and Oceanic Technology, 2013,</span>
 <span class="sd">    30, 2737-2753.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">half_flat_reg_wlen</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">flat_reg_wlen</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">get_noise_pos</span><span class="p">:</span>
@@ -644,7 +644,7 @@
 
 
 <div class="viewcode-block" id="get_ivic_pct"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_pct.html#pyart.util.get_ivic_pct">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_ivic_pct</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the point clutter threshold (PCT)</span>
 
 <span class="sd">    Parameters</span>
@@ -663,7 +663,7 @@
 <span class="sd">    pct_out : 1D array</span>
 <span class="sd">        The PCT threshold corresponding to each number of pulses</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">400.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
     <span class="n">pct_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">npulses</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">npuls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
@@ -675,7 +675,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_func_pct_int</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">prob_thr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to solve for point clutter target</span>
 
 <span class="sd">    Parameters</span>
@@ -692,7 +692,7 @@
 <span class="sd">    f : 1D array</span>
 <span class="sd">        function f(x)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># default tolerance 1.49e-8</span>
     <span class="n">f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span>
         <span class="n">_func_pct</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">400.0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="n">npuls</span><span class="p">),</span> <span class="n">epsabs</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">epsrel</span><span class="o">=</span><span class="mf">1e-06</span>
@@ -702,7 +702,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_func_pct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pct</span><span class="p">,</span> <span class="n">npuls</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to solve for point clutter target</span>
 
 <span class="sd">    Parameters</span>
@@ -719,7 +719,7 @@
 <span class="sd">    f : 1D array</span>
 <span class="sd">        function f(x)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">log_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span>
     <span class="n">f</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
         <span class="mf">10.0</span><span class="p">,</span>
@@ -743,7 +743,7 @@
 
 
 <div class="viewcode-block" id="get_ivic_flat_reg_var_max"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_flat_reg_var_max.html#pyart.util.get_ivic_flat_reg_var_max">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_ivic_flat_reg_var_max</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">flat_reg_wlen</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span> <span class="n">prob_thr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the threshold for maximum local variance of noise [dB]</span>
 
 <span class="sd">    Parameters</span>
@@ -763,7 +763,7 @@
 <span class="sd">    var_thr : 1D array</span>
 <span class="sd">        The thresholds corresponding to each number of pulses</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
 
     <span class="n">log_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">)</span>
@@ -826,7 +826,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_func_flat_reg</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">npuls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to solve for flat region variance max. Derived from eq. B5 in</span>
 <span class="sd">    paper</span>
 
@@ -846,7 +846,7 @@
 <span class="sd">    f : 1D array</span>
 <span class="sd">        the f(y) function</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
         <span class="mf">10.0</span><span class="p">,</span>
         <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">npuls</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">npuls</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">),</span>
@@ -854,7 +854,7 @@
 
 
 <div class="viewcode-block" id="get_ivic_snr_thr"><a class="viewcode-back" href="../../../API/generated/pyart.util.get_ivic_snr_thr.html#pyart.util.get_ivic_snr_thr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_ivic_snr_thr</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the threshold for steps 3 and 6 of ivic</span>
 
 <span class="sd">    Parameters</span>
@@ -871,12 +871,12 @@
 <span class="sd">        the desired probability of false alarm</span>
 
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">gammainccinv</span><span class="p">(</span><span class="n">npulses</span><span class="p">,</span> <span class="n">pfa_thr</span><span class="p">)</span> <span class="o">/</span> <span class="n">npulses</span></div>
 
 
 <div class="viewcode-block" id="ivic_pct_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_pct_table.html#pyart.util.ivic_pct_table">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ivic_pct_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the point clutter threshold (PCT) of Ivic from a look up table.</span>
 <span class="sd">    The thresholds are computed for between 1 and 200 pulses. If there</span>
 <span class="sd">    number of pulses is beyond this range it throws an error. The table is</span>
@@ -895,10 +895,10 @@
 <span class="sd">    pct_table : 1D array</span>
 <span class="sd">        The PCT corresponding to each number of pulses</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Table valid for number of pulses between 1 and 200"</span><span class="p">)</span>
 
     <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
 
@@ -1111,7 +1111,7 @@
 
 
 <div class="viewcode-block" id="ivic_flat_reg_var_max_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_var_max_table.html#pyart.util.ivic_flat_reg_var_max_table">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ivic_flat_reg_var_max_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get maximum variance of noise of Ivic from a look up table.</span>
 <span class="sd">    These values are computed for a prescribed flat region window length that</span>
 <span class="sd">    depends on the number of pulses. The window length as a function of number</span>
@@ -1129,10 +1129,10 @@
 <span class="sd">    flat_reg_var_max : 1D array</span>
 <span class="sd">        The maximum variance threshold corresponding to each number of pulses</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Table valid for number of pulses between 1 and 200"</span><span class="p">)</span>
 
     <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
 
@@ -1345,7 +1345,7 @@
 
 
 <div class="viewcode-block" id="ivic_flat_reg_wind_len_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_flat_reg_wind_len_table.html#pyart.util.ivic_flat_reg_wind_len_table">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ivic_flat_reg_wind_len_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the size of the flat region window length as a function of the number</span>
 <span class="sd">    of pulses.</span>
 
@@ -1359,10 +1359,10 @@
 <span class="sd">    flat_reg_var_max : 1D array</span>
 <span class="sd">        The maximum variance threshold corresponding to each number of pulses</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Table valid for number of pulses between 1 and 200"</span><span class="p">)</span>
 
     <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
 
@@ -1375,7 +1375,7 @@
 
 
 <div class="viewcode-block" id="ivic_snr_thr_table"><a class="viewcode-back" href="../../../API/generated/pyart.util.ivic_snr_thr_table.html#pyart.util.ivic_snr_thr_table">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ivic_snr_thr_table</span><span class="p">(</span><span class="n">npulses</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the threshold for steps 3 and 6 of ivic from a look up table</span>
 <span class="sd">    The thresholds are computed for between 1 and 200 pulses. If there</span>
 <span class="sd">    number of pulses is beyond this range it throws an error. The table is</span>
@@ -1393,10 +1393,10 @@
 <span class="sd">        the desired probability of false alarm</span>
 
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">npulses</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">,</span> <span class="n">npulses</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ind</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Table valid for number of pulses between 1 and 200&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Table valid for number of pulses between 1 and 200"</span><span class="p">)</span>
 
     <span class="n">ind_npulses</span> <span class="o">=</span> <span class="p">(</span><span class="n">npulses</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
 
