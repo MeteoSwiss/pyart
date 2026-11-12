@@ -40,11 +40,11 @@ def plot_color_gradients(cmap_category, cmap_list):
     axs[0].set_title(cmap_category + " Colormaps", fontsize=14)
 
     for ax, cmap_name in zip(axs, cmap_list):
-        ax.imshow(gradient, aspect="auto", cmap=f"pyart_{cmap_name}")
+        ax.imshow(gradient, aspect="auto", cmap=f"{cmap_name}")
         ax.text(
             -0.01,
             0.5,
-            f"pyart_{cmap_name}",
+            f"{cmap_name}",
             va="center",
             ha="right",
             fontsize=10,
