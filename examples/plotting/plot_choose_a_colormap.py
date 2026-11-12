@@ -166,6 +166,4 @@ display.plot("reflectivity_horizontal", vmin=-32, vmax=64.0, cmap="Spectral_r")
 display = pyart.graph.RadarDisplay(radar)
 
 # Start by plotting a regular matplotlib colormap (Spectral_r)
-display.plot(
-    "reflectivity_horizontal", vmin=-32, vmax=64.0, cmap="pyart_HomeyerRainbow"
-)
+display.plot("reflectivity_horizontal", vmin=-32, vmax=64.0, cmap="HomeyerRainbow")
