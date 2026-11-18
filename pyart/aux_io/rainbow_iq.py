@@ -30,7 +30,7 @@ import numpy as np
 __all__ = [
     "rainbowFormatError",
     "rainbowPulse",
-    "read_rainbow_header",
+    "read_rainbow_iq_header",
     "iter_rainbow_iq",
     "read_rainbow_iq",
     "iter_rainbow_spectra",
@@ -146,7 +146,7 @@ def _archive_header(stream):
     )
 
 
-def read_rainbow_header(filename):
+def read_rainbow_iq_header(filename):
     """Read all UTF-8 archive properties as strings, without reading IQ data."""
     with open(filename, "rb") as stream:
         header = _archive_header(stream)
@@ -1556,7 +1556,8 @@ def _copy_ray_dictionary(sources, attribute, npulses=None):
             (len(arrays), width), dtype=np.result_type(*[a.dtype for a in arrays])
         )
         for index, array in enumerate(arrays):
-            data[index, : len(array)] = array
+            n = int(npulses[index])
+            data[index, :n] = array[:n]
     else:
         data = np.ma.asarray(arrays)
     template["data"] = data
@@ -1584,16 +1585,13 @@ def _concatenate_iq_rays(sources, moment_radar, moment_indices):
     output.time = _copy_ray_dictionary(sources, "time")
     # The moment file defines the requested scan geometry and output order.
     output.azimuth = dict(template.azimuth)
-    output.azimuth["data"] = np.ma.asarray(moment_radar.azimuth["data"])[moment_indices]
+    output.azimuth["data"] = np.array(moment_radar.azimuth["data"])[moment_indices]
     output.elevation = dict(template.elevation)
-    output.elevation["data"] = np.ma.asarray(moment_radar.elevation["data"])[
-        moment_indices
-    ]
+    output.elevation["data"] = np.array(moment_radar.elevation["data"])[moment_indices]
     output.sweep_number = {"data": np.array([0], dtype=np.int32)}
     output.sweep_start_ray_index = {"data": np.array([0], dtype=np.int32)}
     output.sweep_end_ray_index = {"data": np.array([len(sources) - 1], dtype=np.int32)}
-    output.fixed_angle = {"data": np.ma.array([np.ma.median(output.elevation["data"])])}
-
+    output.fixed_angle = {"data": np.unique(output.elevation["data"])}
     output.fields = {}
     for name, field in template.fields.items():
         width = int(npulses.max())
@@ -1602,7 +1600,15 @@ def _concatenate_iq_rays(sources, moment_radar, moment_indices):
         )
         for target, (radar, ray) in enumerate(sources):
             values = np.ma.asarray(radar.fields[name]["data"])[ray]
-            data[target, :, : values.shape[-1]] = values
+            n = int(npulses[target])
+
+            if n > values.shape[-1]:
+                raise ValueError(
+                    f"Ray {ray}: npulses={n} exceeds "
+                    f"IQ array width={values.shape[-1]}"
+                )
+
+            data[target, :, :n] = values[:, :n]
         copied = dict(field)
         copied["data"] = data
         output.fields[name] = copied
@@ -1638,7 +1644,8 @@ def _copy_pulse_metadata(sources, template_data, key, npulses):
     )
     for target, (radar, ray) in enumerate(sources):
         values = np.ma.asarray(radar.rainbow_pulse_metadata[key]["data"])[ray]
-        data[target, : len(values)] = values
+        n = int(npulses[target])
+        data[target, :n] = values[:n]
     return data
 
 

@@ -70,7 +70,6 @@ radar_cross_section_vv = "radar_cross_section_vv"
 
 signal_power_hh = "signal_power_hh"
 signal_power_vv = "signal_power_vv"
-
 signal_to_noise_ratio = "signal_to_noise_ratio"
 unfiltered_signal_to_noise_ratio = "unfiltered_signal_to_noise_ratio"
 signal_to_noise_ratio_hh = "signal_to_noise_ratio_hh"

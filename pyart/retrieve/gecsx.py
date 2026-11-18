@@ -295,41 +295,72 @@ def gecsx(
     azimuths_pol = [radar.get_azimuth(i) for i in range(radar.nsweeps)]
     range_pol = radar.range["data"]
 
-    # Interpolate DEM to AEQD coordinates
-    Z = dem_grid.fields["terrain_altitude"]["data"][0]
-    x_dem = dem_grid.x["data"]  # 1D
-    y_dem = dem_grid.y["data"]  # 1D
+    # The DEM axes are WGS84 pixel centers: x = longitude, y = latitude.
+    dem_crs = CRS.from_epsg(4326)
+    x_dem = np.asarray(dem_grid.x["data"], dtype=float)
+    y_dem = np.asarray(dem_grid.y["data"], dtype=float)
+    Z = np.ma.asarray(
+        dem_grid.fields["terrain_altitude"]["data"][0],
+        dtype=float,
+    ).filled(np.nan)
 
-    dem_crs = dem_grid.projection  # EPSG / proj string
-    # Build transformers
+    for axis in (x_dem, y_dem):
+        if axis.ndim != 1 or axis.size < 2 or not np.all(np.isfinite(axis)):
+            raise ValueError(
+                "Each DEM axis must contain at least two finite coordinates"
+            )
+        delta = np.diff(axis)
+        if not (np.all(delta > 0) or np.all(delta < 0)):
+            raise ValueError("DEM axes must be strictly monotonic")
+
+    if Z.shape != (y_dem.size, x_dem.size):
+        raise ValueError("DEM altitude must have shape (len(y_dem), len(x_dem))")
+
+    west, east = sorted((x_dem[0], x_dem[-1]))
+    south, north = sorted((y_dem[0], y_dem[-1]))
+    if dem_crs.to_epsg() == 4326:
+        if not (-180 <= west < east <= 180 and -90 <= south < north <= 90):
+            raise ValueError("Expected WGS84 longitude and latitude in degrees")
+
+    radar_lat = float(radar.latitude["data"][0])
+    radar_lon = float(radar.longitude["data"][0])
     aeqd_crs = CRS.from_proj4(
-        f"+proj=aeqd +lat_0={float(radar.latitude['data'][0])} "
-        f"+lon_0={float(radar.longitude['data'][0])} "
+        f"+proj=aeqd +lat_0={radar_lat} +lon_0={radar_lon} "
         "+datum=WGS84 +units=m +no_defs"
     )
+    dem_to_aeqd = Transformer.from_crs(dem_crs, aeqd_crs, always_xy=True)
 
-    dem_crs_obj = CRS.from_user_input(dem_crs)
-    dem_to_aeqd = Transformer.from_crs(dem_crs_obj, aeqd_crs, always_xy=True)
+    # Project the DEM bounds, sampling along each edge.
+    xmin_dem, ymin_dem, xmax_dem, ymax_dem = dem_to_aeqd.transform_bounds(
+        west, south, east, north, densify_pts=101, errcheck=True
+    )
 
-    # Transform only DEM corner points (NOT full grid!)
-    corners_x = np.array([x_dem[0], x_dem[-1], x_dem[0], x_dem[-1]])
-    corners_y = np.array([y_dem[0], y_dem[0], y_dem[-1], y_dem[-1]])
+    # Project one adjacent pixel pair per axis near the DEM center.
+    ix = (x_dem.size - 1) // 2
+    iy = (y_dem.size - 1) // 2
+    px, py = dem_to_aeqd.transform(
+        [x_dem[ix], x_dem[ix + 1], x_dem[ix]],
+        [y_dem[iy], y_dem[iy], y_dem[iy + 1]],
+        errcheck=True,
+    )
 
-    cx, cy = dem_to_aeqd.transform(corners_x, corners_y)
+    res_dem_x = np.hypot(px[1] - px[0], py[1] - py[0])
+    res_dem_y = np.hypot(px[2] - px[0], py[2] - py[0])
+    if not (
+        np.isfinite(res_dem_x)
+        and res_dem_x > 0
+        and np.isfinite(res_dem_y)
+        and res_dem_y > 0
+    ):
+        raise ValueError("Could not determine positive AEQD DEM spacing")
 
-    xmin_dem = np.min(cx)
-    xmax_dem = np.max(cx)
-    ymin_dem = np.min(cy)
-    ymax_dem = np.max(cy)
+    nx = int(np.ceil((xmax_dem - xmin_dem) / res_dem_x)) + 1
+    ny = int(np.ceil((ymax_dem - ymin_dem) / res_dem_y)) + 1
+    vec_x = xmin_dem + res_dem_x * np.arange(nx)
+    vec_y = ymin_dem + res_dem_y * np.arange(ny)
 
-    # Resolution (use DEM native resolution)
-    res_dem_x = abs(x_dem[1] - x_dem[0])
-    res_dem_y = abs(y_dem[1] - y_dem[0])
-
-    vec_x = np.arange(xmin_dem, xmax_dem + res_dem_x, res_dem_x)
-    vec_y = np.arange(ymin_dem, ymax_dem + res_dem_y, res_dem_y)
-
-    grid_x_interp, grid_y_interp = np.meshgrid(vec_x, vec_y)
+    # The helper only reads these arrays, so use views to avoid two full copies.
+    grid_x_interp, grid_y_interp = np.meshgrid(vec_x, vec_y, copy=False)
 
     dem_interp = gf.nearest_resample_dem_to_aeqd(
         Z=Z,
