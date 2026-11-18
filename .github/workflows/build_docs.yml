@@ -15,6 +15,8 @@ permissions:
 jobs:
   deploy-website:
     runs-on: ubuntu-latest
+    env:
+      CFLAGS: "-std=gnu11"
     defaults:
       run:
         shell: bash -l {0}
