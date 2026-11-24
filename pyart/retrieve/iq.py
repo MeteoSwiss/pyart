@@ -142,9 +142,9 @@ def compute_pol_variables_iq(
     if signal_v_field is None:
         signal_v_field = get_field_name("IQ_vv_ADU")
     if noise_h_field is None:
-        noise_h_field = get_field_name("IQ_noiseADU_hh")
+        noise_h_field = get_field_name("IQ_noise_power_hh_ADU")
     if noise_v_field is None:
-        noise_v_field = get_field_name("IQ_noiseADU_vv")
+        noise_v_field = get_field_name("IQ_noise_power_vv_ADU")
 
     if (
         "reflectivity" in fields_list
@@ -411,7 +411,7 @@ def compute_reflectivity_iq(
     if signal_field is None:
         signal_field = get_field_name("IQ_hh_ADU")
     if noise_field is None:
-        noise_field = get_field_name("IQ_noiseADU_hh")
+        noise_field = get_field_name("IQ_noise_power_hh_ADU")
 
     if radar.radar_calibration is None:
         raise ValueError(
@@ -623,9 +623,9 @@ def compute_differential_reflectivity_iq(
     if signal_v_field is None:
         signal_v_field = get_field_name("IQ_vv_ADU")
     if noise_h_field is None:
-        noise_h_field = get_field_name("IQ_noiseADU_hh")
+        noise_h_field = get_field_name("IQ_noise_power_hh_ADU")
     if noise_v_field is None:
-        noise_v_field = get_field_name("IQ_noiseADU_vv")
+        noise_v_field = get_field_name("IQ_noise_power_vv_ADU")
 
     if radar.radar_calibration is None:
         raise ValueError(
@@ -685,7 +685,7 @@ def compute_differential_reflectivity_iq(
 
 def compute_mean_phase_iq(radar, signal_field=None):
     """
-    Computes the differential phase from the horizontal or vertical channel
+    Computes the mean phase from the horizontal or vertical channel
     IQ data
 
     Parameters
@@ -801,9 +801,9 @@ def compute_rhohv_iq(
     if signal_v_field is None:
         signal_v_field = get_field_name("IQ_vv_ADU")
     if noise_h_field is None:
-        noise_h_field = get_field_name("IQ_noiseADU_hh")
+        noise_h_field = get_field_name("IQ_noise_power_hh_ADU")
     if noise_v_field is None:
-        noise_v_field = get_field_name("IQ_noiseADU_vv")
+        noise_v_field = get_field_name("IQ_noise_power_vv_ADU")
 
     if lag == 0:
         rhohv = np.ma.abs(
@@ -937,7 +937,7 @@ def compute_Doppler_width_iq(
     if signal_field is None:
         signal_field = get_field_name("IQ_hh_ADU")
     if noise_field is None:
-        noise_field = get_field_name("IQ_noiseADU_hh")
+        noise_field = get_field_name("IQ_noise_power_hh_ADU")
 
     prt = np.broadcast_to(
         np.expand_dims(radar.instrument_parameters["prt"]["data"], axis=1),
