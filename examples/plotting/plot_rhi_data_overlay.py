@@ -41,7 +41,7 @@ display.plot(
     vmax=20.0,
     fig=fig,
     ax=ax,
-    cmap="pyart_BuDRd18",
+    cmap="BuDRd18",
     colorbar_label="Velocity (m/s)",
 )
 

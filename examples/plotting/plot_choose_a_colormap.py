@@ -40,11 +40,11 @@ def plot_color_gradients(cmap_category, cmap_list):
     axs[0].set_title(cmap_category + " Colormaps", fontsize=14)
 
     for ax, cmap_name in zip(axs, cmap_list):
-        ax.imshow(gradient, aspect="auto", cmap=f"pyart_{cmap_name}")
+        ax.imshow(gradient, aspect="auto", cmap=f"{cmap_name}")
         ax.text(
             -0.01,
             0.5,
-            f"pyart_{cmap_name}",
+            f"{cmap_name}",
             va="center",
             ha="right",
             fontsize=10,
@@ -166,6 +166,4 @@ display.plot("reflectivity_horizontal", vmin=-32, vmax=64.0, cmap="Spectral_r")
 display = pyart.graph.RadarDisplay(radar)
 
 # Start by plotting a regular matplotlib colormap (Spectral_r)
-display.plot(
-    "reflectivity_horizontal", vmin=-32, vmax=64.0, cmap="pyart_HomeyerRainbow"
-)
+display.plot("reflectivity_horizontal", vmin=-32, vmax=64.0, cmap="HomeyerRainbow")

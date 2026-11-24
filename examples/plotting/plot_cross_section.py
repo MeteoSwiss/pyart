@@ -54,7 +54,7 @@ display = pyart.graph.GridMapDisplay(grid)
 display.plot_grid(
     "corrected_reflectivity_horizontal",
     ax=ax1,
-    cmap="pyart_HomeyerRainbow",
+    cmap="HomeyerRainbow",
     vmin=-20,
     vmax=70,
 )
@@ -71,7 +71,7 @@ display.plot_cross_section(
     "corrected_reflectivity_horizontal",
     start,
     end,
-    cmap="pyart_HomeyerRainbow",
+    cmap="HomeyerRainbow",
     vmin=-20,
     vmax=70,
 )
