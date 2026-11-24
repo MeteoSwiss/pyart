@@ -611,6 +611,8 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_dat_mf.html">pyart.aux_io.read_dat_mf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_grib.html">pyart.aux_io.read_grib</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_psr.html">pyart.aux_io.read_rainbow_psr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_iq.html">pyart.aux_io.read_rainbow_iq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_iq_scan.html">pyart.aux_io.read_rainbow_iq_scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_psr_spectra.html">pyart.aux_io.read_rainbow_psr_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_spectra.html">pyart.aux_io.read_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_cf1.html">pyart.aux_io.read_cf1</a></li>
@@ -661,6 +663,8 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_psr_header.html">pyart.aux_io.read_psr_header</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_psr_spectra.html">pyart.aux_io.read_psr_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_radx.html">pyart.aux_io.read_radx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_iq.html">pyart.aux_io.read_rainbow_iq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_iq_scan.html">pyart.aux_io.read_rainbow_iq_scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_psr.html">pyart.aux_io.read_rainbow_psr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_psr_spectra.html">pyart.aux_io.read_rainbow_psr_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_wrl.html">pyart.aux_io.read_rainbow_wrl</a></li>
@@ -1916,6 +1920,12 @@ priority.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_psr.html#pyart.aux_io.read_rainbow_psr" title="pyart.aux_io.read_rainbow_psr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr</span></code></a>(filename, filenames_psr[, ...])</p></td>
 <td><p>Read transmitted power and noise levels from a PSR file (to read the complex spectrum use read_rainbow_psr_spectra)</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_iq.html#pyart.aux_io.read_rainbow_iq" title="pyart.aux_io.read_rainbow_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_iq</span></code></a>(filename[, field_names, ...])</p></td>
+<td><p>Read selected GDRX6 RX pulses into one MeteoSwiss RadarSpectra.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_iq_scan.html#pyart.aux_io.read_rainbow_iq_scan" title="pyart.aux_io.read_rainbow_iq_scan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_iq_scan</span></code></a>(moment_filename, ...[, ...])</p></td>
+<td><p>Read IQRecord files for one Rainbow scan, using its moment rays as reference.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_psr_spectra.html#pyart.aux_io.read_rainbow_psr_spectra" title="pyart.aux_io.read_rainbow_psr_spectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr_spectra</span></code></a>(filename, filenames_psr)</p></td>
 <td><p>Read a PSR file to get the complex spectra</p></td>
 </tr>
@@ -2089,6 +2099,12 @@ priority.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyart.aux_io.read_radx.html#pyart.aux_io.read_radx" title="pyart.aux_io.read_radx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_radx</span></code></a>(filename[, radx_dir])</p></td>
 <td><p>Read a file by first converting it to Cf/Radial using RadxConvert.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_iq.html#pyart.aux_io.read_rainbow_iq" title="pyart.aux_io.read_rainbow_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_iq</span></code></a>(filename[, field_names, ...])</p></td>
+<td><p>Read selected GDRX6 RX pulses into one MeteoSwiss RadarSpectra.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_iq_scan.html#pyart.aux_io.read_rainbow_iq_scan" title="pyart.aux_io.read_rainbow_iq_scan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_iq_scan</span></code></a>(moment_filename, ...[, ...])</p></td>
+<td><p>Read IQRecord files for one Rainbow scan, using its moment rays as reference.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.aux_io.read_rainbow_psr.html#pyart.aux_io.read_rainbow_psr" title="pyart.aux_io.read_rainbow_psr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rainbow_psr</span></code></a>(filename, filenames_psr[, ...])</p></td>
 <td><p>Read transmitted power and noise levels from a PSR file (to read the complex spectrum use read_rainbow_psr_spectra)</p></td>

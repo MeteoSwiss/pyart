@@ -611,6 +611,8 @@
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_dat_mf.html">pyart.aux_io.read_dat_mf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_grib.html">pyart.aux_io.read_grib</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_psr.html">pyart.aux_io.read_rainbow_psr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_iq.html">pyart.aux_io.read_rainbow_iq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_iq_scan.html">pyart.aux_io.read_rainbow_iq_scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_rainbow_psr_spectra.html">pyart.aux_io.read_rainbow_psr_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_spectra.html">pyart.aux_io.read_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/pyart.aux_io.read_cf1.html">pyart.aux_io.read_cf1</a></li>
@@ -661,6 +663,8 @@
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_psr_header.html">pyart.aux_io.read_psr_header</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_psr_spectra.html">pyart.aux_io.read_psr_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_radx.html">pyart.aux_io.read_radx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_iq.html">pyart.aux_io.read_rainbow_iq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_iq_scan.html">pyart.aux_io.read_rainbow_iq_scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_psr.html">pyart.aux_io.read_rainbow_psr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_psr_spectra.html">pyart.aux_io.read_rainbow_psr_spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyart.aux_io.read_rainbow_wrl.html">pyart.aux_io.read_rainbow_wrl</a></li>
@@ -2221,7 +2225,7 @@
 <td><p>Computes the spectra from IQ data through a Fourier transform</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.retrieve.compute_mean_phase_iq.html#pyart.retrieve.compute_mean_phase_iq" title="pyart.retrieve.compute_mean_phase_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_mean_phase_iq</span></code></a>(radar[, signal_field])</p></td>
-<td><p>Computes the differential phase from the horizontal or vertical channel IQ data</p></td>
+<td><p>Computes the mean phase from the horizontal or vertical channel IQ data</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyart.retrieve.compute_st1_iq.html#pyart.retrieve.compute_st1_iq" title="pyart.retrieve.compute_st1_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_st1_iq</span></code></a>(radar[, signal_field])</p></td>
 <td><p>Computes the statistical test one lag fluctuation from the horizontal or vertical channel IQ data</p></td>
@@ -2312,7 +2316,7 @@
 <td><p>Computes Rhohv in logarithmic scale according to ll=-log10(1-RhoHV).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pyart.retrieve.compute_mean_phase_iq.html#pyart.retrieve.compute_mean_phase_iq" title="pyart.retrieve.compute_mean_phase_iq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_mean_phase_iq</span></code></a>(radar[, signal_field])</p></td>
-<td><p>Computes the differential phase from the horizontal or vertical channel IQ data</p></td>
+<td><p>Computes the mean phase from the horizontal or vertical channel IQ data</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pyart.retrieve.compute_noise_power.html#pyart.retrieve.compute_noise_power" title="pyart.retrieve.compute_noise_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_noise_power</span></code></a>(spectra[, units, navg, ...])</p></td>
 <td><p>Computes the noise power from the complex spectra in ADU.</p></td>

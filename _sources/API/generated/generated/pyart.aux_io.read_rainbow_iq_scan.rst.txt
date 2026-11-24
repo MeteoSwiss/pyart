@@ -1,0 +1,6 @@
+pyart.aux\_io.read\_rainbow\_iq\_scan
+=====================================
+
+.. currentmodule:: pyart.aux_io
+
+.. autofunction:: read_rainbow_iq_scan
