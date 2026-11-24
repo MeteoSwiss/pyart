@@ -534,7 +534,6 @@ def detect_ml(
         iso0_dict = compute_iso0(
             radar_in, ml_obj.fields[ml_pos_field]["data"][:, 1], iso0_field=iso0_field
         )
-
     return ml_obj, ml_dict, iso0_dict, all_ml
 
 
@@ -2683,7 +2682,6 @@ def _detect_ml_sweep(
     bottom_ml, top_ml = _process_map_ml(
         gradient_z, rhohv_field_c, detect_threshold, *RHOHV_VALID_BOUNDS
     )
-
     # Restrict gradient using conditions on medians
     median_bot_height = np.nanmedian(bottom_ml)
     median_top_height = np.nanmedian(top_ml)
@@ -2798,7 +2796,6 @@ def _detect_ml_sweep(
                 map_ml[0 : int(bottom_ml[j]), j] = mdata_ml["ABOVE"]
 
     # create dictionary of output ml
-
     # Cartesian coordinates
     ml_cart = {}
     ml_cart["data"] = np.array(map_ml)
@@ -2827,7 +2824,6 @@ def _detect_ml_sweep(
     output["ml_cart"] = ml_cart
     output["ml_pol"] = ml_pol
     output["ml_exists"] = not invalid_ml
-
     return output
 
 
@@ -3047,10 +3043,12 @@ def _remap_to_polar(radar_sweep, x, bottom_ml, top_ml, tol=1.5, interp=True):
         for i in range(len(map_ml_pol)):
             if idx_r_bottom[i] != -9999 and idx_r_top[i] != -9999:
                 r_bottom_interp = min([len(r), idx_r_bottom[i]]) * dr
-                bottom_ml_pol[i] = _r_to_h(E, r_bottom_interp, theta[i])
+                bottom_ml_pol[i] = np.asarray(
+                    _r_to_h(E, r_bottom_interp, theta[i])
+                ).item()
 
                 r_top_interp = min([len(r), idx_r_top[i]]) * dr
-                top_ml_pol[i] = _r_to_h(E, r_top_interp, theta[i])
+                top_ml_pol[i] = np.asarray(_r_to_h(E, r_top_interp, theta[i])).item()
 
                 # check that data has plausible values
                 if (
